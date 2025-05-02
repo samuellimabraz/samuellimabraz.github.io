@@ -1,5 +1,7 @@
 import { ActivationFn, getActivation } from './activation';
 import { Layer } from './layer';
+import { WeightInitializer, getInitializer } from './initializers';
+import { Optimizer, getOptimizer } from './optimizers';
 
 export interface NetworkConfig {
     inputDim: number;
@@ -8,6 +10,9 @@ export interface NetworkConfig {
     hiddenActivations: string[];
     outputActivation: string;
     useBias: boolean;
+    weightInitializer?: string; // Global weight initialization method (fallback)
+    layerInitializers?: string[]; // Per-layer weight initialization methods
+    optimizer?: string; // Name of optimizer to use
 }
 
 export interface TrainingConfig {
@@ -33,10 +38,22 @@ export class NeuralNetwork {
     private useBias: boolean;
     private seed?: number;
     private history: TrainingHistory;
+    private weightInitializer?: string;
+    private layerInitializers?: string[];
+    private optimizer?: string;
 
-    constructor(useBias: boolean = true, seed?: number) {
+    constructor(
+        useBias: boolean = true,
+        seed?: number,
+        weightInitializer?: string,
+        optimizer?: string,
+        layerInitializers?: string[]
+    ) {
         this.useBias = useBias;
         this.seed = seed;
+        this.weightInitializer = weightInitializer;
+        this.layerInitializers = layerInitializers;
+        this.optimizer = optimizer;
         this.history = {
             loss: [],
             gradientNorm: [],
@@ -52,7 +69,8 @@ export class NeuralNetwork {
     addLayer(
         outputDim: number,
         activation: ActivationFn,
-        inputDim?: number
+        inputDim?: number,
+        layerIndex?: number
     ): void {
         // For the first layer, input dimension must be specified
         if (!this.layers.length && inputDim === undefined) {
@@ -66,8 +84,21 @@ export class NeuralNetwork {
             inputDim = dummyOutput.length;
         }
 
-        // Create and add the new layer
-        const layer = new Layer(inputDim, outputDim, activation, this.useBias, this.seed);
+        // Determine which initializer to use for this layer
+        let layerInitializer = this.weightInitializer;
+        if (this.layerInitializers && layerIndex !== undefined && layerIndex < this.layerInitializers.length) {
+            // Use layer-specific initializer if available
+            layerInitializer = this.layerInitializers[layerIndex];
+        }
+
+        // Create and add the new layer with the specified initializer
+        const layer = new Layer(inputDim, outputDim, activation, this.useBias, layerInitializer, this.seed);
+
+        // Set optimizer if specified
+        if (this.optimizer) {
+            layer.setOptimizer(this.optimizer, { learningRate: 0.01 }); // Default learning rate will be overridden during training
+        }
+
         this.layers.push(layer);
     }
 
@@ -125,6 +156,76 @@ export class NeuralNetwork {
     updateParameters(gradients: any[], learningRate: number): void {
         for (let i = 0; i < this.layers.length; i++) {
             this.layers[i].updateParameters(gradients[i], learningRate);
+        }
+    }
+
+    // Set optimizer for all layers
+    setOptimizer(optimizer: string | Optimizer, config: any = {}): void {
+        // If learning rate is not specified, use default
+        if (!config.learningRate) {
+            config.learningRate = 0.01;
+        }
+
+        for (const layer of this.layers) {
+            layer.setOptimizer(optimizer, config);
+        }
+
+        // Store optimizer name if it's a string
+        if (typeof optimizer === 'string') {
+            this.optimizer = optimizer;
+        }
+    }
+
+    // Reinitialize all weights in the network
+    reinitializeWeights(initializer?: string | WeightInitializer, layerIndex?: number): void {
+        if (layerIndex !== undefined && layerIndex >= 0 && layerIndex < this.layers.length) {
+            // Reinitialize a specific layer
+            this.layers[layerIndex].reinitializeWeights(initializer);
+
+            // Update the layer initializer if it's a string
+            if (typeof initializer === 'string' && this.layerInitializers) {
+                // Make sure layerInitializers array is properly sized
+                while (this.layerInitializers.length <= layerIndex) {
+                    this.layerInitializers.push(this.weightInitializer || 'he');
+                }
+                this.layerInitializers[layerIndex] = initializer;
+            }
+        } else {
+            // Reinitialize all layers
+            for (const layer of this.layers) {
+                layer.reinitializeWeights(initializer);
+            }
+
+            // Store initializer name if it's a string
+            if (typeof initializer === 'string') {
+                this.weightInitializer = initializer;
+
+                // Reset all layer initializers to this one if requested
+                if (!this.layerInitializers) {
+                    this.layerInitializers = Array(this.layers.length).fill(initializer);
+                }
+            }
+        }
+    }
+
+    // Set initializer for a specific layer
+    setLayerInitializer(layerIndex: number, initializer: string): void {
+        if (layerIndex >= 0 && layerIndex < this.layers.length) {
+            // Initialize layerInitializers array if it doesn't exist
+            if (!this.layerInitializers) {
+                this.layerInitializers = Array(this.layers.length).fill(this.weightInitializer || 'he');
+            }
+
+            // Make sure layerInitializers array is properly sized
+            while (this.layerInitializers.length <= layerIndex) {
+                this.layerInitializers.push(this.weightInitializer || 'he');
+            }
+
+            // Update the layer initializer
+            this.layerInitializers[layerIndex] = initializer;
+
+            // Reinitialize the layer with the new initializer
+            this.layers[layerIndex].reinitializeWeights(initializer);
         }
     }
 
@@ -192,18 +293,24 @@ export class NeuralNetwork {
 
     // Create neural network from configuration
     static fromConfig(config: NetworkConfig): NeuralNetwork {
-        const model = new NeuralNetwork(config.useBias);
+        const model = new NeuralNetwork(
+            config.useBias,
+            undefined, // seed
+            config.weightInitializer,
+            config.optimizer,
+            config.layerInitializers
+        );
 
         // Add hidden layers
         for (let i = 0; i < config.hiddenDims.length; i++) {
             const activation = getActivation(config.hiddenActivations[i] || 'tanh');
             const inputDim = i === 0 ? config.inputDim : config.hiddenDims[i - 1];
-            model.addLayer(config.hiddenDims[i], activation, inputDim);
+            model.addLayer(config.hiddenDims[i], activation, inputDim, i);
         }
 
         // Add output layer
         const outputActivation = getActivation(config.outputActivation);
-        model.addLayer(config.outputDim, outputActivation);
+        model.addLayer(config.outputDim, outputActivation, undefined, config.hiddenDims.length);
 
         return model;
     }
@@ -248,94 +355,77 @@ export class NeuralNetwork {
                 trainAccuracy: [],
                 testAccuracy: []
             };
+        }
 
-            // Store initial selected weights
-            const initialWeights = this.getSelectedWeights();
-            this.history.selectedWeightsTrace.push([...initialWeights, 0]);
+        // Set learning rate in all layers' optimizers
+        if (this.optimizer) {
+            this.setOptimizer(this.optimizer, { learningRate: config.learningRate });
         }
 
         return new Promise((resolve, reject) => {
-            // Start from the specified epoch or from 0
-            let epoch = config.startEpoch || 0;
-            console.log(`Starting training from epoch ${epoch} to ${config.numEpochs}`);
+            // Use the current epoch or start from 0
+            const startEpoch = config.startEpoch || 0;
+            let currentEpoch = startEpoch;
 
-            // Use a named function so we can reference it for cleanup
+            // Recursive function to train one epoch at a time, allowing for UI updates
             const trainEpoch = () => {
-                // Check if we should continue training
+                // Check if we should continue (if shouldContinue is provided)
                 if (shouldContinue && !shouldContinue()) {
-                    console.log(`Training stopped at epoch ${epoch} due to external signal`);
-                    resolve(this.history);
-                    return;
-                }
-
-                if (epoch >= config.numEpochs) {
-                    console.log(`Training complete at epoch ${epoch}`);
+                    console.log('Training interrupted by shouldContinue returning false');
                     resolve(this.history);
                     return;
                 }
 
                 try {
-                    // Run one epoch of training
+                    // Train one epoch
                     const { loss, gradientNorm } = this.trainOneEpoch(X, Y, config);
 
                     // Update history
                     this.history.loss.push(loss);
                     this.history.gradientNorm.push(gradientNorm);
+                    this.history.epochs.push(currentEpoch);
 
-                    // Calculate and record accuracy
-                    const trainPredictions = this.predict(X);
-                    const trainAccuracy = this.computeAccuracy(trainPredictions, Y, 0.5);
-                    this.history.trainAccuracy.push(trainAccuracy);
+                    // Track a subset of weights for visualization
+                    if (currentEpoch % 5 === 0 || currentEpoch === config.numEpochs - 1) {
+                        this.history.selectedWeightsTrace.push(this.getSelectedWeights());
+                    }
 
-                    // If test data is provided, calculate test accuracy
-                    if (testData && testData.X.length > 0) {
+                    // Compute accuracy if test data is provided
+                    if (testData) {
+                        const trainPredictions = this.predict(X);
                         const testPredictions = this.predict(testData.X);
-                        const testAccuracy = this.computeAccuracy(testPredictions, testData.Y, 0.5);
+
+                        const trainAccuracy = this.computeAccuracy(trainPredictions, Y);
+                        const testAccuracy = this.computeAccuracy(testPredictions, testData.Y);
+
+                        this.history.trainAccuracy.push(trainAccuracy);
                         this.history.testAccuracy.push(testAccuracy);
                     }
 
-                    // Track selected weights
-                    const selectedWeights = this.getSelectedWeights();
-                    this.history.selectedWeightsTrace.push([...selectedWeights, loss]);
+                    // Calculate progress
+                    const progress = ((currentEpoch - startEpoch + 1) / (config.numEpochs - startEpoch)) * 100;
 
-                    // Record predictions for every epoch (or at a reasonable frequency for performance)
-                    // For very large epoch counts, we may want to throttle this
-                    const updateFrequency = Math.max(1, Math.floor(config.numEpochs / 100));
-
-                    if (epoch % updateFrequency === 0 || epoch === config.numEpochs - 1) {
-                        // We're no longer storing predictions here
-                        // The controller will generate predictions for visualization using the grid data
-                        // and add them to the history at the appropriate times
-                        this.history.epochs.push(epoch);
-                    }
-
-                    // Report progress
-                    const progress = (epoch + 1) / config.numEpochs * 100;
+                    // Call the callback if provided
                     if (onEpochEnd) {
-                        onEpochEnd(epoch, loss, progress);
+                        onEpochEnd(currentEpoch, loss, progress);
                     }
 
-                    // Schedule next epoch
-                    epoch++;
-
-                    // Use requestAnimationFrame if available, otherwise setTimeout
-                    if (typeof window !== 'undefined' && window.requestAnimationFrame) {
-                        window.requestAnimationFrame(trainEpoch);
+                    // Check if training is complete
+                    if (currentEpoch >= config.numEpochs - 1) {
+                        resolve(this.history);
                     } else {
-                        setTimeout(trainEpoch, 0);
+                        // Continue training
+                        currentEpoch++;
+                        setTimeout(trainEpoch, 0); // Use setTimeout to avoid blocking UI
                     }
                 } catch (error) {
-                    console.log(`Training interrupted at epoch ${epoch}`);
+                    console.error('Error during training:', error);
                     reject(error);
                 }
             };
 
-            // Start training - use requestAnimationFrame for better browser performance if available
-            if (typeof window !== 'undefined' && window.requestAnimationFrame) {
-                window.requestAnimationFrame(trainEpoch);
-            } else {
-                setTimeout(trainEpoch, 0);
-            }
+            // Start training
+            trainEpoch();
         });
     }
 
@@ -345,57 +435,62 @@ export class NeuralNetwork {
         Y: number[][],
         config: TrainingConfig
     ): { loss: number, gradientNorm: number } {
-        // Shuffle data
-        const indices = Array.from({ length: X.length }, (_, i) => i);
-        for (let i = indices.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [indices[i], indices[j]] = [indices[j], indices[i]];
-        }
+        const m = X.length;
+        const batchSize = Math.min(config.batchSize, m);
+        const numBatches = Math.ceil(m / batchSize);
 
-        const X_shuffled = indices.map(i => X[i]);
-        const Y_shuffled = indices.map(i => Y[i]);
+        let totalLoss = 0;
+        let totalGradientNorm = 0;
 
-        // Process in mini-batches
-        const numBatches = Math.ceil(X.length / config.batchSize);
-        let epochLoss = 0;
-
+        // Process each batch
         for (let batch = 0; batch < numBatches; batch++) {
-            const startIdx = batch * config.batchSize;
-            const endIdx = Math.min((batch + 1) * config.batchSize, X.length);
+            const startIdx = batch * batchSize;
+            const endIdx = Math.min(startIdx + batchSize, m);
 
-            const X_batch = X_shuffled.slice(startIdx, endIdx);
-            const Y_batch = Y_shuffled.slice(startIdx, endIdx);
+            const batchX = X.slice(startIdx, endIdx);
+            const batchY = Y.slice(startIdx, endIdx);
 
-            // Forward pass to compute loss
-            const predictions = this.predict(X_batch);
-            const batchLoss = this.computeCost(predictions, Y_batch);
-            epochLoss += batchLoss;
+            // Compute forward pass and loss for the first example in batch (simplified)
+            const predictions = this.forward(batchX[0]);
+            const loss = batchY[0].reduce((acc, y, i) => acc + Math.pow(predictions[i] - y, 2), 0) / batchY[0].length;
 
-            // Backward pass to compute gradients
-            const { gradients } = this.backward(X_batch, Y_batch);
+            // Compute gradients
+            const { gradients } = this.backward(batchX, batchY);
+
+            // Calculate gradient norm for monitoring
+            const gradientNorm = this.computeGradientNorm(gradients);
 
             // Update parameters
             this.updateParameters(gradients, config.learningRate);
+
+            // Accumulate metrics
+            totalLoss += loss;
+            totalGradientNorm += gradientNorm;
         }
 
-        // Compute full gradients for gradient norm
-        const { gradients } = this.backward(X, Y);
-        const gradientNorm = this.computeGradientNorm(gradients);
-
         return {
-            loss: epochLoss / numBatches,
-            gradientNorm
+            loss: totalLoss / numBatches,
+            gradientNorm: totalGradientNorm / numBatches
         };
     }
 
-    // Get selected weights for visualization (first two weights of first layer)
+    // Get a subset of weights for visualization
     private getSelectedWeights(): number[] {
-        if (this.layers.length > 0) {
-            const firstLayerWeights = this.layers[0].getParameters().weights;
-            if (firstLayerWeights.length > 0 && firstLayerWeights[0].length > 1) {
-                return [firstLayerWeights[0][0], firstLayerWeights[0][1]];
+        const params = this.getParameters();
+        const selectedWeights = [];
+
+        // Just take a few weights from each layer
+        for (let layer = 1; layer <= this.layers.length; layer++) {
+            const weights = params[`W${layer}`];
+            if (weights && weights.length > 0) {
+                // Take first row, first few elements
+                const numToTake = Math.min(5, weights[0].length);
+                for (let i = 0; i < numToTake; i++) {
+                    selectedWeights.push(weights[0][i]);
+                }
             }
         }
-        return [0, 0];
+
+        return selectedWeights;
     }
 } 
