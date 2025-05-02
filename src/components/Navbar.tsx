@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 
 interface NavbarProps {
   activeSection: string;
@@ -9,6 +10,7 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,14 +22,20 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
   }, []);
 
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      window.scrollTo({
-        top: element.offsetTop - 70,
-        behavior: 'smooth'
-      });
-      setMobileMenuOpen(false);
+    // Closing the mobile menu regardless
+    setMobileMenuOpen(false);
+    
+    // If we're already on the same hash, manually scroll
+    if (location.hash === `#${id}`) {
+      const element = document.getElementById(id);
+      if (element) {
+        window.scrollTo({
+          top: element.offsetTop - 70,
+          behavior: 'smooth'
+        });
+      }
     }
+    // Otherwise, navigation happens automatically through the Link component
   };
 
   const navItems = [
@@ -58,9 +66,9 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <span className="font-mono cursor-pointer" onClick={() => scrollToSection('home')}>
+            <Link to="/#home" className="font-mono cursor-pointer" onClick={() => scrollToSection('home')}>
               Samuel Lima Braz
-            </span>
+            </Link>
           </motion.div>
 
           <nav className="hidden md:block">
@@ -70,7 +78,8 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
                   whileHover={{ y: -2 }}
                   whileTap={{ y: 0 }}
                 >
-                  <button
+                  <Link
+                    to={`/#${item.id}`}
                     onClick={() => scrollToSection(item.id)}
                     className={`px-1 py-2 text-sm font-medium transition-all duration-300 relative ${activeSection === item.id
                       ? 'text-black'
@@ -91,7 +100,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
                         }}
                       />
                     )}
-                  </button>
+                  </Link>
                 </motion.li>
               ))}
             </ul>
@@ -142,7 +151,8 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
                   }}
                   transition={{ duration: 0.2 }}
                 >
-                  <button
+                  <Link
+                    to={`/#${item.id}`}
                     onClick={() => scrollToSection(item.id)}
                     className={`block w-full text-left px-4 py-3 rounded-md text-sm font-medium transition-colors ${activeSection === item.id
                       ? 'bg-black text-white'
@@ -150,7 +160,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
                       }`}
                   >
                     {item.label}
-                  </button>
+                  </Link>
                 </motion.li>
               ))}
             </motion.ul>

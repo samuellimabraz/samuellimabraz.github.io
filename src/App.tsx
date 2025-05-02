@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Github, Linkedin, Mail, ExternalLink } from 'lucide-react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
@@ -21,9 +21,41 @@ function MainLayout() {
   const [isMounted, setIsMounted] = useState(false);
   const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('down');
   const [lastScrollY, setLastScrollY] = useState(0);
+  const location = useLocation();
+
+  // Map hash fragments to section IDs (in case they differ)
+  const hashToSectionMap: Record<string, string> = {
+    'home': 'home',
+    'about': 'about',
+    'nn': 'nn-playground',  // Example of handling possible mismatch
+    'nn-playground': 'nn-playground',
+    'projects': 'projects',
+    'work': 'work',
+    'extracurricular': 'extracurricular',
+    'education': 'education',
+    'certificates': 'certificates'
+  };
 
   useEffect(() => {
     setIsMounted(true);
+
+    // Scroll to section based on URL hash when component mounts or location changes
+    const hash = location.hash.replace('#', '');
+    if (hash) {
+      const sectionId = hashToSectionMap[hash] || hash;
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          window.scrollTo({
+            top: element.offsetTop - 70,
+            behavior: 'smooth'
+          });
+          setActiveSection(sectionId);
+        } else {
+          console.warn(`Section with ID "${sectionId}" not found`);
+        }
+      }, 100);
+    }
 
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -50,7 +82,7 @@ function MainLayout() {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+  }, [lastScrollY, location.hash]);
 
   return (
     <div className={`min-h-screen bg-white text-black ${isMounted ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
@@ -79,6 +111,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<MainLayout />} />
+        <Route path="*" element={<MainLayout />} />
       </Routes>
     </Router>
   );
