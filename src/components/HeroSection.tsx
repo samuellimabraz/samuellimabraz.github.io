@@ -23,6 +23,9 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [textIndex, setTextIndex] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(150);
+  const nodesRef = useRef<Node[]>([]);
+  const connectionsRef = useRef<Connection[]>([]);
+  const animationFrameRef = useRef<number | null>(null);
 
   // List of expertise areas to display in the typing animation
   const expertiseAreas = [
@@ -78,13 +81,8 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    let mouseX = 0;
+    let mouseY = 0;
 
     // Use custom colors for nodes that match your tech stack
     const colors = [
@@ -95,47 +93,80 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
       'rgba(245, 158, 11, 0.7)',  // amber
     ];
 
-    const nodes: Node[] = [];
-    const connections: Connection[] = [];
     const nodeCount = 400; // Increased for more visual density
 
-    for (let i = 0; i < nodeCount; i++) {
-      nodes.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        radius: Math.random() * 3 + 1,
-        vx: Math.random() * 1 - 0.5,
-        vy: Math.random() * 1 - 0.5,
-        color: colors[Math.floor(Math.random() * colors.length)]
-      });
-    }
+    // Initialize canvas and generate nodes/connections
+    const initializeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
 
-    // Create more connections for a denser network
-    for (let i = 0; i < nodeCount; i++) {
-      for (let j = i + 1; j < nodeCount; j++) {
-        if (Math.random() > 0.95) { // Slightly increased connection probability
-          connections.push({
-            from: i,
-            to: j
-          });
+      // Clear previous nodes and connections
+      nodesRef.current = [];
+      connectionsRef.current = [];
+
+      // Generate new nodes based on current canvas dimensions
+      for (let i = 0; i < nodeCount; i++) {
+        nodesRef.current.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 3 + 1,
+          vx: Math.random() * 1 - 0.5,
+          vy: Math.random() * 1 - 0.5,
+          color: colors[Math.floor(Math.random() * colors.length)]
+        });
+      }
+
+      // Create connections
+      for (let i = 0; i < nodeCount; i++) {
+        for (let j = i + 1; j < nodeCount; j++) {
+          if (Math.random() > 0.95) { // Slightly increased connection probability
+            connectionsRef.current.push({
+              from: i,
+              to: j
+            });
+          }
         }
       }
-    }
+    };
+
+    // Initialize canvas on mount
+    initializeCanvas();
+
+    // Resize handler
+    const handleResize = () => {
+      const oldWidth = canvas.width;
+      const oldHeight = canvas.height;
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      // Scale existing nodes to new dimensions
+      if (nodesRef.current.length > 0) {
+        nodesRef.current.forEach(node => {
+          // Scale coordinates proportionally
+          node.x = (node.x / oldWidth) * canvas.width;
+          node.y = (node.y / oldHeight) * canvas.height;
+
+          // Ensure nodes stay within boundaries
+          node.x = Math.min(Math.max(node.x, 0), canvas.width);
+          node.y = Math.min(Math.max(node.y, 0), canvas.height);
+        });
+      } else {
+        // If no nodes exist (this shouldn't happen), initialize them
+        initializeCanvas();
+      }
+    };
 
     // Interactive effect - nodes respond to mouse
-    let mouseX = 0;
-    let mouseY = 0;
     const handleMouseMove = (event: MouseEvent) => {
       mouseX = event.clientX;
       mouseY = event.clientY;
     };
 
-    canvas.addEventListener('mousemove', handleMouseMove);
-
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      nodes.forEach((node, idx) => {
+      nodesRef.current.forEach((node, idx) => {
         // Apply slight attraction to mouse position
         const dx = mouseX - node.x;
         const dy = mouseY - node.y;
@@ -154,9 +185,15 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
         node.x += node.vx;
         node.y += node.vy;
 
-        // Bounce off edges
-        if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
-        if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+        // Bounce off edges - ensure nodes stay within the canvas
+        if (node.x < 0 || node.x > canvas.width) {
+          node.vx *= -1;
+          node.x = Math.min(Math.max(node.x, 0), canvas.width);
+        }
+        if (node.y < 0 || node.y > canvas.height) {
+          node.vy *= -1;
+          node.y = Math.min(Math.max(node.y, 0), canvas.height);
+        }
 
         ctx.beginPath();
         ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
@@ -164,9 +201,11 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
         ctx.fill();
       });
 
-      connections.forEach(connection => {
-        const fromNode = nodes[connection.from];
-        const toNode = nodes[connection.to];
+      connectionsRef.current.forEach(connection => {
+        const fromNode = nodesRef.current[connection.from];
+        const toNode = nodesRef.current[connection.to];
+
+        if (!fromNode || !toNode) return;
 
         const dx = toNode.x - fromNode.x;
         const dy = toNode.y - fromNode.y;
@@ -188,14 +227,21 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
         }
       });
 
-      requestAnimationFrame(render);
+      animationFrameRef.current = requestAnimationFrame(render);
     };
 
-    render();
+    window.addEventListener('resize', handleResize);
+    canvas.addEventListener('mousemove', handleMouseMove);
+
+    // Start animation loop
+    animationFrameRef.current = requestAnimationFrame(render);
 
     return () => {
-      window.removeEventListener('resize', resizeCanvas);
+      window.removeEventListener('resize', handleResize);
       canvas.removeEventListener('mousemove', handleMouseMove);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
     };
   }, []);
 
