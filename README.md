@@ -1,6 +1,6 @@
 # Samuel Lima Braz - Personal Portfolio
 
-![Portfolio Preview](https://i.postimg.cc/c1zMn27L/realsense-photo.jpg)
+![Portfolio Preview](./assets/site-preview.png)
 
 Welcome to my personal portfolio website repository! This portfolio showcases my background, technical expertise, projects, and professional experience in machine learning, computer vision, and autonomous systems.
 
