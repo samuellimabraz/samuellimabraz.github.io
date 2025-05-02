@@ -1,0 +1,358 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
+import { SectionProps } from '../lib/types';
+import { FaBrain } from 'react-icons/fa';
+
+interface Node {
+  x: number;
+  y: number;
+  radius: number;
+  vx: number;
+  vy: number;
+  color?: string;
+}
+
+interface Connection {
+  from: number;
+  to: number;
+}
+
+const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [typedText, setTypedText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [textIndex, setTextIndex] = useState(0);
+  const [typingSpeed, setTypingSpeed] = useState(150);
+
+  // List of expertise areas to display in the typing animation
+  const expertiseAreas = [
+    "Machine Learning Engineer",
+    "Computer Vision",
+    "Autonomous Drone",
+    "Fine Tuning",
+    "PyTorch & Transformers",
+    "PEFT Techniques",
+    "AI Deployment",
+    "Neural Networks",
+    "Model Optimization"
+  ];
+
+  // Typing animation effect
+  useEffect(() => {
+    const currentText = expertiseAreas[textIndex];
+
+    const typingEffect = () => {
+      if (isDeleting) {
+        // Deleting mode
+        setTypedText(currentText.substring(0, typedText.length - 1));
+        setTypingSpeed(20); // Faster when deleting
+      } else {
+        // Typing mode
+        setTypedText(currentText.substring(0, typedText.length + 1));
+        setTypingSpeed(80); // Slower when typing
+      }
+
+      // If we've completed typing the word
+      if (!isDeleting && typedText === currentText) {
+        // Pause at the end of typing before starting to delete
+        setTimeout(() => setIsDeleting(true), 1500);
+      }
+
+      // If we've deleted the word
+      if (isDeleting && typedText === '') {
+        setIsDeleting(false);
+        // Move to the next word
+        setTextIndex((prev) => (prev + 1) % expertiseAreas.length);
+      }
+    };
+
+    const timer = setTimeout(typingEffect, typingSpeed);
+
+    return () => clearTimeout(timer);
+  }, [typedText, isDeleting, textIndex, typingSpeed, expertiseAreas]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Use custom colors for nodes that match your tech stack
+    const colors = [
+      'rgba(59, 130, 246, 0.7)', // blue
+      'rgba(79, 70, 229, 0.7)',  // indigo
+      'rgba(236, 72, 153, 0.7)', // pink
+      'rgba(16, 185, 129, 0.7)', // green
+      'rgba(245, 158, 11, 0.7)',  // amber
+    ];
+
+    const nodes: Node[] = [];
+    const connections: Connection[] = [];
+    const nodeCount = 400; // Increased for more visual density
+
+    for (let i = 0; i < nodeCount; i++) {
+      nodes.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 3 + 1,
+        vx: Math.random() * 1 - 0.5,
+        vy: Math.random() * 1 - 0.5,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      });
+    }
+
+    // Create more connections for a denser network
+    for (let i = 0; i < nodeCount; i++) {
+      for (let j = i + 1; j < nodeCount; j++) {
+        if (Math.random() > 0.95) { // Slightly increased connection probability
+          connections.push({
+            from: i,
+            to: j
+          });
+        }
+      }
+    }
+
+    // Interactive effect - nodes respond to mouse
+    let mouseX = 0;
+    let mouseY = 0;
+    const handleMouseMove = (event: MouseEvent) => {
+      mouseX = event.clientX;
+      mouseY = event.clientY;
+    };
+
+    canvas.addEventListener('mousemove', handleMouseMove);
+
+    const render = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      nodes.forEach((node, idx) => {
+        // Apply slight attraction to mouse position
+        const dx = mouseX - node.x;
+        const dy = mouseY - node.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < 200) {
+          const force = 0.02;
+          node.vx += (dx / distance) * force;
+          node.vy += (dy / distance) * force;
+        }
+
+        // Apply some damping to prevent too much acceleration
+        node.vx *= 0.99;
+        node.vy *= 0.99;
+
+        node.x += node.vx;
+        node.y += node.vy;
+
+        // Bounce off edges
+        if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
+        if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+        ctx.fillStyle = node.color || 'rgba(0, 0, 0, 0.5)';
+        ctx.fill();
+      });
+
+      connections.forEach(connection => {
+        const fromNode = nodes[connection.from];
+        const toNode = nodes[connection.to];
+
+        const dx = toNode.x - fromNode.x;
+        const dy = toNode.y - fromNode.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < 200) {
+          ctx.beginPath();
+          ctx.moveTo(fromNode.x, fromNode.y);
+          ctx.lineTo(toNode.x, toNode.y);
+
+          // Use gradient colors for connections
+          const gradient = ctx.createLinearGradient(fromNode.x, fromNode.y, toNode.x, toNode.y);
+          gradient.addColorStop(0, fromNode.color || 'rgba(0, 0, 0, 0.1)');
+          gradient.addColorStop(1, toNode.color || 'rgba(0, 0, 0, 0.1)');
+
+          ctx.strokeStyle = gradient;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      });
+
+      requestAnimationFrame(render);
+    };
+
+    render();
+
+    return () => {
+      window.removeEventListener('resize', resizeCanvas);
+      canvas.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
+  // Animation variants for text elements
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.3,
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: 0.5, ease: "easeOut" }
+    }
+  };
+
+  // Blinking cursor animation
+  const cursorVariants = {
+    blinking: {
+      opacity: [0, 1, 0],
+      transition: {
+        duration: 1,
+        repeat: Infinity,
+        repeatType: "loop" as const,
+        ease: "linear",
+      },
+    },
+  };
+
+  // Pulsing animation for Neural Network button
+  const pulseVariants = {
+    pulse: {
+      scale: [1, 1.03, 1],
+      boxShadow: [
+        "0 0 0 0 rgba(18, 50, 99, 0.4)",
+        "0 0 0 10px rgba(18, 50, 99, 0)",
+        "0 0 0 0 rgba(18, 50, 99, 0)"
+      ],
+      transition: {
+        duration: 2,
+        repeat: Infinity,
+        repeatType: "loop" as const,
+      },
+    },
+  };
+
+  return (
+    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full z-0"
+      />
+
+      <motion.div
+        className="container mx-auto px-4 md:px-6 z-10"
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+      >
+        <motion.div className="max-w-3xl mx-auto text-center">
+          <motion.h1
+            className="text-4xl md:text-6xl font-bold mb-6 tracking-tight"
+            variants={itemVariants}
+          >
+            <motion.div className="flex flex-col md:flex-row md:justify-center items-center">
+              <motion.span
+                className="md:mr-3"
+                variants={itemVariants}
+              >
+                Samuel Lima
+              </motion.span>
+              <motion.span
+                className="font-mono text-3xl md:text-5xl opacity-80"
+                variants={itemVariants}
+              >
+                Braz
+              </motion.span>
+            </motion.div>
+          </motion.h1>
+
+          <motion.div
+            className="text-lg md:text-xl mb-8 font-light leading-relaxed h-8 flex justify-center items-center"
+            variants={itemVariants}
+          >
+            <span className="font-medium" style={{ color: "#37474F" }}>{typedText}</span>
+            <motion.span
+              className="w-1 h-6 ml-1 inline-block"
+              style={{ backgroundColor: "#37474F" }}
+              variants={cursorVariants}
+              animate="blinking"
+            />
+          </motion.div>
+
+          <motion.div
+            className="flex flex-col sm:flex-row justify-center gap-4"
+            variants={itemVariants}
+          >
+            <motion.a
+              href="#projects"
+              className="px-8 py-3 bg-black text-white font-medium rounded-md hover:bg-gray-800 transition-colors"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              View Projects
+            </motion.a>
+            <motion.a
+              href="#about"
+              className="px-8 py-3 bg-white text-black font-medium rounded-md border border-black hover:bg-gray-100 transition-colors"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              About Me
+            </motion.a>
+            <motion.a
+              href="#nn-playground"
+              className="px-8 py-3 text-white font-medium rounded-md flex items-center justify-center"
+              style={{ backgroundColor: "#37474F" }}
+              whileHover={{ scale: 1.05, backgroundColor: "#0a1d3d" }}
+              whileTap={{ scale: 0.95 }}
+              variants={pulseVariants}
+              animate="pulse"
+            >
+              <FaBrain className="mr-2 text-lg" />
+              Neural Network
+            </motion.a>
+          </motion.div>
+        </motion.div>
+      </motion.div>
+
+      <motion.div
+        className="absolute bottom-8 left-0 right-0 flex justify-center"
+        animate={{ y: [0, 10, 0] }}
+        transition={{ duration: 2, repeat: Infinity }}
+      >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </motion.div>
+    </section>
+  );
+};
+
+export default HeroSection;
