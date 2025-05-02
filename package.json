@@ -15,7 +15,7 @@
   "dependencies": {
     "@react-spring/three": "^9.7.5",
     "@react-spring/web": "^9.7.5",
-    "@react-three/drei": "^10.0.7",
+    "@react-three/drei": "^9.80.0",
     "@react-three/fiber": "^8.13.5",
     "@types/plotly.js": "^2.35.5",
     "d3": "^7.9.0",
