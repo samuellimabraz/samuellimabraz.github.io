@@ -50,10 +50,10 @@ const EducationSection: React.FC<SectionProps> = ({ scrollDirection }) => {
   };
 
   return (
-    <section id="education" className="py-20 bg-gray-50">
+    <section id="education" className="py-20 bg-dark-secondary">
       <div className="container mx-auto px-4 md:px-6">
         <motion.h2
-          className="text-3xl font-bold mb-12 text-center"
+          className="text-3xl font-bold mb-12 text-center text-dark-text-primary"
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -66,18 +66,18 @@ const EducationSection: React.FC<SectionProps> = ({ scrollDirection }) => {
           {education.map((item, index) => (
             <motion.div
               key={index}
-              className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 transition-transform hover:translate-y-[-4px]"
+              className="bg-dark-tertiary p-6 rounded-lg shadow-sm border border-dark-border transition-transform hover:translate-y-[-4px]"
               variants={cardVariants}
             >
               <div className="flex flex-col sm:flex-row justify-between mb-4">
-                <h3 className="text-xl font-bold">{item.degree}</h3>
-                <span className="text-sm text-gray-600 mt-1 sm:mt-0 font-mono">
+                <h3 className="text-xl font-bold text-dark-text-primary">{item.degree}</h3>
+                <span className="text-sm text-dark-text-secondary mt-1 sm:mt-0 font-mono">
                   {item.period}
                 </span>
               </div>
 
-              <p className="text-gray-700 font-medium mb-4">{item.institution}</p>
-              <p>{item.description}</p>
+              <p className="text-dark-text-secondary font-medium mb-4">{item.institution}</p>
+              <p className="text-dark-text-secondary">{item.description}</p>
             </motion.div>
           ))}
         </div>

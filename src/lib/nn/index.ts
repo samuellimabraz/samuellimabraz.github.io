@@ -15,11 +15,19 @@ export * from './data';
 // Visualization
 export * from './visualization';
 
+// Weight initialization strategies
+export * from './initializers';
+
+// Optimizers
+export * from './optimizers';
+
 // Main playground controller
 import { NeuralNetwork, NetworkConfig, TrainingConfig } from './network';
-import { generateData, generateGridData, splitTrainTest, GridData } from './data';
+import { generateData, generateGridData, splitTrainTest, GridData, StandardScaler } from './data';
 import { initializeVisualization, updateVisualization, VisualizationElements } from './visualization';
 import { getActivation } from './activation';
+import { getInitializer } from './initializers';
+import { getOptimizer } from './optimizers';
 
 export interface PlaygroundState {
     isTraining: boolean;
@@ -29,6 +37,8 @@ export interface PlaygroundState {
     trainData: { X: number[][], Y: number[][] } | null;
     testData: { X: number[][], Y: number[][] } | null;
     gridData: GridData | null;
+    useNormalization: boolean;
+    scaler: StandardScaler | null;
 }
 
 export class NNPlaygroundController {
@@ -41,6 +51,7 @@ export class NNPlaygroundController {
         testRatio: number;
         xRange: [number, number];
         yRange: [number, number];
+        useNormalization: boolean;
     };
     private visualElements: VisualizationElements | null = null;
     private trainingPromise: Promise<any> | null = null;
@@ -53,7 +64,9 @@ export class NNPlaygroundController {
             network: null,
             trainData: null,
             testData: null,
-            gridData: null
+            gridData: null,
+            useNormalization: false,
+            scaler: null
         };
 
         this.networkConfig = {
@@ -62,7 +75,10 @@ export class NNPlaygroundController {
             outputDim: 1,
             hiddenActivations: ['tanh', 'tanh'],
             outputActivation: 'linear',
-            useBias: true
+            useBias: true,
+            weightInitializer: 'he',
+            layerInitializers: ['he', 'he', 'he'], // Default initializers for each layer
+            optimizer: 'adam'
         };
 
         this.trainingConfig = {
@@ -77,7 +93,8 @@ export class NNPlaygroundController {
             samples: 1000,
             testRatio: 0.1,
             xRange: [-3, 3],
-            yRange: [-3, 3]
+            yRange: [-3, 3],
+            useNormalization: false
         };
     }
 
@@ -88,6 +105,21 @@ export class NNPlaygroundController {
 
     // Update network configuration
     updateNetworkConfig(config: Partial<NetworkConfig>): void {
+        // Special handling for layer-specific configuration changes
+        if (config.hiddenDims && (!this.networkConfig.layerInitializers ||
+            config.hiddenDims.length !== this.networkConfig.hiddenDims.length)) {
+            // When changing layer dimensions, ensure layer initializers array matches
+            const newLayerCount = config.hiddenDims.length + 1; // +1 for output layer
+            const currentInitializers = this.networkConfig.layerInitializers || [];
+            const defaultInitializer = this.networkConfig.weightInitializer || 'he';
+
+            // Resize initializers array, preserving existing values where possible
+            const newInitializers = Array(newLayerCount).fill(defaultInitializer)
+                .map((defaultVal, i) => i < currentInitializers.length ? currentInitializers[i] : defaultVal);
+
+            config.layerInitializers = newInitializers;
+        }
+
         this.networkConfig = { ...this.networkConfig, ...config };
     }
 
@@ -99,6 +131,11 @@ export class NNPlaygroundController {
     // Update data configuration
     updateDataConfig(config: Partial<typeof this.dataConfig>): void {
         this.dataConfig = { ...this.dataConfig, ...config };
+
+        // If normalization setting changed, we need to update the state
+        if (config.useNormalization !== undefined) {
+            this.state.useNormalization = config.useNormalization;
+        }
     }
 
     // Initialize the playground
@@ -123,6 +160,33 @@ export class NNPlaygroundController {
                 20 // grid size
             );
 
+            // Initialize or reset the scaler
+            const scaler = new StandardScaler();
+
+            let normalizedTrainData = { ...trainData };
+            let normalizedTestData = { ...testData };
+            let normalizedGridPoints = [...gridData.gridPoints];
+
+            // Apply normalization if enabled
+            if (this.dataConfig.useNormalization) {
+                // Fit the scaler on training data
+                scaler.fit(trainData.X, trainData.Y);
+
+                // Transform the data
+                normalizedTrainData = {
+                    X: scaler.transformX(trainData.X),
+                    Y: scaler.transformY(trainData.Y)
+                };
+
+                normalizedTestData = {
+                    X: scaler.transformX(testData.X),
+                    Y: scaler.transformY(testData.Y)
+                };
+
+                // Transform grid points for prediction (but keep original for visualization)
+                normalizedGridPoints = scaler.transformX(gridData.gridPoints);
+            }
+
             // Create neural network
             const network = NeuralNetwork.fromConfig(this.networkConfig);
 
@@ -130,22 +194,29 @@ export class NNPlaygroundController {
             this.state = {
                 ...this.state,
                 network,
-                trainData,
-                testData,
-                gridData
+                trainData: normalizedTrainData,
+                testData: normalizedTestData,
+                gridData: {
+                    ...gridData,
+                    // Store normalized grid points for prediction if normalization is enabled
+                    gridPoints: this.dataConfig.useNormalization ? normalizedGridPoints : gridData.gridPoints
+                },
+                useNormalization: this.dataConfig.useNormalization,
+                scaler: this.dataConfig.useNormalization ? scaler : null
             };
 
             // Initialize visualization if elements are available
             if (this.visualElements) {
+                // For visualization, we always use the original (non-normalized) data
                 initializeVisualization(
                     this.visualElements,
-                    trainData,
-                    gridData,
+                    trainData, // Use original training data for visualization
+                    gridData,  // Use original grid data for visualization
                     this.dataConfig.dataFunction
                 );
             }
 
-            console.log('Neural network playground initialized.');
+            console.log('Neural network playground initialized with normalization:', this.dataConfig.useNormalization);
         } catch (error) {
             console.error('Failed to initialize neural network playground:', error);
         }
@@ -156,7 +227,8 @@ export class NNPlaygroundController {
         console.log('NNPlaygroundController state:', {
             isTraining: this.state.isTraining,
             currentEpoch: this.state.currentEpoch,
-            progress: this.state.progress
+            progress: this.state.progress,
+            useNormalization: this.state.useNormalization
         });
     }
 
@@ -185,7 +257,10 @@ export class NNPlaygroundController {
                 // Generate current predictions for the visualization grid
                 if (this.state.network && this.state.gridData) {
                     // Always generate fresh predictions from the current network state
-                    const currentPredictions = this.state.network.predict(this.state.gridData.gridPoints);
+                    let currentPredictions = this.state.network.predict(this.state.gridData.gridPoints);
+
+                    // Denormalize predictions if normalization is enabled
+                    currentPredictions = this.denormalizePredictions(currentPredictions);
 
                     // Get the network history
                     const history = this.state.network.getHistory();
@@ -250,36 +325,84 @@ export class NNPlaygroundController {
                 shouldContinueTraining // Pass the function to check if training should continue
             );
 
-            // Wait for training to complete
             await this.trainingPromise;
 
-            // Update state
+            // Ensure we update state once training is complete
             this.state.isTraining = false;
-            this.trainingPromise = null;
         } catch (error) {
-            console.error('Training failed:', error);
+            console.error('Training error:', error);
             this.state.isTraining = false;
-            this.trainingPromise = null;
         }
     }
 
     // Reset the playground
     reset(): void {
-        // Stop training if in progress
+        // Cancel any ongoing training
         this.state.isTraining = false;
-        this.state.currentEpoch = 0;
-        this.state.progress = 0;
 
-        // Cancel any pending training promise
-        if (this.trainingPromise !== null) {
-            // We can't actually cancel the promise, but we can signal through state
-            // that it should stop processing. The network.train method should check
-            // this.state.isTraining and stop if it's false
-            this.trainingPromise = null;
+        // Re-initialize the playground
+        this.initialize();
+    }
+
+    // Change global weight initializer
+    setWeightInitializer(initializer: string): void {
+        this.networkConfig.weightInitializer = initializer;
+        if (this.state.network) {
+            this.state.network.reinitializeWeights(initializer);
+        }
+    }
+
+    // Change weight initializer for a specific layer
+    setLayerInitializer(layerIndex: number, initializer: string): void {
+        // Ensure we have a valid layerInitializers array
+        if (!this.networkConfig.layerInitializers) {
+            this.networkConfig.layerInitializers = Array(this.networkConfig.hiddenDims.length + 1)
+                .fill(this.networkConfig.weightInitializer || 'he');
         }
 
-        // Re-initialize
-        this.initialize();
+        // Make sure layerInitializers array is properly sized
+        while (this.networkConfig.layerInitializers.length <= this.networkConfig.hiddenDims.length) {
+            this.networkConfig.layerInitializers.push(this.networkConfig.weightInitializer || 'he');
+        }
+
+        // Update the specific layer initializer
+        if (layerIndex >= 0 && layerIndex <= this.networkConfig.hiddenDims.length) {
+            this.networkConfig.layerInitializers[layerIndex] = initializer;
+
+            // Apply the change to the network
+            if (this.state.network) {
+                this.state.network.setLayerInitializer(layerIndex, initializer);
+            }
+        }
+    }
+
+    // Change optimizer
+    setOptimizer(optimizer: string): void {
+        this.networkConfig.optimizer = optimizer;
+        if (this.state.network) {
+            this.state.network.setOptimizer(optimizer, {
+                learningRate: this.trainingConfig.learningRate
+            });
+        }
+    }
+
+    // Set whether to use data normalization
+    setUseNormalization(useNormalization: boolean): void {
+        if (this.dataConfig.useNormalization !== useNormalization) {
+            this.dataConfig.useNormalization = useNormalization;
+            this.state.useNormalization = useNormalization;
+
+            // Re-initialize the data with or without normalization
+            this.reset();
+        }
+    }
+
+    // Helper method to denormalize predictions if needed
+    denormalizePredictions(predictions: number[][]): number[][] {
+        if (this.state.useNormalization && this.state.scaler) {
+            return this.state.scaler.inverseTransformY(predictions);
+        }
+        return predictions;
     }
 
     // Get current state

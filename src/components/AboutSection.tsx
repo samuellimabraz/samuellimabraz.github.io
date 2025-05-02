@@ -28,7 +28,7 @@ const AboutSection: React.FC<SectionProps> = ({ scrollDirection }) => {
   };
 
   return (
-    <section id="about" className="py-20 bg-gray-50">
+    <section id="about" className="py-20 bg-dark-primary">
       <div className="container mx-auto px-4 md:px-6">
         <motion.div
           className="flex flex-col gap-12"
@@ -41,7 +41,7 @@ const AboutSection: React.FC<SectionProps> = ({ scrollDirection }) => {
             className="text-center"
             variants={cardVariants}
           >
-            <h2 className="text-3xl font-bold mb-2">About Me</h2>
+            <h2 className="text-3xl font-bold mb-2 text-dark-text-primary">About Me</h2>
           </motion.div>
 
           <div className="flex flex-col md:flex-row gap-12">
@@ -49,7 +49,7 @@ const AboutSection: React.FC<SectionProps> = ({ scrollDirection }) => {
               className="md:w-1/2"
               variants={cardVariants}
             >
-              <div className="prose prose-lg max-w-none">
+              <div className="prose prose-lg max-w-none text-dark-text-secondary">
                 <p>
                   Specializing in custom AI model development with PyTorch and Transformers, with particular expertise in Parameter-Efficient Fine-Tuning (PEFT) techniques that achieve excellent results with minimal computational resources.
                 </p>
@@ -59,16 +59,16 @@ const AboutSection: React.FC<SectionProps> = ({ scrollDirection }) => {
                 <p>
                   Beyond technical skills, there's a commitment to knowledge sharing through open-source contributions, publications, and comprehensive documentation—the best AI is open.
                 </p>
-                <blockquote className="border-l-4 border-indigo-600 pl-4 italic my-6 text-gray-700">
+                <blockquote className="border-l-4 border-dark-accent pl-4 italic my-6 text-dark-text-secondary">
                   "We are stardust brought to life, then empowered by the universe to figure itself out – and we have only just begun."
-                  <footer className="text-sm mt-2 text-gray-500">— Neil deGrasse Tyson, Astrophysics for People in a Hurry</footer>
+                  <footer className="text-sm mt-2 text-dark-text-secondary/70">— Neil deGrasse Tyson, Astrophysics for People in a Hurry</footer>
                 </blockquote>
               </div>
 
               <div className="mt-8 flex space-x-6">
                 <a
                   href="mailto:samuellimabraz@gmail.com"
-                  className="text-gray-600 hover:text-black transition-colors"
+                  className="text-dark-text-secondary hover:text-dark-text-primary transition-colors"
                   aria-label="Email"
                 >
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -80,7 +80,7 @@ const AboutSection: React.FC<SectionProps> = ({ scrollDirection }) => {
                   href="https://github.com/samuellimabraz"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-black transition-colors"
+                  className="text-dark-text-secondary hover:text-dark-text-primary transition-colors"
                   aria-label="GitHub"
                 >
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -92,7 +92,7 @@ const AboutSection: React.FC<SectionProps> = ({ scrollDirection }) => {
                   href="https://br.linkedin.com/in/samuel-lima-braz/en"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-black transition-colors"
+                  className="text-dark-text-secondary hover:text-dark-text-primary transition-colors"
                   aria-label="LinkedIn"
                 >
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -105,7 +105,7 @@ const AboutSection: React.FC<SectionProps> = ({ scrollDirection }) => {
                   href="https://huggingface.co/samuellimabraz"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-black transition-colors"
+                  className="text-dark-text-secondary hover:text-dark-text-primary transition-colors"
                   aria-label="Hugging Face"
                 >
                   <img
@@ -126,92 +126,92 @@ const AboutSection: React.FC<SectionProps> = ({ scrollDirection }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Expertise Card 1 */}
                 <motion.div
-                  className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
+                  className="bg-dark-secondary border border-dark-border rounded-lg p-6 hover:shadow-md hover:shadow-dark-accent/10 transition-shadow"
                   whileHover={{ scale: 1.03 }}
                   transition={{ duration: 0.2 }}
                 >
                   <div className="flex items-center mb-4">
-                    <svg className="w-6 h-6 mr-3 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-6 h-6 mr-3 text-dark-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                     </svg>
-                    <h3 className="text-lg font-bold">Model Engineering</h3>
+                    <h3 className="text-lg font-bold text-dark-text-primary">Model Engineering</h3>
                   </div>
-                  <p className="text-gray-700 mb-4">
+                  <p className="text-dark-text-secondary mb-4">
                     Custom AI model development with PyTorch and Transformers. Specializing in PEFT techniques that achieve state-of-the-art results with minimal computational resources.
                   </p>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    <span className="px-2 py-1 bg-indigo-50 text-indigo-800 rounded-md text-xs font-medium">PyTorch</span>
-                    <span className="px-2 py-1 bg-indigo-50 text-indigo-800 rounded-md text-xs font-medium">Transformers</span>
-                    <span className="px-2 py-1 bg-indigo-50 text-indigo-800 rounded-md text-xs font-medium">LoRA/QLoRA</span>
-                    <span className="px-2 py-1 bg-indigo-50 text-indigo-800 rounded-md text-xs font-medium">Unsloth</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">PyTorch</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">Transformers</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">LoRA/QLoRA</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">Unsloth</span>
                   </div>
                 </motion.div>
 
                 {/* Expertise Card 2 */}
                 <motion.div
-                  className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
+                  className="bg-dark-secondary border border-dark-border rounded-lg p-6 hover:shadow-md hover:shadow-dark-accent/10 transition-shadow"
                   whileHover={{ scale: 1.03 }}
                   transition={{ duration: 0.2 }}
                 >
                   <div className="flex items-center mb-4">
-                    <svg className="w-6 h-6 mr-3 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-6 h-6 mr-3 text-dark-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
-                    <h3 className="text-lg font-bold">Computer Vision</h3>
+                    <h3 className="text-lg font-bold text-dark-text-primary">Computer Vision</h3>
                   </div>
-                  <p className="text-gray-700 mb-4">
+                  <p className="text-dark-text-secondary mb-4">
                     Creating production-ready vision systems from object detection to autonomous navigation. Projects include signature detection models featured on Hugging Face Blog.
                   </p>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    <span className="px-2 py-1 bg-indigo-50 text-indigo-800 rounded-md text-xs font-medium">OpenCV</span>
-                    <span className="px-2 py-1 bg-indigo-50 text-indigo-800 rounded-md text-xs font-medium">YOLO</span>
-                    <span className="px-2 py-1 bg-indigo-50 text-indigo-800 rounded-md text-xs font-medium">ONNX</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">OpenCV</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">YOLO</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">ONNX</span>
                   </div>
                 </motion.div>
 
                 {/* Expertise Card 3 */}
                 <motion.div
-                  className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
+                  className="bg-dark-secondary border border-dark-border rounded-lg p-6 hover:shadow-md hover:shadow-dark-accent/10 transition-shadow"
                   whileHover={{ scale: 1.03 }}
                   transition={{ duration: 0.2 }}
                 >
                   <div className="flex items-center mb-4">
-                    <svg className="w-6 h-6 mr-3 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-6 h-6 mr-3 text-dark-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                     </svg>
-                    <h3 className="text-lg font-bold">Deployment</h3>
+                    <h3 className="text-lg font-bold text-dark-text-primary">Deployment</h3>
                   </div>
-                  <p className="text-gray-700 mb-4">
+                  <p className="text-dark-text-secondary mb-4">
                     Expertise in optimizing and deploying ML models to production. Experienced with Azure, GCP, Docker, and specialized inference servers like Triton and vLLM.
                   </p>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    <span className="px-2 py-1 bg-indigo-50 text-indigo-800 rounded-md text-xs font-medium">Docker</span>
-                    <span className="px-2 py-1 bg-indigo-50 text-indigo-800 rounded-md text-xs font-medium">Azure/GCP</span>
-                    <span className="px-2 py-1 bg-indigo-50 text-indigo-800 rounded-md text-xs font-medium">Triton</span>
-                    <span className="px-2 py-1 bg-indigo-50 text-indigo-800 rounded-md text-xs font-medium">vLLM</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">Docker</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">Azure/GCP</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">Triton</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">vLLM</span>
                   </div>
                 </motion.div>
 
                 {/* Expertise Card 4 */}
                 <motion.div
-                  className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
+                  className="bg-dark-secondary border border-dark-border rounded-lg p-6 hover:shadow-md hover:shadow-dark-accent/10 transition-shadow"
                   whileHover={{ scale: 1.03 }}
                   transition={{ duration: 0.2 }}
                 >
                   <div className="flex items-center mb-4">
-                    <svg className="w-6 h-6 mr-3 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-6 h-6 mr-3 text-dark-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
-                    <h3 className="text-lg font-bold">Robotics</h3>
+                    <h3 className="text-lg font-bold text-dark-text-primary">Robotics</h3>
                   </div>
-                  <p className="text-gray-700 mb-4">
+                  <p className="text-dark-text-secondary mb-4">
                     Building autonomous drone systems with ROS and computer vision algorithms that enable navigation in GPS-denied environments. Contributed to winning 3rd place at IMAV competition.
                   </p>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    <span className="px-2 py-1 bg-indigo-50 text-indigo-800 rounded-md text-xs font-medium">ROS2</span>
-                    <span className="px-2 py-1 bg-indigo-50 text-indigo-800 rounded-md text-xs font-medium">C++</span>
-                    <span className="px-2 py-1 bg-indigo-50 text-indigo-800 rounded-md text-xs font-medium">SLAM</span>
-                    <span className="px-2 py-1 bg-indigo-50 text-indigo-800 rounded-md text-xs font-medium">Optical Flow</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">ROS2</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">C++</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">SLAM</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">Optical Flow</span>
                   </div>
                 </motion.div>
               </div>

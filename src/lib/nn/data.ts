@@ -12,6 +12,162 @@ export interface GridData {
     yGrid: number[][];
 }
 
+// Standard Scaler for data normalization
+export class StandardScaler {
+    private xMean: number[] = [];
+    private xStd: number[] = [];
+    private yMean: number[] = [];
+    private yStd: number[] = [];
+    private isXFit: boolean = false;
+    private isYFit: boolean = false;
+
+    // Fit scaler to the data (compute mean and standard deviation)
+    fit(X: number[][], Y?: number[][]): void {
+        this.fitX(X);
+        if (Y) {
+            this.fitY(Y);
+        }
+    }
+
+    // Fit scaler to X features
+    fitX(X: number[][]): void {
+        if (X.length === 0) return;
+
+        const dims = X[0].length;
+        this.xMean = Array(dims).fill(0);
+        this.xStd = Array(dims).fill(0);
+
+        // Calculate mean
+        for (const x of X) {
+            for (let i = 0; i < dims; i++) {
+                this.xMean[i] += x[i];
+            }
+        }
+
+        for (let i = 0; i < dims; i++) {
+            this.xMean[i] /= X.length;
+        }
+
+        // Calculate standard deviation
+        for (const x of X) {
+            for (let i = 0; i < dims; i++) {
+                this.xStd[i] += Math.pow(x[i] - this.xMean[i], 2);
+            }
+        }
+
+        for (let i = 0; i < dims; i++) {
+            this.xStd[i] = Math.sqrt(this.xStd[i] / X.length);
+            // Avoid division by zero
+            if (this.xStd[i] === 0) {
+                this.xStd[i] = 1;
+            }
+        }
+
+        this.isXFit = true;
+    }
+
+    // Fit scaler to Y values
+    fitY(Y: number[][]): void {
+        if (Y.length === 0) return;
+
+        const dims = Y[0].length;
+        this.yMean = Array(dims).fill(0);
+        this.yStd = Array(dims).fill(0);
+
+        // Calculate mean
+        for (const y of Y) {
+            for (let i = 0; i < dims; i++) {
+                this.yMean[i] += y[i];
+            }
+        }
+
+        for (let i = 0; i < dims; i++) {
+            this.yMean[i] /= Y.length;
+        }
+
+        // Calculate standard deviation
+        for (const y of Y) {
+            for (let i = 0; i < dims; i++) {
+                this.yStd[i] += Math.pow(y[i] - this.yMean[i], 2);
+            }
+        }
+
+        for (let i = 0; i < dims; i++) {
+            this.yStd[i] = Math.sqrt(this.yStd[i] / Y.length);
+            // Avoid division by zero
+            if (this.yStd[i] === 0) {
+                this.yStd[i] = 1;
+            }
+        }
+
+        this.isYFit = true;
+    }
+
+    // Transform X features (normalize)
+    transformX(X: number[][]): number[][] {
+        if (!this.isXFit) {
+            throw new Error('Scaler not fit for X. Call fitX first.');
+        }
+
+        return X.map(x => {
+            return x.map((val, i) => (val - this.xMean[i]) / this.xStd[i]);
+        });
+    }
+
+    // Transform Y values (normalize)
+    transformY(Y: number[][]): number[][] {
+        if (!this.isYFit) {
+            throw new Error('Scaler not fit for Y. Call fitY first.');
+        }
+
+        return Y.map(y => {
+            return y.map((val, i) => (val - this.yMean[i]) / this.yStd[i]);
+        });
+    }
+
+    // Inverse transform X features (denormalize)
+    inverseTransformX(X: number[][]): number[][] {
+        if (!this.isXFit) {
+            throw new Error('Scaler not fit for X. Call fitX first.');
+        }
+
+        return X.map(x => {
+            return x.map((val, i) => val * this.xStd[i] + this.xMean[i]);
+        });
+    }
+
+    // Inverse transform Y values (denormalize)
+    inverseTransformY(Y: number[][]): number[][] {
+        if (!this.isYFit) {
+            throw new Error('Scaler not fit for Y. Call fitY first.');
+        }
+
+        return Y.map(y => {
+            return y.map((val, i) => val * this.yStd[i] + this.yMean[i]);
+        });
+    }
+
+    // Get parameters for later reuse
+    getParams(): { xMean: number[], xStd: number[], yMean: number[], yStd: number[] } {
+        return {
+            xMean: [...this.xMean],
+            xStd: [...this.xStd],
+            yMean: [...this.yMean],
+            yStd: [...this.yStd]
+        };
+    }
+
+    // Reset the scaler
+    reset(): void {
+        this.xMean = [];
+        this.xStd = [];
+        this.yMean = [];
+        this.yStd = [];
+        this.isXFit = false;
+        this.isYFit = false;
+    }
+}
+
 // Saddle function: f(x, y) = x^2 - y^2
 export function saddleFunction(x: number, y: number): number {
     return x * x - y * y;
