@@ -1,9 +1,10 @@
 name: Deploy to GitHub Pages
 
 on:
-  pull_request:
+  # Trigger deployment only on pushes to the main branch
+  push:
     branches: [ main ]
-    types: [closed]
+  # Allow manual triggering
   workflow_dispatch:
 
 permissions:
@@ -17,12 +18,12 @@ concurrency:
 
 jobs:
   build:
-    # Only run when PR is merged, not when it's just closed without merging
-    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout main branch
         uses: actions/checkout@v4
+        with:
+          ref: main
       - name: Setup Node
         uses: actions/setup-node@v4
         with:

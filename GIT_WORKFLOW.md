@@ -1,6 +1,6 @@
 # Git Workflow for samuellimabraz.github.io
 
-This document outlines the Git workflow for this project, which follows a development branch strategy with PR-based deployments.
+This document outlines the Git workflow for this project, which follows a development branch strategy with main branch deployments.
 
 ## Branches
 
@@ -47,11 +47,20 @@ This document outlines the Git workflow for this project, which follows a develo
 
 ### Deploying to Production
 
-1. Create a PR from `develop` to `main` when you're ready to deploy.
+1. Create a PR from `develop` to `main` when you're ready to deploy:
+   ```bash
+   # From the develop branch
+   git checkout develop
+   git pull origin develop
+   
+   # Create a PR from develop to main using GitHub interface
+   ```
 
-2. After review, merge the PR into `main`.
+2. After review, merge the PR into `main` through the GitHub interface.
 
-3. The GitHub Actions workflow will automatically build and deploy your site to GitHub Pages.
+3. Once merged into `main`, the deployment workflow will automatically trigger and deploy your site to GitHub Pages.
+
+4. You can also trigger a manual deployment from the Actions tab if needed.
 
 ## CI/CD Pipelines
 
@@ -61,10 +70,20 @@ This project uses two GitHub Actions workflows:
    - Triggered on pushes and PRs to the `develop` branch
    - Builds the project to ensure there are no build errors
    - Does not deploy the site
+   - Allows you to test changes before promoting to production
 
 2. **Deploy to GitHub Pages** (`.github/workflows/deploy.yml`):
-   - Triggered when a PR to `main` is merged
+   - Triggered when changes are pushed to the `main` branch
+   - Always deploys from the `main` branch, never from `develop`
    - Builds the project and deploys it to GitHub Pages
+
+## GitHub Pages Configuration
+
+GitHub Pages for this repository is configured to:
+
+1. Deploy only from the `main` branch
+2. Use GitHub Actions as the deployment method
+3. Enforce environment protection rules on the `github-pages` environment
 
 ## Best Practices
 
