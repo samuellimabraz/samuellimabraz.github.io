@@ -1,10 +1,14 @@
 import { ActivationFn } from './activation';
+import { WeightInitializer, getInitializer, getInitializerForActivation } from './initializers';
+import { Optimizer, Gradients, getOptimizer } from './optimizers';
 
 export class Layer {
     private inputDim: number;
     private outputDim: number;
     private activation: ActivationFn;
     private useBias: boolean;
+    private initializer: WeightInitializer;
+    private optimizer: Optimizer | null = null;
 
     // Layer parameters
     public weights: number[][];
@@ -22,6 +26,7 @@ export class Layer {
         outputDim: number,
         activation: ActivationFn,
         useBias: boolean = true,
+        initializer?: WeightInitializer | string,
         seed?: number
     ) {
         this.inputDim = inputDim;
@@ -30,17 +35,33 @@ export class Layer {
         this.useBias = useBias;
         this.cache = {};
 
-        // Initialize weights and biases
-        this.weights = [];
+        // Set initializer
+        if (initializer) {
+            if (typeof initializer === 'string') {
+                this.initializer = getInitializer(initializer);
+            } else {
+                this.initializer = initializer;
+            }
+        } else {
+            // Auto-select initializer based on activation function
+            this.initializer = getInitializerForActivation(
+                activation.constructor.name.toLowerCase()
+            );
+        }
+
+        // Initialize weights using the initializer
+        this.weights = this.initializer.initialize(inputDim, outputDim);
+
+        // Initialize biases with zeros
         this.bias = Array(outputDim).fill(0);
+    }
 
-        // Initialize weights with He initialization
-        const scale = Math.sqrt(2 / inputDim);
-
-        for (let i = 0; i < outputDim; i++) {
-            this.weights[i] = Array(inputDim).fill(0).map(() => {
-                return (Math.random() * 2 - 1) * scale;
-            });
+    // Set optimizer for this layer
+    setOptimizer(optimizer: Optimizer | string, config: any = {}): void {
+        if (typeof optimizer === 'string') {
+            this.optimizer = getOptimizer(optimizer, config);
+        } else {
+            this.optimizer = optimizer;
         }
     }
 
@@ -77,7 +98,7 @@ export class Layer {
     }
 
     // Backward pass
-    backward(dOutput: number[]): { dInput: number[], gradients: { dWeights: number[][], dBias: number[] } } {
+    backward(dOutput: number[]): { dInput: number[], gradients: Gradients } {
         const input = this.cache.input!;
         const z = this.cache.z!;
         const m = 1; // Batch size
@@ -115,18 +136,31 @@ export class Layer {
     }
 
     // Update parameters
-    updateParameters(gradients: { dWeights: number[][], dBias: number[] }, learningRate: number): void {
-        // Update weights
-        for (let i = 0; i < this.outputDim; i++) {
-            for (let j = 0; j < this.inputDim; j++) {
-                this.weights[i][j] -= learningRate * gradients.dWeights[i][j];
-            }
-        }
+    updateParameters(gradients: Gradients, learningRate: number): void {
+        if (this.optimizer) {
+            // Use optimizer if available
+            const { newWeights, newBias } = this.optimizer.update(
+                this.weights,
+                this.bias,
+                gradients
+            );
 
-        // Update biases
-        if (this.useBias) {
+            this.weights = newWeights;
+            this.bias = newBias;
+        } else {
+            // Fallback to standard SGD
+            // Update weights
             for (let i = 0; i < this.outputDim; i++) {
-                this.bias[i] -= learningRate * gradients.dBias[i];
+                for (let j = 0; j < this.inputDim; j++) {
+                    this.weights[i][j] -= learningRate * gradients.dWeights[i][j];
+                }
+            }
+
+            // Update biases
+            if (this.useBias) {
+                for (let i = 0; i < this.outputDim; i++) {
+                    this.bias[i] -= learningRate * gradients.dBias[i];
+                }
             }
         }
     }
@@ -143,5 +177,19 @@ export class Layer {
     setParameters(parameters: { weights: number[][], bias: number[] }): void {
         this.weights = parameters.weights.map(row => [...row]);
         this.bias = [...parameters.bias];
+    }
+
+    // Reinitialize weights using current initializer or a new one
+    reinitializeWeights(initializer?: WeightInitializer | string): void {
+        if (initializer) {
+            if (typeof initializer === 'string') {
+                this.initializer = getInitializer(initializer);
+            } else {
+                this.initializer = initializer;
+            }
+        }
+
+        this.weights = this.initializer.initialize(this.inputDim, this.outputDim);
+        this.bias = Array(this.outputDim).fill(0);
     }
 } 
