@@ -10,6 +10,8 @@ import {
 // Type definitions
 type ActivationFunction = 'sigmoid' | 'relu' | 'tanh' | 'linear';
 type DataFunction = 'saddle' | 'rosenbrock' | 'sine' | 'circle';
+type WeightInitializer = 'random' | 'he' | 'xavier' | 'xavier_uniform' | 'zero';
+type OptimizerType = 'sgd' | 'sgd_momentum' | 'rmsprop' | 'adam' | 'adagrad';
 
 interface DataConfig {
     dataFunction: DataFunction;
@@ -17,6 +19,13 @@ interface DataConfig {
     testRatio: number;
     xRange: [number, number];
     yRange: [number, number];
+    useNormalization: boolean;
+}
+
+interface LayerConfig {
+    neurons: number;
+    activation: ActivationFunction;
+    initializer: WeightInitializer;
 }
 
 const NNPlayground: React.FC = () => {
@@ -40,35 +49,54 @@ const NNPlayground: React.FC = () => {
         }
     `;
 
+    // Layer configuration (separate from NetworkConfig for easier UI management)
+    const [layers, setLayers] = useState<LayerConfig[]>([
+        { neurons: 89, activation: 'relu', initializer: 'he' },
+        { neurons: 16, activation: 'tanh', initializer: 'xavier' }
+    ]);
+
     // State variables for configurations
     const [networkConfig, setNetworkConfig] = useState<NetworkConfig>({
         inputDim: 2,
         hiddenDims: [10, 5],
         outputDim: 1,
-        hiddenActivations: ['tanh', 'tanh'],
+        hiddenActivations: ['relu', 'tanh'],
         outputActivation: 'linear',
         useBias: true,
+        weightInitializer: 'he',
+        layerInitializers: ['he', 'xavier', 'he'], // Include output layer
+        optimizer: 'adam'
     });
 
     const [trainingConfig, setTrainingConfig] = useState<TrainingConfig>({
-        learningRate: 0.01,
-        numEpochs: 1000,
+        learningRate: 0.001,
+        numEpochs: 50,
         batchSize: 32,
         noise: 0.1,
     });
 
     const [dataConfig, setDataConfig] = useState<DataConfig>({
         dataFunction: 'saddle',
-        samples: 1000,
+        samples: 700,
         testRatio: 0.1,
         xRange: [-3, 3],
         yRange: [-3, 3],
+        useNormalization: true
     });
 
     // State for animation control
     const [isTraining, setIsTraining] = useState(false);
     const [currentEpoch, setCurrentEpoch] = useState(0);
     const [progress, setProgress] = useState(0);
+
+    // Output layer configuration
+    const [outputLayerConfig, setOutputLayerConfig] = useState<{
+        activation: ActivationFunction,
+        initializer: WeightInitializer
+    }>({
+        activation: 'linear',
+        initializer: 'he'
+    });
 
     // Check if Plotly is available
     const [plotlyAvailable, setPlotlyAvailable] = useState(false);
@@ -91,6 +119,22 @@ const NNPlayground: React.FC = () => {
             };
         }
     }, []);
+
+    // Effect to sync layers with networkConfig
+    useEffect(() => {
+        // Extract the hidden dimensions and activations from layers
+        const hiddenDims = layers.map(layer => layer.neurons);
+        const hiddenActivations = layers.map(layer => layer.activation);
+        const layerInitializers = [...layers.map(layer => layer.initializer), outputLayerConfig.initializer];
+
+        setNetworkConfig(prev => ({
+            ...prev,
+            hiddenDims,
+            hiddenActivations,
+            outputActivation: outputLayerConfig.activation,
+            layerInitializers
+        }));
+    }, [layers, outputLayerConfig]);
 
     // Initialize neural network playground when Plotly is available
     useEffect(() => {
@@ -259,47 +303,59 @@ const NNPlayground: React.FC = () => {
         }));
     };
 
-    // Function to handle hidden layer dimensions change
-    const handleLayerDimChange = (index: number, value: number) => {
-        if (!isNaN(value) && value > 0) {
-            const newHiddenDims = [...networkConfig.hiddenDims];
-            newHiddenDims[index] = value;
-            updateNetworkConfig('hiddenDims', newHiddenDims);
+    // Function to handle layer specific updates
+    const handleLayerUpdate = (index: number, key: keyof LayerConfig, value: any) => {
+        const newLayers = [...layers];
+        newLayers[index] = { ...newLayers[index], [key]: value };
+        setLayers(newLayers);
+
+        // If updating initializer, update the controller directly
+        if (key === 'initializer' && controllerRef.current) {
+            controllerRef.current.setLayerInitializer(index, value as string);
         }
     };
 
-    // Function to handle hidden layer activation change
-    const handleLayerActivationChange = (index: number, value: ActivationFunction) => {
-        const newHiddenActivations = [...networkConfig.hiddenActivations];
-        newHiddenActivations[index] = value;
-        updateNetworkConfig('hiddenActivations', newHiddenActivations);
+    // Function to update output layer config
+    const handleOutputLayerUpdate = (key: keyof typeof outputLayerConfig, value: any) => {
+        setOutputLayerConfig(prev => ({
+            ...prev,
+            [key]: value
+        }));
+
+        // If updating initializer, update the controller directly
+        if (key === 'initializer' && controllerRef.current) {
+            const outputLayerIndex = layers.length; // Output layer is after all hidden layers
+            controllerRef.current.setLayerInitializer(outputLayerIndex, value as string);
+        }
     };
 
     // Function to add a new hidden layer
     const addHiddenLayer = () => {
-        const newHiddenDims = [...networkConfig.hiddenDims, 5];
-        const newHiddenActivations = [...networkConfig.hiddenActivations, 'tanh'];
-        setNetworkConfig(prev => ({
-            ...prev,
-            hiddenDims: newHiddenDims,
-            hiddenActivations: newHiddenActivations
-        }));
+        // Default new layer configuration
+        const newLayer: LayerConfig = {
+            neurons: 5,
+            activation: 'tanh',
+            initializer: 'he'
+        };
+        setLayers([...layers, newLayer]);
     };
 
     // Function to remove a hidden layer
     const removeHiddenLayer = (index: number) => {
-        if (networkConfig.hiddenDims.length > 1) {
-            const newHiddenDims = [...networkConfig.hiddenDims];
-            newHiddenDims.splice(index, 1);
+        if (layers.length > 1) {
+            const newLayers = [...layers];
+            newLayers.splice(index, 1);
+            setLayers(newLayers);
+        }
+    };
 
-            const newHiddenActivations = [...networkConfig.hiddenActivations];
-            newHiddenActivations.splice(index, 1);
+    // Function to change optimizer
+    const handleOptimizerChange = (value: OptimizerType) => {
+        updateNetworkConfig('optimizer', value);
 
-            setNetworkConfig(prev => ({
-                ...prev,
-                hiddenDims: newHiddenDims,
-                hiddenActivations: newHiddenActivations
-            }));
+        // Update the controller
+        if (controllerRef.current) {
+            controllerRef.current.setOptimizer(value);
         }
     };
 
@@ -308,89 +364,201 @@ const NNPlayground: React.FC = () => {
             {/* Adicionar o estilo de pulso */}
             <style>{pulseStyle}</style>
 
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                {/* Configuration Panel */}
-                <div className="bg-white p-4 rounded-lg shadow lg:col-span-1">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                {/* Left Panel - Network Configuration */}
+                <div className="bg-white p-4 rounded-lg shadow lg:col-span-3">
                     <h3 className="text-lg font-semibold mb-4 flex items-center">
-                        <Sliders className="mr-2 h-5 w-5" /> Configuration
+                        <Sliders className="mr-2 h-5 w-5" /> Network Architecture
                     </h3>
 
-                    {/* Network Configuration */}
-                    <div className="mb-6">
-                        <h4 className="font-medium text-gray-700 mb-2">Network Architecture</h4>
-
-                        <div className="mb-3">
-                            <label className="block text-sm text-gray-600 mb-1">Hidden Layers</label>
-                            <div className="space-y-2">
-                                {networkConfig.hiddenDims.map((dim, index) => (
-                                    <div key={index} className="flex items-center space-x-2">
-                                        <input
-                                            type="number"
-                                            min="1"
-                                            className="w-20 px-3 py-2 border rounded-md"
-                                            value={dim}
-                                            onChange={(e) => handleLayerDimChange(index, parseInt(e.target.value))}
-                                        />
-                                        <span className="text-sm text-gray-500">neurons</span>
-
-                                        <select
-                                            className="flex-1 px-3 py-2 border rounded-md"
-                                            value={networkConfig.hiddenActivations[index] || 'tanh'}
-                                            onChange={(e) => handleLayerActivationChange(index, e.target.value as ActivationFunction)}
-                                        >
-                                            <option value="sigmoid">Sigmoid</option>
-                                            <option value="relu">ReLU</option>
-                                            <option value="tanh">Tanh</option>
-                                            <option value="linear">Linear</option>
-                                        </select>
-
-                                        <button
-                                            className="p-1 text-red-500 hover:text-red-700"
-                                            onClick={() => removeHiddenLayer(index)}
-                                            disabled={networkConfig.hiddenDims.length <= 1}
-                                        >
-                                            ✕
-                                        </button>
-                                    </div>
-                                ))}
-
-                                <button
-                                    className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-sm"
-                                    onClick={addHiddenLayer}
-                                >
-                                    + Add Layer
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="mb-3">
-                            <label className="block text-sm text-gray-600 mb-1">Output Activation</label>
-                            <select
-                                className="w-full px-3 py-2 border rounded-md"
-                                value={networkConfig.outputActivation}
-                                onChange={(e) => updateNetworkConfig('outputActivation', e.target.value)}
+                    <div className="mb-3">
+                        <div className="flex justify-between items-center mb-2">
+                            <label className="block text-sm text-gray-600">Hidden Layers</label>
+                            <button
+                                className="px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs"
+                                onClick={addHiddenLayer}
                             >
-                                <option value="sigmoid">Sigmoid</option>
-                                <option value="relu">ReLU</option>
-                                <option value="tanh">Tanh</option>
-                                <option value="linear">Linear</option>
-                            </select>
+                                + Add Layer
+                            </button>
                         </div>
 
-                        <div className="flex items-center">
-                            <input
-                                type="checkbox"
-                                id="useBias"
-                                className="mr-2"
-                                checked={networkConfig.useBias}
-                                onChange={(e) => updateNetworkConfig('useBias', e.target.checked)}
-                            />
-                            <label htmlFor="useBias" className="text-sm text-gray-600">Use Bias</label>
+                        <div className="space-y-4">
+                            {layers.map((layer, index) => (
+                                <div key={index} className="p-3 border rounded-md bg-gray-50">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <span className="text-sm font-medium">Layer {index + 1}</span>
+                                        {layers.length > 1 && (
+                                            <button
+                                                className="p-1 text-red-500 hover:text-red-700"
+                                                onClick={() => removeHiddenLayer(index)}
+                                            >
+                                                ✕
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-2 mb-2">
+                                        <div>
+                                            <label className="block text-xs text-gray-600 mb-1">Neurons</label>
+                                            <input
+                                                type="number"
+                                                min="1"
+                                                className="w-full px-2 py-1 border rounded-md text-sm"
+                                                value={layer.neurons}
+                                                onChange={(e) => handleLayerUpdate(index, 'neurons', parseInt(e.target.value))}
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-xs text-gray-600 mb-1">Activation</label>
+                                            <select
+                                                className="w-full px-2 py-1 border rounded-md text-sm"
+                                                value={layer.activation}
+                                                onChange={(e) => handleLayerUpdate(index, 'activation', e.target.value as ActivationFunction)}
+                                            >
+                                                <option value="sigmoid">Sigmoid</option>
+                                                <option value="relu">ReLU</option>
+                                                <option value="tanh">Tanh</option>
+                                                <option value="linear">Linear</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs text-gray-600 mb-1">Weight Initializer</label>
+                                        <select
+                                            className="w-full px-2 py-1 border rounded-md text-sm"
+                                            value={layer.initializer}
+                                            onChange={(e) => handleLayerUpdate(index, 'initializer', e.target.value as WeightInitializer)}
+                                            disabled={isTraining}
+                                        >
+                                            <option value="random">Random</option>
+                                            <option value="he">He</option>
+                                            <option value="xavier">Xavier/Glorot</option>
+                                            <option value="xavier_uniform">Xavier Uniform</option>
+                                            <option value="zero">Zero</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
 
-                    {/* Training Configuration */}
-                    <div className="mb-6">
+                    <div className="mb-3 p-3 border rounded-md bg-gray-50">
+                        <div className="text-sm font-medium mb-2">Output Layer</div>
+
+                        <div className="grid grid-cols-1 gap-2 mb-2">
+                            <div>
+                                <label className="block text-xs text-gray-600 mb-1">Activation</label>
+                                <select
+                                    className="w-full px-2 py-1 border rounded-md text-sm"
+                                    value={outputLayerConfig.activation}
+                                    onChange={(e) => handleOutputLayerUpdate('activation', e.target.value as ActivationFunction)}
+                                >
+                                    <option value="sigmoid">Sigmoid</option>
+                                    <option value="relu">ReLU</option>
+                                    <option value="tanh">Tanh</option>
+                                    <option value="linear">Linear</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs text-gray-600 mb-1">Weight Initializer</label>
+                                <select
+                                    className="w-full px-2 py-1 border rounded-md text-sm"
+                                    value={outputLayerConfig.initializer}
+                                    onChange={(e) => handleOutputLayerUpdate('initializer', e.target.value as WeightInitializer)}
+                                    disabled={isTraining}
+                                >
+                                    <option value="random">Random</option>
+                                    <option value="he">He</option>
+                                    <option value="xavier">Xavier/Glorot</option>
+                                    <option value="xavier_uniform">Xavier Uniform</option>
+                                    <option value="zero">Zero</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mb-3">
+                        <label className="block text-sm text-gray-600 mb-1">Optimizer</label>
+                        <select
+                            className="w-full px-3 py-2 border rounded-md"
+                            value={networkConfig.optimizer || 'adam'}
+                            onChange={(e) => handleOptimizerChange(e.target.value as OptimizerType)}
+                            disabled={isTraining}
+                        >
+                            <option value="sgd">SGD</option>
+                            <option value="sgd_momentum">SGD with Momentum</option>
+                            <option value="rmsprop">RMSProp</option>
+                            <option value="adam">Adam</option>
+                            <option value="adagrad">Adagrad</option>
+                        </select>
+                    </div>
+
+                    <div className="flex items-center">
+                        <input
+                            type="checkbox"
+                            id="useBias"
+                            className="mr-2"
+                            checked={networkConfig.useBias}
+                            onChange={(e) => updateNetworkConfig('useBias', e.target.checked)}
+                        />
+                        <label htmlFor="useBias" className="text-sm text-gray-600">Use Bias</label>
+                    </div>
+                </div>
+
+                {/* Center/Right Panel - Visualization and Additional Config */}
+                <div className="lg:col-span-9 grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    {/* Visualization Panel - Takes full width */}
+                    <div className="bg-white p-4 rounded-lg shadow lg:col-span-12 flex flex-col">
+                        {/* 3D Plot - Full width container with increased height */}
+                        <div className="w-full h-80 md:h-96 lg:h-[420px] rounded-lg border border-gray-100 overflow-hidden" ref={plot3dRef}>
+                            {!plotlyAvailable && (
+                                <div className="w-full h-full flex items-center justify-center">
+                                    <p className="text-gray-500">Loading visualization...</p>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Container for Loss and Accuracy Plots side by side with increased height */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                            {/* Loss Plot - Increased height */}
+                            <div className="h-64 lg:h-72 rounded-lg border border-gray-100 overflow-hidden" ref={lossPlotRef}>
+                                {!plotlyAvailable && (
+                                    <div className="w-full h-full flex items-center justify-center">
+                                        <p className="text-gray-500">Loading visualization...</p>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Accuracy Plot - Increased height */}
+                            <div className="h-64 lg:h-72 rounded-lg border border-gray-100 overflow-hidden" ref={contourPlotRef}>
+                                {!plotlyAvailable && (
+                                    <div className="w-full h-full flex items-center justify-center">
+                                        <p className="text-gray-500">Loading visualization...</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Training Progress */}
+                        <div className="mt-4">
+                            <div className="flex justify-between mb-1">
+                                <span className="text-sm text-gray-600">Epoch {currentEpoch} / {trainingConfig.numEpochs}</span>
+                                <span className="text-sm text-gray-600">{progress.toFixed(1)}%</span>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-2">
+                                <div
+                                    className="bg-blue-500 h-2 rounded-full"
+                                    style={{ width: `${progress}%` }}
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Training Configuration Panel - Half width */}
+                    <div className="bg-white p-4 rounded-lg shadow lg:col-span-6">
                         <h4 className="font-medium text-gray-700 mb-2">Training Parameters</h4>
 
                         <div className="mb-3">
@@ -415,7 +583,7 @@ const NNPlayground: React.FC = () => {
                             <input
                                 type="range"
                                 min="100"
-                                max="5000"
+                                max="1000"
                                 step="100"
                                 className="w-full"
                                 value={trainingConfig.numEpochs}
@@ -452,10 +620,35 @@ const NNPlayground: React.FC = () => {
                                 onChange={(e) => updateTrainingConfig('noise', parseFloat(e.target.value))}
                             />
                         </div>
+
+                        {/* Controls */}
+                        <div className="flex space-x-2 mt-4">
+                            <button
+                                className={`flex-1 px-4 py-2 rounded-md flex items-center justify-center text-white 
+                                    ${isTraining
+                                        ? 'bg-gray-500'
+                                        : 'bg-blue-500 hover:bg-blue-600 pulse-animation'
+                                    }
+                                `}
+                                onClick={startTraining}
+                                disabled={isTraining}
+                            >
+                                <>
+                                    <Play className="mr-1 h-4 w-4" /> {isTraining ? 'Training...' : 'Start Training'}
+                                </>
+                            </button>
+
+                            <button
+                                className="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md flex items-center justify-center"
+                                onClick={resetPlayground}
+                            >
+                                <RefreshCw className="mr-1 h-4 w-4" /> Restart
+                            </button>
+                        </div>
                     </div>
 
-                    {/* Data Configuration */}
-                    <div className="mb-6">
+                    {/* Data Configuration Panel - Half width */}
+                    <div className="bg-white p-4 rounded-lg shadow lg:col-span-6">
                         <h4 className="font-medium text-gray-700 mb-2">Data</h4>
 
                         <div className="mb-3">
@@ -479,87 +672,35 @@ const NNPlayground: React.FC = () => {
                             <input
                                 type="range"
                                 min="100"
-                                max="5000"
+                                max="2000"
                                 step="100"
                                 className="w-full"
                                 value={dataConfig.samples}
                                 onChange={(e) => updateDataConfig('samples', parseInt(e.target.value))}
                             />
                         </div>
-                    </div>
 
-                    {/* Controls */}
-                    <div className="flex space-x-2">
-                        <button
-                            className={`flex-1 px-4 py-2 rounded-md flex items-center justify-center text-white 
-                                ${isTraining
-                                    ? 'bg-gray-500'
-                                    : 'bg-blue-500 hover:bg-blue-600 pulse-animation'
-                                }
-                            `}
-                            onClick={startTraining}
-                            disabled={isTraining}
-                        >
-                            <>
-                                <Play className="mr-1 h-4 w-4" /> {isTraining ? 'Training...' : 'Start Training'}
-                            </>
-                        </button>
-
-                        <button
-                            className="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md flex items-center justify-center"
-                            onClick={resetPlayground}
-                        >
-                            <RefreshCw className="mr-1 h-4 w-4" /> Restart
-                        </button>
-                    </div>
-                </div>
-
-                {/* Visualization Panel */}
-                <div className="bg-white p-4 rounded-lg shadow lg:col-span-3 flex flex-col h-full">
-                    {/* Modified layout to ensure visualizations stay in their containers */}
-                    <div className="flex flex-col space-y-4 flex-grow">
-                        {/* 3D Plot - Full width container with increased height */}
-                        <div className="w-full h-80 md:h-96 lg:h-[420px] rounded-lg border border-gray-100 overflow-hidden" ref={plot3dRef}>
-                            {!plotlyAvailable && (
-                                <div className="w-full h-full flex items-center justify-center">
-                                    <p className="text-gray-500">Loading visualization...</p>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Container for Loss and Accuracy Plots side by side with increased height */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-grow">
-                            {/* Loss Plot - Increased height */}
-                            <div className="h-64 lg:h-72 rounded-lg border border-gray-100 overflow-hidden" ref={lossPlotRef}>
-                                {!plotlyAvailable && (
-                                    <div className="w-full h-full flex items-center justify-center">
-                                        <p className="text-gray-500">Loading visualization...</p>
-                                    </div>
-                                )}
+                        <div className="mb-3">
+                            <div className="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    id="useNormalization"
+                                    className="mr-2"
+                                    checked={dataConfig.useNormalization}
+                                    onChange={(e) => {
+                                        updateDataConfig('useNormalization', e.target.checked);
+                                        if (controllerRef.current) {
+                                            controllerRef.current.setUseNormalization(e.target.checked);
+                                        }
+                                    }}
+                                />
+                                <label htmlFor="useNormalization" className="text-sm text-gray-600">
+                                    Use Standard Scaler Normalization
+                                </label>
                             </div>
-
-                            {/* Accuracy Plot - Increased height */}
-                            <div className="h-64 lg:h-72 rounded-lg border border-gray-100 overflow-hidden" ref={contourPlotRef}>
-                                {!plotlyAvailable && (
-                                    <div className="w-full h-full flex items-center justify-center">
-                                        <p className="text-gray-500">Loading visualization...</p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Training Progress */}
-                    <div className="mt-4">
-                        <div className="flex justify-between mb-1">
-                            <span className="text-sm text-gray-600">Epoch {currentEpoch} / {trainingConfig.numEpochs}</span>
-                            <span className="text-sm text-gray-600">{progress.toFixed(1)}%</span>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div
-                                className="bg-blue-500 h-2 rounded-full"
-                                style={{ width: `${progress}%` }}
-                            ></div>
+                            <p className="text-xs text-gray-500 mt-1">
+                                Normalizes input and output data for better training. Visualization will display original (denormalized) values.
+                            </p>
                         </div>
                     </div>
                 </div>

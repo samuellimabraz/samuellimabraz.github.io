@@ -41,7 +41,7 @@ const NNPlaygroundSection: React.FC<SectionProps> = ({ scrollDirection }) => {
                     <h2 className="text-3xl font-bold mb-3">Neural Network Playground</h2>
                     <p className="text-gray-700 max-w-2xl mx-auto">
                         An interactive visualization of neural networks built with TypeScript and React.
-                        Explore how neural networks learn to approximate various mathematical functions through real-time training.
+                        Explore how neural networks learn to approximate various non-linear functions through real-time training.
                     </p>
                 </motion.div>
 
