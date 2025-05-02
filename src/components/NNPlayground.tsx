@@ -360,22 +360,22 @@ const NNPlayground: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col text-dark-text-secondary">
             {/* Adicionar o estilo de pulso */}
             <style>{pulseStyle}</style>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 {/* Left Panel - Network Configuration */}
-                <div className="bg-white p-4 rounded-lg shadow lg:col-span-3">
-                    <h3 className="text-lg font-semibold mb-4 flex items-center">
-                        <Sliders className="mr-2 h-5 w-5" /> Network Architecture
+                <div className="bg-dark-secondary p-4 rounded-lg shadow-md shadow-black/5 lg:col-span-3 border border-dark-border">
+                    <h3 className="text-lg font-semibold mb-4 flex items-center text-dark-text-primary">
+                        <Sliders className="mr-2 h-5 w-5 text-dark-accent" /> Network Architecture
                     </h3>
 
                     <div className="mb-3">
                         <div className="flex justify-between items-center mb-2">
-                            <label className="block text-sm text-gray-600">Hidden Layers</label>
+                            <label className="block text-sm text-dark-text-secondary">Hidden Layers</label>
                             <button
-                                className="px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs"
+                                className="px-2 py-1 bg-dark-primary hover:bg-dark-primary/80 rounded text-xs text-dark-text-primary"
                                 onClick={addHiddenLayer}
                             >
                                 + Add Layer
@@ -384,12 +384,12 @@ const NNPlayground: React.FC = () => {
 
                         <div className="space-y-4">
                             {layers.map((layer, index) => (
-                                <div key={index} className="p-3 border rounded-md bg-gray-50">
+                                <div key={index} className="p-3 border rounded-md bg-dark-primary border-dark-border">
                                     <div className="flex justify-between items-center mb-2">
-                                        <span className="text-sm font-medium">Layer {index + 1}</span>
+                                        <span className="text-sm font-medium text-dark-text-primary">Layer {index + 1}</span>
                                         {layers.length > 1 && (
                                             <button
-                                                className="p-1 text-red-500 hover:text-red-700"
+                                                className="p-1 text-red-400 hover:text-red-300"
                                                 onClick={() => removeHiddenLayer(index)}
                                             >
                                                 ✕
@@ -399,20 +399,20 @@ const NNPlayground: React.FC = () => {
 
                                     <div className="grid grid-cols-2 gap-2 mb-2">
                                         <div>
-                                            <label className="block text-xs text-gray-600 mb-1">Neurons</label>
+                                            <label className="block text-xs text-dark-text-secondary mb-1">Neurons</label>
                                             <input
                                                 type="number"
                                                 min="1"
-                                                className="w-full px-2 py-1 border rounded-md text-sm"
+                                                className="w-full px-2 py-1 border rounded-md text-sm bg-dark-secondary border-dark-border text-dark-text-primary"
                                                 value={layer.neurons}
                                                 onChange={(e) => handleLayerUpdate(index, 'neurons', parseInt(e.target.value))}
                                             />
                                         </div>
 
                                         <div>
-                                            <label className="block text-xs text-gray-600 mb-1">Activation</label>
+                                            <label className="block text-xs text-dark-text-secondary mb-1">Activation</label>
                                             <select
-                                                className="w-full px-2 py-1 border rounded-md text-sm"
+                                                className="w-full px-2 py-1 border rounded-md text-sm bg-dark-secondary border-dark-border text-dark-text-primary"
                                                 value={layer.activation}
                                                 onChange={(e) => handleLayerUpdate(index, 'activation', e.target.value as ActivationFunction)}
                                             >
@@ -425,9 +425,9 @@ const NNPlayground: React.FC = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs text-gray-600 mb-1">Weight Initializer</label>
+                                        <label className="block text-xs text-dark-text-secondary mb-1">Weight Initializer</label>
                                         <select
-                                            className="w-full px-2 py-1 border rounded-md text-sm"
+                                            className="w-full px-2 py-1 border rounded-md text-sm bg-dark-secondary border-dark-border text-dark-text-primary"
                                             value={layer.initializer}
                                             onChange={(e) => handleLayerUpdate(index, 'initializer', e.target.value as WeightInitializer)}
                                             disabled={isTraining}
@@ -444,14 +444,14 @@ const NNPlayground: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="mb-3 p-3 border rounded-md bg-gray-50">
-                        <div className="text-sm font-medium mb-2">Output Layer</div>
+                    <div className="mb-3 p-3 border rounded-md bg-dark-primary border-dark-border">
+                        <div className="text-sm font-medium mb-2 text-dark-text-primary">Output Layer</div>
 
                         <div className="grid grid-cols-1 gap-2 mb-2">
                             <div>
-                                <label className="block text-xs text-gray-600 mb-1">Activation</label>
+                                <label className="block text-xs text-dark-text-secondary mb-1">Activation</label>
                                 <select
-                                    className="w-full px-2 py-1 border rounded-md text-sm"
+                                    className="w-full px-2 py-1 border rounded-md text-sm bg-dark-secondary border-dark-border text-dark-text-primary"
                                     value={outputLayerConfig.activation}
                                     onChange={(e) => handleOutputLayerUpdate('activation', e.target.value as ActivationFunction)}
                                 >
@@ -463,9 +463,9 @@ const NNPlayground: React.FC = () => {
                             </div>
 
                             <div>
-                                <label className="block text-xs text-gray-600 mb-1">Weight Initializer</label>
+                                <label className="block text-xs text-dark-text-secondary mb-1">Weight Initializer</label>
                                 <select
-                                    className="w-full px-2 py-1 border rounded-md text-sm"
+                                    className="w-full px-2 py-1 border rounded-md text-sm bg-dark-secondary border-dark-border text-dark-text-primary"
                                     value={outputLayerConfig.initializer}
                                     onChange={(e) => handleOutputLayerUpdate('initializer', e.target.value as WeightInitializer)}
                                     disabled={isTraining}
@@ -481,9 +481,9 @@ const NNPlayground: React.FC = () => {
                     </div>
 
                     <div className="mb-3">
-                        <label className="block text-sm text-gray-600 mb-1">Optimizer</label>
+                        <label className="block text-sm text-dark-text-secondary mb-1">Optimizer</label>
                         <select
-                            className="w-full px-3 py-2 border rounded-md"
+                            className="w-full px-3 py-2 border rounded-md bg-dark-secondary border-dark-border text-dark-text-primary"
                             value={networkConfig.optimizer || 'adam'}
                             onChange={(e) => handleOptimizerChange(e.target.value as OptimizerType)}
                             disabled={isTraining}
@@ -504,19 +504,19 @@ const NNPlayground: React.FC = () => {
                             checked={networkConfig.useBias}
                             onChange={(e) => updateNetworkConfig('useBias', e.target.checked)}
                         />
-                        <label htmlFor="useBias" className="text-sm text-gray-600">Use Bias</label>
+                        <label htmlFor="useBias" className="text-sm text-dark-text-secondary">Use Bias</label>
                     </div>
                 </div>
 
                 {/* Center/Right Panel - Visualization and Additional Config */}
                 <div className="lg:col-span-9 grid grid-cols-1 lg:grid-cols-12 gap-6">
                     {/* Visualization Panel - Takes full width */}
-                    <div className="bg-white p-4 rounded-lg shadow lg:col-span-12 flex flex-col">
+                    <div className="bg-dark-secondary p-4 rounded-lg shadow-md shadow-black/5 lg:col-span-12 flex flex-col border border-dark-border">
                         {/* 3D Plot - Full width container with increased height */}
-                        <div className="w-full h-80 md:h-96 lg:h-[420px] rounded-lg border border-gray-100 overflow-hidden" ref={plot3dRef}>
+                        <div className="w-full h-80 md:h-96 lg:h-[420px] rounded-lg border border-dark-border overflow-hidden" ref={plot3dRef}>
                             {!plotlyAvailable && (
-                                <div className="w-full h-full flex items-center justify-center">
-                                    <p className="text-gray-500">Loading visualization...</p>
+                                <div className="w-full h-full flex items-center justify-center bg-dark-primary">
+                                    <p className="text-dark-text-secondary">Loading visualization...</p>
                                 </div>
                             )}
                         </div>
@@ -524,19 +524,19 @@ const NNPlayground: React.FC = () => {
                         {/* Container for Loss and Accuracy Plots side by side with increased height */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                             {/* Loss Plot - Increased height */}
-                            <div className="h-64 lg:h-72 rounded-lg border border-gray-100 overflow-hidden" ref={lossPlotRef}>
+                            <div className="h-64 lg:h-72 rounded-lg border border-dark-border overflow-hidden" ref={lossPlotRef}>
                                 {!plotlyAvailable && (
-                                    <div className="w-full h-full flex items-center justify-center">
-                                        <p className="text-gray-500">Loading visualization...</p>
+                                    <div className="w-full h-full flex items-center justify-center bg-dark-primary">
+                                        <p className="text-dark-text-secondary">Loading visualization...</p>
                                     </div>
                                 )}
                             </div>
 
                             {/* Accuracy Plot - Increased height */}
-                            <div className="h-64 lg:h-72 rounded-lg border border-gray-100 overflow-hidden" ref={contourPlotRef}>
+                            <div className="h-64 lg:h-72 rounded-lg border border-dark-border overflow-hidden" ref={contourPlotRef}>
                                 {!plotlyAvailable && (
-                                    <div className="w-full h-full flex items-center justify-center">
-                                        <p className="text-gray-500">Loading visualization...</p>
+                                    <div className="w-full h-full flex items-center justify-center bg-dark-primary">
+                                        <p className="text-dark-text-secondary">Loading visualization...</p>
                                     </div>
                                 )}
                             </div>
@@ -545,12 +545,12 @@ const NNPlayground: React.FC = () => {
                         {/* Training Progress */}
                         <div className="mt-4">
                             <div className="flex justify-between mb-1">
-                                <span className="text-sm text-gray-600">Epoch {currentEpoch} / {trainingConfig.numEpochs}</span>
-                                <span className="text-sm text-gray-600">{progress.toFixed(1)}%</span>
+                                <span className="text-sm text-dark-text-secondary">Epoch {currentEpoch} / {trainingConfig.numEpochs}</span>
+                                <span className="text-sm text-dark-text-secondary">{progress.toFixed(1)}%</span>
                             </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div className="w-full bg-dark-primary rounded-full h-2">
                                 <div
-                                    className="bg-blue-500 h-2 rounded-full"
+                                    className="bg-dark-accent h-2 rounded-full"
                                     style={{ width: `${progress}%` }}
                                 ></div>
                             </div>
@@ -558,11 +558,11 @@ const NNPlayground: React.FC = () => {
                     </div>
 
                     {/* Training Configuration Panel - Half width */}
-                    <div className="bg-white p-4 rounded-lg shadow lg:col-span-6">
-                        <h4 className="font-medium text-gray-700 mb-2">Training Parameters</h4>
+                    <div className="bg-dark-secondary p-4 rounded-lg shadow-md shadow-black/5 lg:col-span-6 border border-dark-border">
+                        <h4 className="font-medium text-dark-text-primary mb-2">Training Parameters</h4>
 
                         <div className="mb-3">
-                            <label className="block text-sm text-gray-600 mb-1">
+                            <label className="block text-sm text-dark-text-secondary mb-1">
                                 Learning Rate: {trainingConfig.learningRate}
                             </label>
                             <input
@@ -570,14 +570,14 @@ const NNPlayground: React.FC = () => {
                                 min="0.0001"
                                 max="0.1"
                                 step="0.0001"
-                                className="w-full"
+                                className="w-full accent-dark-accent"
                                 value={trainingConfig.learningRate}
                                 onChange={(e) => updateTrainingConfig('learningRate', parseFloat(e.target.value))}
                             />
                         </div>
 
                         <div className="mb-3">
-                            <label className="block text-sm text-gray-600 mb-1">
+                            <label className="block text-sm text-dark-text-secondary mb-1">
                                 Epochs: {trainingConfig.numEpochs}
                             </label>
                             <input
@@ -585,14 +585,14 @@ const NNPlayground: React.FC = () => {
                                 min="100"
                                 max="1000"
                                 step="100"
-                                className="w-full"
+                                className="w-full accent-dark-accent"
                                 value={trainingConfig.numEpochs}
                                 onChange={(e) => updateTrainingConfig('numEpochs', parseInt(e.target.value))}
                             />
                         </div>
 
                         <div className="mb-3">
-                            <label className="block text-sm text-gray-600 mb-1">
+                            <label className="block text-sm text-dark-text-secondary mb-1">
                                 Batch Size: {trainingConfig.batchSize}
                             </label>
                             <input
@@ -600,14 +600,14 @@ const NNPlayground: React.FC = () => {
                                 min="8"
                                 max="128"
                                 step="8"
-                                className="w-full"
+                                className="w-full accent-dark-accent"
                                 value={trainingConfig.batchSize}
                                 onChange={(e) => updateTrainingConfig('batchSize', parseInt(e.target.value))}
                             />
                         </div>
 
                         <div className="mb-3">
-                            <label className="block text-sm text-gray-600 mb-1">
+                            <label className="block text-sm text-dark-text-secondary mb-1">
                                 Noise: {trainingConfig.noise}
                             </label>
                             <input
@@ -615,7 +615,7 @@ const NNPlayground: React.FC = () => {
                                 min="0"
                                 max="0.5"
                                 step="0.01"
-                                className="w-full"
+                                className="w-full accent-dark-accent"
                                 value={trainingConfig.noise}
                                 onChange={(e) => updateTrainingConfig('noise', parseFloat(e.target.value))}
                             />
@@ -624,10 +624,10 @@ const NNPlayground: React.FC = () => {
                         {/* Controls */}
                         <div className="flex space-x-2 mt-4">
                             <button
-                                className={`flex-1 px-4 py-2 rounded-md flex items-center justify-center text-white 
+                                className={`flex-1 px-4 py-2 rounded-md flex items-center justify-center text-dark-text-primary 
                                     ${isTraining
-                                        ? 'bg-gray-500'
-                                        : 'bg-blue-500 hover:bg-blue-600 pulse-animation'
+                                        ? 'bg-dark-tertiary'
+                                        : 'bg-dark-accent hover:bg-dark-accent/80 pulse-animation'
                                     }
                                 `}
                                 onClick={startTraining}
@@ -639,7 +639,7 @@ const NNPlayground: React.FC = () => {
                             </button>
 
                             <button
-                                className="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md flex items-center justify-center"
+                                className="flex-1 px-4 py-2 bg-dark-primary hover:bg-dark-primary/80 rounded-md flex items-center justify-center text-dark-text-primary"
                                 onClick={resetPlayground}
                             >
                                 <RefreshCw className="mr-1 h-4 w-4" /> Restart
@@ -648,13 +648,13 @@ const NNPlayground: React.FC = () => {
                     </div>
 
                     {/* Data Configuration Panel - Half width */}
-                    <div className="bg-white p-4 rounded-lg shadow lg:col-span-6">
-                        <h4 className="font-medium text-gray-700 mb-2">Data</h4>
+                    <div className="bg-dark-secondary p-4 rounded-lg shadow-md shadow-black/5 lg:col-span-6 border border-dark-border">
+                        <h4 className="font-medium text-dark-text-primary mb-2">Data</h4>
 
                         <div className="mb-3">
-                            <label className="block text-sm text-gray-600 mb-1">Function</label>
+                            <label className="block text-sm text-dark-text-secondary mb-1">Function</label>
                             <select
-                                className="w-full px-3 py-2 border rounded-md"
+                                className="w-full px-3 py-2 border rounded-md bg-dark-primary border-dark-border text-dark-text-primary"
                                 value={dataConfig.dataFunction}
                                 onChange={(e) => updateDataConfig('dataFunction', e.target.value)}
                             >
@@ -666,7 +666,7 @@ const NNPlayground: React.FC = () => {
                         </div>
 
                         <div className="mb-3">
-                            <label className="block text-sm text-gray-600 mb-1">
+                            <label className="block text-sm text-dark-text-secondary mb-1">
                                 Samples: {dataConfig.samples}
                             </label>
                             <input
@@ -674,7 +674,7 @@ const NNPlayground: React.FC = () => {
                                 min="100"
                                 max="2000"
                                 step="100"
-                                className="w-full"
+                                className="w-full accent-dark-accent"
                                 value={dataConfig.samples}
                                 onChange={(e) => updateDataConfig('samples', parseInt(e.target.value))}
                             />
@@ -685,7 +685,7 @@ const NNPlayground: React.FC = () => {
                                 <input
                                     type="checkbox"
                                     id="useNormalization"
-                                    className="mr-2"
+                                    className="mr-2 accent-dark-accent"
                                     checked={dataConfig.useNormalization}
                                     onChange={(e) => {
                                         updateDataConfig('useNormalization', e.target.checked);
@@ -694,11 +694,11 @@ const NNPlayground: React.FC = () => {
                                         }
                                     }}
                                 />
-                                <label htmlFor="useNormalization" className="text-sm text-gray-600">
+                                <label htmlFor="useNormalization" className="text-sm text-dark-text-secondary">
                                     Use Standard Scaler Normalization
                                 </label>
                             </div>
-                            <p className="text-xs text-gray-500 mt-1">
+                            <p className="text-xs text-dark-text-secondary/70 mt-1">
                                 Normalizes input and output data for better training. Visualization will display original (denormalized) values.
                             </p>
                         </div>

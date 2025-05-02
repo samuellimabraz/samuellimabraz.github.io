@@ -105,7 +105,7 @@ function MainLayout() {
   }, [lastScrollY, location.hash]);
 
   return (
-    <div className={`min-h-screen bg-white text-black ${isMounted ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
+    <div className={`min-h-screen bg-dark-primary text-dark-text-primary ${isMounted ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
       <Navbar activeSection={activeSection} />
 
       <main className="pt-16 overflow-hidden">

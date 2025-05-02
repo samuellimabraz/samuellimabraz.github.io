@@ -232,22 +232,22 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
     const renderProjectCard = (project: Project) => (
         <div
             key={project.id}
-            className="flex-shrink-0 w-80 bg-white rounded-lg overflow-hidden border border-gray-200 shadow-sm transition-all hover:shadow-md mx-3 my-3 flex flex-col"
+            className="flex-shrink-0 w-80 bg-dark-tertiary rounded-lg overflow-hidden border border-dark-border shadow-sm transition-all hover:shadow-md mx-3 my-3 flex flex-col"
         >
-            <div className="h-52 overflow-hidden bg-gray-100 relative group">
+            <div className="h-52 overflow-hidden bg-dark-secondary relative group">
                 <img
                     src={project.image}
                     alt={project.title}
                     className="w-full h-full object-cover transition-transform group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-3 transition-opacity">
+                <div className="absolute inset-0 bg-dark-primary bg-opacity-80 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-3 transition-opacity">
                     {project.embedUrl && (
                         <button
                             onClick={(e) => {
                                 e.stopPropagation(); // Prevent the parent's onMouseEnter/onMouseLeave
                                 openProjectModal(project, 'demo');
                             }}
-                            className="px-4 py-2 bg-white text-black rounded-md font-medium hover:bg-gray-100 transition-colors flex items-center"
+                            className="px-4 py-2 bg-dark-tertiary text-dark-text-primary rounded-md font-medium hover:bg-dark-secondary transition-colors flex items-center"
                         >
                             <ExternalLink size={16} className="mr-2" />
                             Live Demo
@@ -259,7 +259,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                 e.stopPropagation(); // Prevent the parent's onMouseEnter/onMouseLeave
                                 openProjectModal(project, 'repo');
                             }}
-                            className="px-4 py-2 bg-white text-black rounded-md font-medium hover:bg-gray-100 transition-colors flex items-center"
+                            className="px-4 py-2 bg-dark-tertiary text-dark-text-primary rounded-md font-medium hover:bg-dark-secondary transition-colors flex items-center"
                         >
                             <Code size={16} className="mr-2" />
                             View Code
@@ -269,20 +269,20 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
             </div>
 
             <div className="p-6 flex-1 flex flex-col">
-                <h3 className="text-xl font-bold mb-2">{project.title}</h3>
-                <p className="text-gray-600 text-sm mb-4 line-clamp-3 flex-1">{project.description}</p>
+                <h3 className="text-xl font-bold mb-2 text-dark-text-primary">{project.title}</h3>
+                <p className="text-dark-text-secondary text-sm mb-4 line-clamp-3 flex-1">{project.description}</p>
 
                 <div className="flex flex-wrap gap-1 mb-3">
                     {project.tags.slice(0, 3).map((tag: string) => (
                         <span
                             key={tag}
-                            className="px-2 py-0.5 bg-gray-100 text-xs rounded"
+                            className="px-2 py-0.5 bg-dark-secondary text-dark-text-secondary text-xs rounded"
                         >
                             {tag}
                         </span>
                     ))}
                     {project.tags.length > 3 && (
-                        <span className="px-2 py-0.5 bg-gray-100 text-xs rounded">
+                        <span className="px-2 py-0.5 bg-dark-secondary text-dark-text-secondary text-xs rounded">
                             +{project.tags.length - 3}
                         </span>
                     )}
@@ -294,7 +294,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                             href={project.github}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="px-2 py-1 border border-gray-200 rounded text-xs flex items-center hover:bg-gray-50 transition-colors"
+                            className="px-2 py-1 border border-dark-border rounded text-xs flex items-center hover:bg-dark-secondary transition-colors text-dark-text-secondary"
                             onClick={(e) => {
                                 e.stopPropagation(); // Prevent the parent's onMouseEnter/onMouseLeave
                             }}
@@ -309,7 +309,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                             href={project.demo}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`px-2 py-1 border border-gray-200 rounded text-xs flex items-center hover:bg-gray-50 transition-colors ${project.demo.includes('colab.research.google.com') ? 'bg-blue-50 border-blue-200' : ''}`}
+                            className={`px-2 py-1 border border-dark-border rounded text-xs flex items-center hover:bg-dark-secondary transition-colors text-dark-text-secondary ${project.demo.includes('colab.research.google.com') ? 'bg-dark-secondary border-dark-accent/50' : ''}`}
                             onClick={(e) => {
                                 e.stopPropagation(); // Prevent the parent's onMouseEnter/onMouseLeave
                             }}
@@ -333,7 +333,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                             href={project.article}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="px-2 py-1 border border-gray-200 rounded text-xs flex items-center hover:bg-gray-50 transition-colors"
+                            className="px-2 py-1 border border-dark-border rounded text-xs flex items-center hover:bg-dark-secondary transition-colors text-dark-text-secondary"
                             onClick={(e) => {
                                 e.stopPropagation(); // Prevent the parent's onMouseEnter/onMouseLeave
                             }}
@@ -348,7 +348,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                             href={project.articlePt}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="px-2 py-1 border border-gray-200 rounded text-xs flex items-center hover:bg-gray-50 transition-colors"
+                            className="px-2 py-1 border border-dark-border rounded text-xs flex items-center hover:bg-dark-secondary transition-colors text-dark-text-secondary"
                             onClick={(e) => {
                                 e.stopPropagation(); // Prevent the parent's onMouseEnter/onMouseLeave
                             }}
@@ -363,10 +363,10 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
     );
 
     return (
-        <section id="projects" className="py-20 bg-gray-50 overflow-hidden">
+        <section id="projects" className="py-20 bg-dark-primary overflow-hidden">
             <div className="container mx-auto px-4 md:px-6">
-                <h2 className="text-3xl font-bold mb-6 text-center">Projects</h2>
-                <p className="text-center text-lg mb-10 max-w-2xl mx-auto">
+                <h2 className="text-3xl font-bold mb-6 text-center text-dark-text-primary">Projects</h2>
+                <p className="text-center text-lg mb-10 max-w-2xl mx-auto text-dark-text-secondary">
                     Explore my projects including computer vision models, language model applications, and AI frameworks.
                 </p>
 
@@ -374,7 +374,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                 <div className="flex justify-center mb-6 gap-4">
                     <button
                         onClick={() => setIsPaused(!isPaused)}
-                        className="px-4 py-2 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors text-sm"
+                        className="px-4 py-2 bg-dark-tertiary border border-dark-border rounded-md hover:bg-dark-secondary transition-colors text-sm text-dark-text-secondary"
                     >
                         {isPaused ? 'Start Carousel' : 'Pause Carousel'}
                     </button>
@@ -385,7 +385,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                     {/* Left navigation button */}
                     <button
                         onClick={() => scrollRow('left', topRowRef, topPositionRef)}
-                        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 rounded-full p-2 shadow-md z-10 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-dark-tertiary bg-opacity-70 hover:bg-opacity-100 rounded-full p-2 shadow-md z-10 opacity-0 group-hover:opacity-100 transition-opacity text-dark-text-primary"
                         aria-label="Scroll left"
                     >
                         <ChevronLeft size={24} />
@@ -407,7 +407,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                     {/* Right navigation button */}
                     <button
                         onClick={() => scrollRow('right', topRowRef, topPositionRef)}
-                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 rounded-full p-2 shadow-md z-10 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-dark-tertiary bg-opacity-70 hover:bg-opacity-100 rounded-full p-2 shadow-md z-10 opacity-0 group-hover:opacity-100 transition-opacity text-dark-text-primary"
                         aria-label="Scroll right"
                     >
                         <ChevronRight size={24} />
@@ -419,7 +419,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                     {/* Left navigation button */}
                     <button
                         onClick={() => scrollRow('left', bottomRowRef, bottomPositionRef)}
-                        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 rounded-full p-2 shadow-md z-10 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-dark-tertiary bg-opacity-70 hover:bg-opacity-100 rounded-full p-2 shadow-md z-10 opacity-0 group-hover:opacity-100 transition-opacity text-dark-text-primary"
                         aria-label="Scroll left"
                     >
                         <ChevronLeft size={24} />
@@ -441,7 +441,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                     {/* Right navigation button */}
                     <button
                         onClick={() => scrollRow('right', bottomRowRef, bottomPositionRef)}
-                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 rounded-full p-2 shadow-md z-10 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-dark-tertiary bg-opacity-70 hover:bg-opacity-100 rounded-full p-2 shadow-md z-10 opacity-0 group-hover:opacity-100 transition-opacity text-dark-text-primary"
                         aria-label="Scroll right"
                     >
                         <ChevronRight size={24} />
@@ -452,17 +452,17 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
             {/* Project Modal for Demo or Code */}
             {selectedProject && modalType && (
                 <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-lg w-full max-w-6xl h-[90vh] flex flex-col">
-                        <div className="flex justify-between items-center p-4 border-b">
+                    <div className="bg-dark-secondary rounded-lg w-full max-w-6xl h-[90vh] flex flex-col border border-dark-border">
+                        <div className="flex justify-between items-center p-4 border-b border-dark-border">
                             <div className="flex-1">
-                                <h3 className="text-xl font-bold">{selectedProject.title}</h3>
-                                <p className="text-sm text-gray-500">
+                                <h3 className="text-xl font-bold text-dark-text-primary">{selectedProject.title}</h3>
+                                <p className="text-sm text-dark-text-secondary">
                                     {modalType === 'demo' ? 'Live Demo' : 'Project Code & Details'}
                                 </p>
                             </div>
                             <button
                                 onClick={closeProjectModal}
-                                className="p-1 rounded-full hover:bg-gray-100"
+                                className="p-1 rounded-full hover:bg-dark-tertiary text-dark-text-secondary"
                             >
                                 <X size={24} />
                             </button>
@@ -482,15 +482,15 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                             {modalType === 'repo' && (
                                 <div className="flex flex-1 overflow-hidden">
                                     {/* File Selector Sidebar */}
-                                    <div className="w-64 border-r bg-gray-50 overflow-y-auto">
-                                        <div className="p-4 border-b">
+                                    <div className="w-64 border-r border-dark-border bg-dark-primary overflow-y-auto">
+                                        <div className="p-4 border-b border-dark-border">
                                             <div className="flex items-center">
-                                                <Github size={16} className="mr-2" />
+                                                <Github size={16} className="mr-2 text-dark-text-secondary" />
                                                 <a
                                                     href={selectedProject.github}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="text-sm font-mono text-blue-600 hover:underline truncate"
+                                                    className="text-sm font-mono text-dark-accent hover:underline truncate"
                                                 >
                                                     {selectedProject.github?.replace('https://github.com/', '')}
                                                 </a>
@@ -498,21 +498,21 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                         </div>
 
                                         <div className="p-2">
-                                            <h4 className="px-2 py-1 text-sm font-medium text-gray-500">Some Project Files</h4>
+                                            <h4 className="px-2 py-1 text-sm font-medium text-dark-text-secondary">Some Project Files</h4>
                                             <ul className="mt-2">
                                                 {selectedProject.codeExamples?.map((example: CodeExample, index: number) => (
                                                     <li key={index}>
                                                         <button
                                                             onClick={() => selectCodeExample(example)}
                                                             className={`w-full flex items-start p-2 rounded text-left text-sm transition-colors ${selectedCodeExample && selectedCodeExample.path === example.path
-                                                                ? 'bg-gray-200'
-                                                                : 'hover:bg-gray-100'
+                                                                ? 'bg-dark-tertiary text-dark-text-primary'
+                                                                : 'text-dark-text-secondary hover:bg-dark-tertiary/50 hover:text-dark-text-primary'
                                                                 }`}
                                                         >
                                                             <FileCode size={16} className="mr-2 flex-shrink-0 mt-0.5" />
                                                             <div>
                                                                 <div className="font-medium">{example.path.split('/').pop()}</div>
-                                                                <div className="text-xs text-gray-500 mt-1">{example.description}</div>
+                                                                <div className="text-xs text-dark-text-secondary/70 mt-1">{example.description}</div>
                                                             </div>
                                                         </button>
                                                     </li>
@@ -524,10 +524,10 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                     {/* Code Content */}
                                     <div className="flex-1 flex flex-col overflow-hidden">
                                         {selectedCodeExample && (
-                                            <div className="p-2 border-b flex items-center justify-between bg-gray-50">
+                                            <div className="p-2 border-b border-dark-border flex items-center justify-between bg-dark-primary">
                                                 <div className="flex items-center">
-                                                    <FileCode size={16} className="mr-2 text-gray-500" />
-                                                    <span className="font-mono text-sm">{selectedCodeExample.path}</span>
+                                                    <FileCode size={16} className="mr-2 text-dark-text-secondary" />
+                                                    <span className="font-mono text-sm text-dark-text-secondary">{selectedCodeExample.path}</span>
                                                 </div>
                                                 <div className="flex items-center gap-2">
                                                     <button
@@ -536,7 +536,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                                                 navigator.clipboard.writeText(codeContent.content);
                                                             }
                                                         }}
-                                                        className="flex items-center p-1 px-2 rounded text-xs bg-gray-200 hover:bg-gray-300 transition-colors"
+                                                        className="flex items-center p-1 px-2 rounded text-xs bg-dark-tertiary hover:bg-dark-tertiary/70 transition-colors text-dark-text-secondary"
                                                         disabled={!codeContent.content || codeContent.loading}
                                                     >
                                                         <Download size={14} className="mr-1" />
@@ -546,7 +546,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                                         href={`${selectedProject.github}/blob/main/${selectedCodeExample.path}`}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="flex items-center p-1 px-2 rounded text-xs bg-gray-200 hover:bg-gray-300 transition-colors"
+                                                        className="flex items-center p-1 px-2 rounded text-xs bg-dark-tertiary hover:bg-dark-tertiary/70 transition-colors text-dark-text-secondary"
                                                     >
                                                         <ExternalLink size={14} className="mr-1" />
                                                         View on GitHub
@@ -555,22 +555,22 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                             </div>
                                         )}
 
-                                        <div className="flex-1 overflow-auto">
+                                        <div className="flex-1 overflow-auto bg-dark-primary">
                                             {codeContent.loading && (
-                                                <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-70 z-10">
-                                                    <Loader2 size={30} className="animate-spin text-gray-400" />
+                                                <div className="absolute inset-0 flex items-center justify-center bg-dark-primary bg-opacity-70 z-10">
+                                                    <Loader2 size={30} className="animate-spin text-dark-text-secondary" />
                                                 </div>
                                             )}
 
                                             {codeContent.error && (
                                                 <div className="p-4 flex flex-col items-center justify-center h-full">
                                                     <AlertTriangle size={30} className="text-amber-500 mb-3" />
-                                                    <p className="text-red-500 text-center mb-3">{codeContent.error}</p>
+                                                    <p className="text-red-400 text-center mb-3">{codeContent.error}</p>
                                                     <a
                                                         href={selectedProject.github}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="px-4 py-2 bg-gray-100 rounded-md text-sm hover:bg-gray-200 transition-colors"
+                                                        className="px-4 py-2 bg-dark-tertiary rounded-md text-sm hover:bg-dark-tertiary/70 transition-colors text-dark-text-secondary"
                                                     >
                                                         View Repository
                                                     </a>
@@ -588,7 +588,8 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                                             padding: '16px',
                                                             fontSize: '14px',
                                                             height: 'auto',
-                                                            minHeight: '100%'
+                                                            minHeight: '100%',
+                                                            background: '#0c0f19',
                                                         }}
                                                     >
                                                         {codeContent.content}
@@ -597,7 +598,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                             )}
 
                                             {!codeContent.loading && !codeContent.error && !codeContent.content && (
-                                                <div className="flex items-center justify-center h-full p-6 text-gray-500">
+                                                <div className="flex items-center justify-center h-full p-6 text-dark-text-secondary">
                                                     Select a file to view the code
                                                 </div>
                                             )}
@@ -609,17 +610,17 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
 
                         {/* Project Details Section */}
                         {modalType === 'repo' && (
-                            <div className="border-t p-4 max-h-64 overflow-y-auto">
+                            <div className="border-t border-dark-border p-4 max-h-64 overflow-y-auto bg-dark-secondary">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <h4 className="font-medium mb-2">Description</h4>
-                                        <p className="text-sm text-gray-700">{selectedProject.description}</p>
+                                        <h4 className="font-medium mb-2 text-dark-text-primary">Description</h4>
+                                        <p className="text-sm text-dark-text-secondary">{selectedProject.description}</p>
 
                                         <div className="mt-4">
-                                            <h4 className="font-medium mb-2">Technologies</h4>
+                                            <h4 className="font-medium mb-2 text-dark-text-primary">Technologies</h4>
                                             <div className="flex flex-wrap gap-2">
                                                 {selectedProject.tags.map((tag: string) => (
-                                                    <span key={tag} className="px-2 py-1 bg-gray-100 text-sm rounded">
+                                                    <span key={tag} className="px-2 py-1 bg-dark-tertiary text-dark-text-secondary text-sm rounded">
                                                         {tag}
                                                     </span>
                                                 ))}
@@ -628,14 +629,14 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                     </div>
 
                                     <div>
-                                        <h4 className="font-medium mb-2">Links</h4>
+                                        <h4 className="font-medium mb-2 text-dark-text-primary">Links</h4>
                                         <div className="flex flex-wrap gap-3">
                                             {selectedProject.github && (
                                                 <a
                                                     href={selectedProject.github}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors flex items-center"
+                                                    className="px-4 py-2 bg-dark-primary text-dark-text-primary rounded-md hover:bg-dark-primary/70 transition-colors flex items-center border border-dark-border"
                                                 >
                                                     <Github size={18} className="mr-2" />
                                                     GitHub Repository
@@ -647,7 +648,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                                     href={selectedProject.demo}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className={`px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors flex items-center ${selectedProject.demo.includes('colab.research.google.com') ? 'bg-blue-50 border-blue-200' : ''}`}
+                                                    className={`px-4 py-2 border border-dark-border rounded-md hover:bg-dark-tertiary/50 transition-colors flex items-center text-dark-text-secondary ${selectedProject.demo.includes('colab.research.google.com') ? 'bg-dark-primary/50' : ''}`}
                                                 >
                                                     {selectedProject.demo.includes('colab.research.google.com') ? (
                                                         <>
@@ -668,7 +669,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                                     href={selectedProject.article}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors flex items-center"
+                                                    className="px-4 py-2 border border-dark-border rounded-md hover:bg-dark-tertiary/50 transition-colors flex items-center text-dark-text-secondary"
                                                 >
                                                     <FileCode size={18} className="mr-2" />
                                                     Article
@@ -680,7 +681,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                                     href={selectedProject.articlePt}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors flex items-center"
+                                                    className="px-4 py-2 border border-dark-border rounded-md hover:bg-dark-tertiary/50 transition-colors flex items-center text-dark-text-secondary"
                                                 >
                                                     <FileCode size={18} className="mr-2" />
                                                     Article (PT)

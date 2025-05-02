@@ -81,10 +81,10 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
   };
 
   return (
-    <section id="certificates" className="py-20 bg-gray-50">
+    <section id="certificates" className="py-20 bg-dark-secondary">
       <div className="container mx-auto px-4 md:px-6">
         <motion.h2
-          className="text-3xl font-bold mb-6 text-center"
+          className="text-3xl font-bold mb-6 text-center text-dark-text-primary"
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -94,7 +94,7 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
         </motion.h2>
 
         <motion.p
-          className="text-center text-lg mb-10 max-w-2xl mx-auto"
+          className="text-center text-lg mb-10 max-w-2xl mx-auto text-dark-text-secondary"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
@@ -113,18 +113,18 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
           {certificates.map(certificate => (
             <motion.div
               key={certificate.id}
-              className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+              className="bg-dark-tertiary p-6 rounded-lg border border-dark-border shadow-sm hover:shadow-md hover:shadow-black/10 transition-shadow"
               variants={cardVariants}
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2 }}
             >
               <div className="flex justify-between items-start mb-3">
-                <h3 className="text-lg font-bold">{certificate.title}</h3>
-                <span className="text-sm text-gray-500 font-mono">{certificate.date}</span>
+                <h3 className="text-lg font-bold text-dark-text-primary">{certificate.title}</h3>
+                <span className="text-sm text-dark-text-secondary font-mono">{certificate.date}</span>
               </div>
 
-              <p className="text-gray-700 font-medium mb-2">{certificate.issuer}</p>
-              <p className="text-gray-600 mb-4 text-sm">{certificate.description}</p>
+              <p className="text-dark-text-secondary font-medium mb-2">{certificate.issuer}</p>
+              <p className="text-dark-text-secondary mb-4 text-sm">{certificate.description}</p>
 
               <div className="flex justify-end items-center">
                 {certificate.credential && (
@@ -132,10 +132,10 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
                     href={certificate.credential}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center text-sm text-gray-700 hover:text-black transition-colors group"
+                    className="flex items-center text-sm text-dark-text-secondary hover:text-dark-text-primary transition-colors group"
                   >
-                    <ExternalLink size={14} className="mr-1 group-hover:text-blue-600" />
-                    <span className="group-hover:text-blue-600">Verify</span>
+                    <ExternalLink size={14} className="mr-1 group-hover:text-dark-accent" />
+                    <span className="group-hover:text-dark-accent">Verify</span>
                   </a>
                 )}
               </div>
