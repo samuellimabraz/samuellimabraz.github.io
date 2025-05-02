@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Github, ExternalLink, FileCode, Code, X, Loader2, AlertTriangle } from 'lucide-react';
+import { Github, ExternalLink, FileCode, Code, X, Loader2, AlertTriangle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Project, CodeExample, SectionProps } from '../lib/types';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -40,6 +40,30 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
     // Store the current scroll positions persistently
     const topPositionRef = useRef(0);
     const bottomPositionRef = useRef(0);
+
+    // Handle manual scrolling
+    const scrollAmount = 300; // pixels to scroll on button click
+
+    const scrollRow = (direction: 'left' | 'right', rowRef: React.RefObject<HTMLDivElement>, positionRef: React.MutableRefObject<number>) => {
+        if (!rowRef.current) return;
+
+        const container = rowRef.current;
+        const containerWidth = container.clientWidth;
+        const scrollWidth = container.scrollWidth;
+
+        // Calculate new position
+        if (direction === 'left') {
+            positionRef.current = Math.max(positionRef.current - scrollAmount, 0);
+        } else {
+            positionRef.current = Math.min(
+                positionRef.current + scrollAmount,
+                scrollWidth - containerWidth
+            );
+        }
+
+        // Apply the scroll
+        container.scrollLeft = positionRef.current;
+    };
 
     // Handle scrolling animation with requestAnimationFrame
     useEffect(() => {
@@ -357,7 +381,16 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                 </div>
 
                 {/* Top row - scrolls left to right */}
-                <div className="overflow-hidden mb-6">
+                <div className="overflow-hidden mb-6 relative group">
+                    {/* Left navigation button */}
+                    <button
+                        onClick={() => scrollRow('left', topRowRef, topPositionRef)}
+                        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 rounded-full p-2 shadow-md z-10 opacity-0 group-hover:opacity-100 transition-opacity"
+                        aria-label="Scroll left"
+                    >
+                        <ChevronLeft size={24} />
+                    </button>
+
                     <div
                         ref={topRowRef}
                         className="flex whitespace-nowrap overflow-x-scroll scrollbar-hide"
@@ -370,10 +403,28 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                             </div>
                         ))}
                     </div>
+
+                    {/* Right navigation button */}
+                    <button
+                        onClick={() => scrollRow('right', topRowRef, topPositionRef)}
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 rounded-full p-2 shadow-md z-10 opacity-0 group-hover:opacity-100 transition-opacity"
+                        aria-label="Scroll right"
+                    >
+                        <ChevronRight size={24} />
+                    </button>
                 </div>
 
                 {/* Bottom row - scrolls right to left */}
-                <div className="overflow-hidden">
+                <div className="overflow-hidden relative group">
+                    {/* Left navigation button */}
+                    <button
+                        onClick={() => scrollRow('left', bottomRowRef, bottomPositionRef)}
+                        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 rounded-full p-2 shadow-md z-10 opacity-0 group-hover:opacity-100 transition-opacity"
+                        aria-label="Scroll left"
+                    >
+                        <ChevronLeft size={24} />
+                    </button>
+
                     <div
                         ref={bottomRowRef}
                         className="flex whitespace-nowrap overflow-x-scroll scrollbar-hide"
@@ -386,6 +437,15 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                             </div>
                         ))}
                     </div>
+
+                    {/* Right navigation button */}
+                    <button
+                        onClick={() => scrollRow('right', bottomRowRef, bottomPositionRef)}
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 hover:bg-opacity-100 rounded-full p-2 shadow-md z-10 opacity-0 group-hover:opacity-100 transition-opacity"
+                        aria-label="Scroll right"
+                    >
+                        <ChevronRight size={24} />
+                    </button>
                 </div>
             </div>
 
