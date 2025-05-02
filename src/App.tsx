@@ -16,6 +16,20 @@ import Footer from './components/Footer';
 // Import the project data
 import { projects } from './data/projects';
 
+// Utility function to navigate to a section that can be exported and used across the app
+export const navigateToSection = (id: string): void => {
+  const element = document.getElementById(id);
+  if (element) {
+    window.scrollTo({
+      top: element.offsetTop - 70,
+      behavior: 'smooth'
+    });
+
+    // Update URL without causing a page reload (simpler than using router)
+    window.history.pushState(null, '', `#${id}`);
+  }
+};
+
 function MainLayout() {
   const [activeSection, setActiveSection] = useState('home');
   const [isMounted, setIsMounted] = useState(false);
@@ -40,7 +54,13 @@ function MainLayout() {
     setIsMounted(true);
 
     // Scroll to section based on URL hash when component mounts or location changes
-    const hash = location.hash.replace('#', '');
+    let hash = location.hash.replace('#', '');
+
+    // Handle case where we might have double hashes (/#/#section)
+    if (hash.startsWith('#')) {
+      hash = hash.replace('#', '');
+    }
+
     if (hash) {
       const sectionId = hashToSectionMap[hash] || hash;
       setTimeout(() => {

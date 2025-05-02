@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { navigateToSection } from '../App';
 
 interface NavbarProps {
   activeSection: string;
@@ -24,18 +25,9 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
   const scrollToSection = (id: string) => {
     // Closing the mobile menu regardless
     setMobileMenuOpen(false);
-    
-    // If we're already on the same hash, manually scroll
-    if (location.hash === `#${id}`) {
-      const element = document.getElementById(id);
-      if (element) {
-        window.scrollTo({
-          top: element.offsetTop - 70,
-          behavior: 'smooth'
-        });
-      }
-    }
-    // Otherwise, navigation happens automatically through the Link component
+
+    // Use the utility function for reliable navigation
+    navigateToSection(id);
   };
 
   const navItems = [
@@ -66,9 +58,16 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <Link to="/#home" className="font-mono cursor-pointer" onClick={() => scrollToSection('home')}>
+            <a
+              href="#home"
+              className="font-mono cursor-pointer"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection('home');
+              }}
+            >
               Samuel Lima Braz
-            </Link>
+            </a>
           </motion.div>
 
           <nav className="hidden md:block">
@@ -78,9 +77,12 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
                   whileHover={{ y: -2 }}
                   whileTap={{ y: 0 }}
                 >
-                  <Link
-                    to={`/#${item.id}`}
-                    onClick={() => scrollToSection(item.id)}
+                  <a
+                    href={`#${item.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection(item.id);
+                    }}
                     className={`px-1 py-2 text-sm font-medium transition-all duration-300 relative ${activeSection === item.id
                       ? 'text-black'
                       : 'text-gray-600 hover:text-gray-900'
@@ -100,7 +102,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
                         }}
                       />
                     )}
-                  </Link>
+                  </a>
                 </motion.li>
               ))}
             </ul>
@@ -151,16 +153,19 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
                   }}
                   transition={{ duration: 0.2 }}
                 >
-                  <Link
-                    to={`/#${item.id}`}
-                    onClick={() => scrollToSection(item.id)}
+                  <a
+                    href={`#${item.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection(item.id);
+                    }}
                     className={`block w-full text-left px-4 py-3 rounded-md text-sm font-medium transition-colors ${activeSection === item.id
                       ? 'bg-black text-white'
                       : 'hover:bg-gray-100'
                       }`}
                   >
                     {item.label}
-                  </Link>
+                  </a>
                 </motion.li>
               ))}
             </motion.ul>
