@@ -64,6 +64,24 @@ The portfolio showcases several key projects, including:
 4. **PEFT: Parameter-Efficient Fine-Tuning Methods for LLMs** - Technical article and implementation
 5. **CafeDL: Deep Learning Framework** - Java-based deep learning framework
 
+## Neural Network Playground
+
+The portfolio features an interactive Neural Network Playground that allows visitors to experiment with neural networks in real-time:
+
+![Neural Network Playground](./assets/nn-preview.png)
+
+### Features of the Neural Network Playground:
+
+- **Interactive 3D Visualization** - See neural network predictions on various mathematical functions
+- **Customizable Architecture** - Add/remove layers, change neuron count, and activation functions
+- **Real-time Training** - Watch the network learn with live training loss and accuracy plots
+- **Multiple Dataset Options** - Train on different mathematical functions (Saddle, Rosenbrock, Sine, Circle)
+- **Configurable Training Parameters** - Adjust learning rate, batch size, epochs, and noise
+- **Optimizer Selection** - Choose from different optimization algorithms (Adam, SGD, RMSProp, etc.)
+- **Weight Initialization Methods** - Experiment with different weight initializers (He, Xavier/Glorot, etc.)
+
+This playground demonstrates deep learning fundamentals visually and serves as both an educational tool and a showcase of interactive data visualization capabilities.
+
 ## Setup and Installation
 
 To run this project locally:

@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Github, Linkedin, Mail, ExternalLink } from 'lucide-react';
-import { HashRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
@@ -13,10 +12,8 @@ import ProjectsCarousel from './components/ProjectsCarousel';
 import CertificatesSection from './components/CertificatesSection';
 import Footer from './components/Footer';
 
-// Import the project data
 import { projects } from './data/projects';
 
-// Utility function to navigate to a section that can be exported and used across the app
 export const navigateToSection = (id: string): void => {
   const element = document.getElementById(id);
   if (element) {
@@ -41,7 +38,7 @@ function MainLayout() {
   const hashToSectionMap: Record<string, string> = {
     'home': 'home',
     'about': 'about',
-    'nn': 'nn-playground',  // Example of handling possible mismatch
+    'nn': 'nn-playground', 
     'nn-playground': 'nn-playground',
     'projects': 'projects',
     'work': 'work',
@@ -53,10 +50,8 @@ function MainLayout() {
   useEffect(() => {
     setIsMounted(true);
 
-    // Scroll to section based on URL hash when component mounts or location changes
     let hash = location.hash.replace('#', '');
 
-    // Handle case where we might have double hashes (/#/#section)
     if (hash.startsWith('#')) {
       hash = hash.replace('#', '');
     }
@@ -82,7 +77,6 @@ function MainLayout() {
       const sections = document.querySelectorAll('section');
       const scrollPosition = currentScrollY + 100;
 
-      // Detect scroll direction
       if (currentScrollY > lastScrollY) {
         setScrollDirection('down');
       } else if (currentScrollY < lastScrollY) {
