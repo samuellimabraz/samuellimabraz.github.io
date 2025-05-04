@@ -4,6 +4,10 @@ import { Project, CodeExample, SectionProps } from '../lib/types';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Download } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
+import rehypeSlug from 'rehype-slug';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
 interface ProjectsCarouselProps extends SectionProps {
     projects: Project[];
@@ -18,13 +22,16 @@ interface CodeContent {
 const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDirection }) => {
     // Modal functionality
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-    const [modalType, setModalType] = useState<'demo' | 'repo' | null>(null);
+    const [modalType, setModalType] = useState<'demo' | 'repo' | 'article' | 'pdf' | null>(null);
     const [selectedCodeExample, setSelectedCodeExample] = useState<CodeExample | null>(null);
     const [codeContent, setCodeContent] = useState<CodeContent>({
         content: '',
         loading: false,
         error: null
     });
+    const [articleContent, setArticleContent] = useState<string>('');
+    const [articleLoading, setArticleLoading] = useState<boolean>(false);
+    const [articleError, setArticleError] = useState<string | null>(null);
 
     // Refs for the scrolling rows
     const topRowRef = useRef<HTMLDivElement>(null);
@@ -131,7 +138,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
     const bottomRowProjects = projects.slice(Math.ceil(projects.length / 2));
 
     // Open project modal
-    const openProjectModal = (project: Project, type: 'demo' | 'repo') => {
+    const openProjectModal = (project: Project, type: 'demo' | 'repo' | 'article' | 'pdf') => {
         setSelectedProject(project);
         setModalType(type);
         document.body.style.overflow = 'hidden';
@@ -146,6 +153,33 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
             setSelectedCodeExample(firstExample);
             fetchCodeContent(project.github!, firstExample.path);
         }
+
+        // If opening article for peft-methods project, fetch the markdown content
+        if (type === 'article' && project.id === 'peft-methods') {
+            fetchArticleContent();
+        }
+    };
+
+    // Fetch article content from local markdown file
+    const fetchArticleContent = async () => {
+        try {
+            setArticleLoading(true);
+            setArticleError(null);
+
+            const response = await fetch('/article/peft-methods.md');
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch article: ${response.status}`);
+            }
+
+            const content = await response.text();
+            setArticleContent(content);
+            setArticleLoading(false);
+        } catch (error) {
+            console.error('Error fetching article content:', error);
+            setArticleError('Failed to load article content. Please try again later.');
+            setArticleLoading(false);
+        }
     };
 
     // Close project modal
@@ -155,6 +189,8 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
         document.body.style.overflow = 'auto';
         setCodeContent({ content: '', loading: false, error: null });
         setSelectedCodeExample(null);
+        setArticleContent('');
+        setArticleError(null);
     };
 
     // Fetch code content from GitHub
@@ -232,7 +268,22 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
     const renderProjectCard = (project: Project) => (
         <div
             key={project.id}
-            className="flex-shrink-0 w-80 bg-dark-tertiary rounded-lg overflow-hidden border border-dark-border shadow-sm transition-all hover:shadow-md mx-3 my-3 flex flex-col"
+            className="flex-shrink-0 w-80 bg-dark-tertiary rounded-lg overflow-hidden border border-dark-border shadow-sm transition-all hover:shadow-md hover:border-dark-accent/50 hover:scale-[1.02] mx-3 my-3 flex flex-col cursor-pointer"
+            onClick={() => {
+                // For PEFT Methods project, open article view if available
+                if (project.id === "peft-methods" && project.article) {
+                    openProjectModal(project, 'article');
+                } else if (project.pdfUrl) {
+                    // For projects with PDF articles
+                    openProjectModal(project, 'pdf');
+                } else if (project.embedUrl) {
+                    // For other projects with embedUrl, open demo view
+                    openProjectModal(project, 'demo');
+                } else if (project.github && project.codeExamples) {
+                    // Otherwise, open repo view if available
+                    openProjectModal(project, 'repo');
+                }
+            }}
         >
             <div className="h-52 overflow-hidden bg-dark-secondary relative group">
                 <img
@@ -240,11 +291,16 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                     alt={project.title}
                     className="w-full h-full object-cover transition-transform group-hover:scale-105"
                 />
+                {project.languagePt && (
+                    <div className="absolute top-2 right-2 bg-dark-tertiary text-dark-text-secondary px-2 py-1 text-xs rounded-md border border-dark-border">
+                        🇧🇷 PT-BR
+                    </div>
+                )}
                 <div className="absolute inset-0 bg-dark-primary bg-opacity-80 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-3 transition-opacity">
                     {project.embedUrl && (
                         <button
                             onClick={(e) => {
-                                e.stopPropagation(); // Prevent the parent's onMouseEnter/onMouseLeave
+                                e.stopPropagation(); // Prevent the parent's onClick
                                 openProjectModal(project, 'demo');
                             }}
                             className="px-4 py-2 bg-dark-tertiary text-dark-text-primary rounded-md font-medium hover:bg-dark-secondary transition-colors flex items-center"
@@ -256,13 +312,25 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                     {project.github && project.codeExamples && (
                         <button
                             onClick={(e) => {
-                                e.stopPropagation(); // Prevent the parent's onMouseEnter/onMouseLeave
+                                e.stopPropagation(); // Prevent the parent's onClick
                                 openProjectModal(project, 'repo');
                             }}
                             className="px-4 py-2 bg-dark-tertiary text-dark-text-primary rounded-md font-medium hover:bg-dark-secondary transition-colors flex items-center"
                         >
                             <Code size={16} className="mr-2" />
                             View Code
+                        </button>
+                    )}
+                    {project.pdfUrl && (
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation(); // Prevent the parent's onClick
+                                openProjectModal(project, 'pdf');
+                            }}
+                            className="px-4 py-2 bg-dark-tertiary text-dark-text-primary rounded-md font-medium hover:bg-dark-secondary transition-colors flex items-center"
+                        >
+                            <FileCode size={16} className="mr-2" />
+                            View Article
                         </button>
                     )}
                 </div>
@@ -296,7 +364,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                             rel="noopener noreferrer"
                             className="px-2 py-1 border border-dark-border rounded text-xs flex items-center hover:bg-dark-secondary transition-colors text-dark-text-secondary"
                             onClick={(e) => {
-                                e.stopPropagation(); // Prevent the parent's onMouseEnter/onMouseLeave
+                                e.stopPropagation(); // Prevent the parent's onClick
                             }}
                         >
                             <Github size={14} className="mr-1" />
@@ -311,7 +379,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                             rel="noopener noreferrer"
                             className={`px-2 py-1 border border-dark-border rounded text-xs flex items-center hover:bg-dark-secondary transition-colors text-dark-text-secondary ${project.demo.includes('colab.research.google.com') ? 'bg-dark-secondary border-dark-accent/50' : ''}`}
                             onClick={(e) => {
-                                e.stopPropagation(); // Prevent the parent's onMouseEnter/onMouseLeave
+                                e.stopPropagation(); // Prevent the parent's onClick
                             }}
                         >
                             {project.demo.includes('colab.research.google.com') ? (
@@ -335,7 +403,11 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                             rel="noopener noreferrer"
                             className="px-2 py-1 border border-dark-border rounded text-xs flex items-center hover:bg-dark-secondary transition-colors text-dark-text-secondary"
                             onClick={(e) => {
-                                e.stopPropagation(); // Prevent the parent's onMouseEnter/onMouseLeave
+                                e.stopPropagation(); // Prevent the parent's onClick
+                                if (project.id === "peft-methods") {
+                                    e.preventDefault();
+                                    openProjectModal(project, 'article');
+                                }
                             }}
                         >
                             <FileCode size={14} className="mr-1" />
@@ -350,11 +422,43 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                             rel="noopener noreferrer"
                             className="px-2 py-1 border border-dark-border rounded text-xs flex items-center hover:bg-dark-secondary transition-colors text-dark-text-secondary"
                             onClick={(e) => {
-                                e.stopPropagation(); // Prevent the parent's onMouseEnter/onMouseLeave
+                                e.stopPropagation(); // Prevent the parent's onClick
                             }}
                         >
                             <FileCode size={14} className="mr-1" />
                             Article (PT)
+                        </a>
+                    )}
+
+                    {project.pdfUrl && (
+                        <a
+                            href={project.pdfUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-2 py-1 border border-dark-border rounded text-xs flex items-center hover:bg-dark-secondary transition-colors text-dark-text-secondary"
+                            onClick={(e) => {
+                                e.stopPropagation(); // Prevent the parent's onClick
+                                e.preventDefault();
+                                openProjectModal(project, 'pdf');
+                            }}
+                        >
+                            <FileCode size={14} className="mr-1" />
+                            PDF Article
+                        </a>
+                    )}
+
+                    {project.externalUrl && (
+                        <a
+                            href={project.externalUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-2 py-1 border border-dark-border rounded text-xs flex items-center hover:bg-dark-secondary transition-colors text-dark-text-secondary"
+                            onClick={(e) => {
+                                e.stopPropagation(); // Prevent the parent's onClick
+                            }}
+                        >
+                            <ExternalLink size={14} className="mr-1" />
+                            Site
                         </a>
                     )}
                 </div>
@@ -457,7 +561,10 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                             <div className="flex-1">
                                 <h3 className="text-xl font-bold text-dark-text-primary">{selectedProject.title}</h3>
                                 <p className="text-sm text-dark-text-secondary">
-                                    {modalType === 'demo' ? 'Live Demo' : 'Project Code & Details'}
+                                    {modalType === 'demo' ? 'Live Demo' :
+                                        modalType === 'article' ? 'Article' :
+                                            modalType === 'pdf' ? 'PDF Article' :
+                                                'Project Code & Details'}
                                 </p>
                             </div>
                             <button
@@ -477,6 +584,175 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     allowFullScreen
                                 />
+                            )}
+
+                            {modalType === 'pdf' && selectedProject.pdfUrl && (
+                                <div className="w-full h-full overflow-auto bg-dark-primary">
+                                    <div className="max-w-4xl mx-auto p-8">
+                                        <div className="flex justify-center gap-4 mb-8">
+                                            <a
+                                                href={selectedProject.pdfUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="px-4 py-2 bg-dark-tertiary text-dark-text-primary rounded-md font-medium hover:bg-dark-secondary transition-colors flex items-center"
+                                            >
+                                                <Download size={16} className="mr-2" />
+                                                Open in New Tab
+                                            </a>
+
+                                            {selectedProject.externalUrl && (
+                                                <a
+                                                    href={selectedProject.externalUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="px-4 py-2 bg-dark-tertiary text-dark-text-primary rounded-md font-medium hover:bg-dark-secondary transition-colors flex items-center"
+                                                >
+                                                    <ExternalLink size={16} className="mr-2" />
+                                                    View on AINews
+                                                </a>
+                                            )}
+                                        </div>
+
+                                        <div className="bg-dark-secondary p-4 rounded-lg border border-dark-border shadow-md">
+                                            <iframe
+                                                src={selectedProject.pdfUrl}
+                                                className="w-full h-[70vh]"
+                                                title={`${selectedProject.title} PDF`}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {modalType === 'article' && selectedProject.id === 'peft-methods' && (
+                                <div className="w-full h-full overflow-auto bg-dark-primary">
+                                    <div className="max-w-4xl mx-auto p-8">
+                                        <div className="flex justify-center gap-4 mb-8">
+                                            <a
+                                                href={selectedProject.article}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="px-4 py-2 bg-dark-tertiary text-dark-text-primary rounded-md font-medium hover:bg-dark-secondary transition-colors flex items-center"
+                                            >
+                                                <ExternalLink size={16} className="mr-2" />
+                                                View on Hugging Face
+                                            </a>
+
+                                            {selectedProject.demo && (
+                                                <a
+                                                    href={selectedProject.demo}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="px-4 py-2 bg-dark-tertiary text-dark-text-primary rounded-md font-medium hover:bg-dark-secondary transition-colors flex items-center"
+                                                >
+                                                    <img src="https://colab.research.google.com/img/colab_favicon_256px.png" alt="Colab" className="w-5 h-5 mr-2" />
+                                                    Open in Colab
+                                                </a>
+                                            )}
+                                        </div>
+
+                                        {articleLoading && (
+                                            <div className="flex items-center justify-center p-12">
+                                                <Loader2 size={40} className="animate-spin text-dark-text-secondary" />
+                                            </div>
+                                        )}
+
+                                        {articleError && (
+                                            <div className="p-8 flex flex-col items-center justify-center">
+                                                <AlertTriangle size={40} className="text-amber-500 mb-4" />
+                                                <p className="text-red-400 text-center">{articleError}</p>
+                                            </div>
+                                        )}
+
+                                        {!articleLoading && !articleError && articleContent && (
+                                            <article className="prose prose-invert prose-sm sm:prose-base lg:prose-lg max-w-none bg-dark-secondary p-8 rounded-lg shadow-md border border-dark-border">
+                                                <div className="prose-headings:text-dark-text-primary prose-headings:border-b prose-headings:border-dark-border/30 prose-headings:pb-2 prose-h1:text-3xl prose-h1:font-bold prose-h1:border-none prose-h2:text-2xl prose-h2:font-semibold prose-h3:text-xl prose-h3:font-medium prose-p:text-dark-text-secondary prose-a:text-dark-accent prose-a:no-underline hover:prose-a:text-dark-accent/70 hover:prose-a:underline prose-code:text-dark-accent prose-code:bg-dark-primary/50 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none prose-pre:bg-dark-primary prose-pre:border prose-pre:border-dark-border prose-pre:rounded-lg prose-img:rounded-lg prose-img:mx-auto prose-img:max-h-[500px] prose-img:object-contain prose-table:border-collapse prose-th:bg-dark-primary prose-th:border prose-th:border-dark-border prose-th:p-2 prose-td:border prose-td:border-dark-border prose-td:p-2 prose-blockquote:border-l-4 prose-blockquote:border-dark-accent/50 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-dark-text-secondary/70">
+                                                    <ReactMarkdown
+                                                        components={{
+                                                            code({ className, children, ...props }: any) {
+                                                                const match = /language-(\w+)/.exec(className || '');
+                                                                return match ? (
+                                                                    <SyntaxHighlighter
+                                                                        style={tomorrow as any}
+                                                                        language={match[1]}
+                                                                        {...props}
+                                                                    >
+                                                                        {String(children).replace(/\n$/, '')}
+                                                                    </SyntaxHighlighter>
+                                                                ) : (
+                                                                    <code className={className} {...props}>
+                                                                        {children}
+                                                                    </code>
+                                                                );
+                                                            },
+                                                            img({ src, alt, ...props }: any) {
+                                                                // Ensure images are properly displayed
+                                                                return (
+                                                                    <img
+                                                                        src={src}
+                                                                        alt={alt || ''}
+                                                                        className="max-w-full rounded-lg my-6"
+                                                                        {...props}
+                                                                    />
+                                                                );
+                                                            },
+                                                            a({ node, children, href, ...props }: any) {
+                                                                // Handle links
+                                                                return (
+                                                                    <a
+                                                                        href={href}
+                                                                        target={href?.startsWith('http') ? '_blank' : undefined}
+                                                                        rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                                                                        {...props}
+                                                                    >
+                                                                        {children}
+                                                                    </a>
+                                                                );
+                                                            },
+                                                            table({ children }: any) {
+                                                                return (
+                                                                    <div className="overflow-x-auto my-6">
+                                                                        <table>{children}</table>
+                                                                    </div>
+                                                                );
+                                                            }
+                                                        }}
+                                                        rehypePlugins={[
+                                                            rehypeRaw, // Allow HTML in markdown
+                                                            rehypeSlug, // Add ids to headings
+                                                            [rehypeAutolinkHeadings, { behavior: 'wrap' }] // Make headings clickable
+                                                        ]}
+                                                    >
+                                                        {articleContent}
+                                                    </ReactMarkdown>
+                                                </div>
+                                            </article>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
+                            {modalType === 'article' && selectedProject.id !== 'peft-methods' && selectedProject.article && (
+                                <div className="w-full h-full p-4 overflow-auto bg-dark-primary">
+                                    <div className="max-w-4xl mx-auto">
+                                        <div className="flex justify-center mb-8">
+                                            <a
+                                                href={selectedProject.article}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="px-4 py-2 bg-dark-tertiary text-dark-text-primary rounded-md font-medium hover:bg-dark-secondary transition-colors flex items-center"
+                                            >
+                                                <ExternalLink size={16} className="mr-2" />
+                                                Open Article in New Tab
+                                            </a>
+                                        </div>
+                                        <iframe
+                                            src={selectedProject.article}
+                                            className="w-full min-h-[70vh] border border-dark-border rounded-lg"
+                                            title={`${selectedProject.title} Article`}
+                                        />
+                                    </div>
+                                </div>
                             )}
 
                             {modalType === 'repo' && (
@@ -670,6 +946,12 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="px-4 py-2 border border-dark-border rounded-md hover:bg-dark-tertiary/50 transition-colors flex items-center text-dark-text-secondary"
+                                                    onClick={(e) => {
+                                                        if (selectedProject.id === "peft-methods") {
+                                                            e.preventDefault();
+                                                            openProjectModal(selectedProject, 'article');
+                                                        }
+                                                    }}
                                                 >
                                                     <FileCode size={18} className="mr-2" />
                                                     Article

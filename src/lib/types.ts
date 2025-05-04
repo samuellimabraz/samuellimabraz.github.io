@@ -15,6 +15,9 @@ export interface Project {
     embedUrl?: string;
     featured: boolean;
     codeExamples?: CodeExample[];
+    pdfUrl?: string;
+    externalUrl?: string;
+    languagePt?: boolean;
 }
 
 export interface CodeExample {
