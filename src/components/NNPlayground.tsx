@@ -6,7 +6,6 @@ import {
     TrainingConfig,
 } from '../lib/nn';
 
-// Type definitions
 type ActivationFunction = 'sigmoid' | 'relu' | 'tanh' | 'linear';
 type DataFunction = 'saddle' | 'rosenbrock' | 'sine' | 'circle';
 type WeightInitializer = 'random' | 'he' | 'xavier' | 'xavier_uniform' | 'zero';
@@ -28,15 +27,12 @@ interface LayerConfig {
 }
 
 const NNPlayground: React.FC = () => {
-    // Refs for visualization elements
     const plot3dRef = useRef<HTMLDivElement>(null);
     const lossPlotRef = useRef<HTMLDivElement>(null);
     const contourPlotRef = useRef<HTMLDivElement>(null);
 
-    // Controller ref
     const controllerRef = useRef<NNPlaygroundController | null>(null);
 
-    // CSS para animação de pulso
     const pulseStyle = `
         @keyframes pulse {
             0% { opacity: 1; }
@@ -48,13 +44,12 @@ const NNPlayground: React.FC = () => {
         }
     `;
 
-    // Layer configuration (separate from NetworkConfig for easier UI management)
+    // Layer configuration (separate from NetworkConfig)
     const [layers, setLayers] = useState<LayerConfig[]>([
         { neurons: 89, activation: 'relu', initializer: 'he' },
         { neurons: 16, activation: 'tanh', initializer: 'xavier' }
     ]);
 
-    // State variables for configurations
     const [networkConfig, setNetworkConfig] = useState<NetworkConfig>({
         inputDim: 2,
         hiddenDims: [10, 5],
@@ -97,10 +92,8 @@ const NNPlayground: React.FC = () => {
         initializer: 'he'
     });
 
-    // Check if Plotly is available
     const [plotlyAvailable, setPlotlyAvailable] = useState(false);
 
-    // Initialize when component mounts
     useEffect(() => {
         // Check if Plotly is available
         if (typeof window !== 'undefined' && (window as any).Plotly) {
@@ -121,7 +114,6 @@ const NNPlayground: React.FC = () => {
 
     // Effect to sync layers with networkConfig
     useEffect(() => {
-        // Extract the hidden dimensions and activations from layers
         const hiddenDims = layers.map(layer => layer.neurons);
         const hiddenActivations = layers.map(layer => layer.activation);
         const layerInitializers = [...layers.map(layer => layer.initializer), outputLayerConfig.initializer];
@@ -135,25 +127,20 @@ const NNPlayground: React.FC = () => {
         }));
     }, [layers, outputLayerConfig]);
 
-    // Initialize neural network playground when Plotly is available
     useEffect(() => {
         if (plotlyAvailable && plot3dRef.current && lossPlotRef.current && contourPlotRef.current) {
-            // Create controller
             controllerRef.current = new NNPlaygroundController();
 
-            // Set visual elements
             controllerRef.current.setVisualElements({
                 plot3dDiv: plot3dRef.current,
                 lossPlotDiv: lossPlotRef.current,
                 contourPlotDiv: contourPlotRef.current
             });
 
-            // Update configurations
             controllerRef.current.updateNetworkConfig(networkConfig);
             controllerRef.current.updateTrainingConfig(trainingConfig);
             controllerRef.current.updateDataConfig(dataConfig);
 
-            // Initialize the playground
             controllerRef.current.initialize();
         }
     }, [plotlyAvailable]);
@@ -162,7 +149,6 @@ const NNPlayground: React.FC = () => {
     useEffect(() => {
         const handleResize = () => {
             if (plotlyAvailable && typeof window !== 'undefined' && (window as any).Plotly) {
-                // Request animation frame to ensure DOM has updated
                 window.requestAnimationFrame(() => {
                     if (plot3dRef.current) {
                         (window as any).Plotly.Plots.resize(plot3dRef.current);
@@ -179,7 +165,6 @@ const NNPlayground: React.FC = () => {
 
         window.addEventListener('resize', handleResize);
 
-        // Initial resize after a short delay to ensure plots are initialized
         const timeoutId = setTimeout(handleResize, 500);
 
         return () => {
@@ -204,7 +189,6 @@ const NNPlayground: React.FC = () => {
     useEffect(() => {
         if (controllerRef.current) {
             controllerRef.current.updateDataConfig(dataConfig);
-            // Reinitialize immediately when data function changes
             controllerRef.current.reset();
         }
     }, [dataConfig]);
@@ -215,36 +199,33 @@ const NNPlayground: React.FC = () => {
             const syncInterval = setInterval(() => {
                 if (controllerRef.current) {
                     const state = controllerRef.current.getState();
-                    // Only update if there's a mismatch to avoid unnecessary renders
                     if (state.isTraining !== isTraining) {
                         setIsTraining(state.isTraining);
                     }
                 }
-            }, 500); // Check every 500ms
+            }, 500);
 
             return () => clearInterval(syncInterval);
         }
     }, [isTraining]);
 
-    // Function to start training
     const startTraining = () => {
         if (controllerRef.current) {
             setIsTraining(true);
             setCurrentEpoch(0);
             setProgress(0);
 
-            // Start training
             controllerRef.current.startTraining((epoch, loss, progress) => {
                 setCurrentEpoch(epoch);
                 setProgress(progress);
             }).then(() => {
-                // Training complete
                 if (controllerRef.current) {
                     const state = controllerRef.current.getState();
                     setIsTraining(state.isTraining);
+                    setCurrentEpoch(trainingConfig.numEpochs);
                 } else {
-                    // Fallback if controller is somehow unavailable
                     setIsTraining(false);
+                    setCurrentEpoch(trainingConfig.numEpochs);
                 }
             }).catch(error => {
                 console.error('Training error:', error);
@@ -253,7 +234,6 @@ const NNPlayground: React.FC = () => {
         }
     };
 
-    // Function to reset the playground
     const resetPlayground = () => {
         if (controllerRef.current) {
             // Force cancel any ongoing training
@@ -264,13 +244,14 @@ const NNPlayground: React.FC = () => {
             // Reset playground - this recreates the network and data
             controllerRef.current.reset();
 
-            // After reset, immediately sync state with controller again to ensure UI is updated
+            // After reset, immediately ensure UI state is reset
+            // Set epoch to 0 explicitly and don't sync this value from controller
+            setCurrentEpoch(0);
+
+            // For other state values, sync with controller if needed
             const state = controllerRef.current.getState();
             if (state.isTraining !== isTraining) {
                 setIsTraining(state.isTraining);
-            }
-            if (state.currentEpoch !== currentEpoch) {
-                setCurrentEpoch(state.currentEpoch);
             }
             if (state.progress !== progress) {
                 setProgress(state.progress);
@@ -278,7 +259,6 @@ const NNPlayground: React.FC = () => {
         }
     };
 
-    // Function to update network configuration
     const updateNetworkConfig = (key: keyof NetworkConfig, value: any) => {
         setNetworkConfig(prev => ({
             ...prev,
@@ -286,7 +266,6 @@ const NNPlayground: React.FC = () => {
         }));
     };
 
-    // Function to update training configuration
     const updateTrainingConfig = (key: keyof TrainingConfig, value: any) => {
         setTrainingConfig(prev => ({
             ...prev,
@@ -294,7 +273,6 @@ const NNPlayground: React.FC = () => {
         }));
     };
 
-    // Function to update data configuration
     const updateDataConfig = (key: keyof DataConfig, value: any) => {
         setDataConfig(prev => ({
             ...prev,
@@ -302,7 +280,6 @@ const NNPlayground: React.FC = () => {
         }));
     };
 
-    // Function to handle layer specific updates
     const handleLayerUpdate = (index: number, key: keyof LayerConfig, value: any) => {
         const newLayers = [...layers];
         newLayers[index] = { ...newLayers[index], [key]: value };
@@ -314,23 +291,19 @@ const NNPlayground: React.FC = () => {
         }
     };
 
-    // Function to update output layer config
     const handleOutputLayerUpdate = (key: keyof typeof outputLayerConfig, value: any) => {
         setOutputLayerConfig(prev => ({
             ...prev,
             [key]: value
         }));
 
-        // If updating initializer, update the controller directly
         if (key === 'initializer' && controllerRef.current) {
-            const outputLayerIndex = layers.length; // Output layer is after all hidden layers
+            const outputLayerIndex = layers.length;
             controllerRef.current.setLayerInitializer(outputLayerIndex, value as string);
         }
     };
 
-    // Function to add a new hidden layer
     const addHiddenLayer = () => {
-        // Default new layer configuration
         const newLayer: LayerConfig = {
             neurons: 5,
             activation: 'tanh',
@@ -339,7 +312,6 @@ const NNPlayground: React.FC = () => {
         setLayers([...layers, newLayer]);
     };
 
-    // Function to remove a hidden layer
     const removeHiddenLayer = (index: number) => {
         if (layers.length > 1) {
             const newLayers = [...layers];
@@ -348,7 +320,6 @@ const NNPlayground: React.FC = () => {
         }
     };
 
-    // Function to change optimizer
     const handleOptimizerChange = (value: OptimizerType) => {
         updateNetworkConfig('optimizer', value);
 
