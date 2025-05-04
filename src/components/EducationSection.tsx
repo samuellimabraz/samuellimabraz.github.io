@@ -18,7 +18,7 @@ const EducationSection: React.FC<SectionProps> = ({ scrollDirection }) => {
       description: "Pursuing Computer Engineering with focus on Artificial Intelligence, Machine Learning, and Computer Vision applications."
     },
     {
-      degree: "Industrial Automation",
+      degree: "Industrial Automation - Integrated Technical High School",
       institution: "Instituto Federal de Educação, Ciência e Tecnologia de Minas Gerais - IFMG",
       period: "Jan 2019 — Mar 2022",
       description: "Focused on industrial automation systems, robotics, and embedded systems programming."
