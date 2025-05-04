@@ -37,7 +37,7 @@ const WorkSection: React.FC<SectionProps> = ({ scrollDirection }) => {
         "Fine-tuned Vision-Language Models (VLMs) for structured data extraction from Brazilian documents using PEFT techniques.",
         "Built AI inference gateways and model-monitoring pipelines with LiteLLM and LangFuse."
       ],
-      skills: ["Computer Vision", "Model Deployment", "PEFT", "Azure", "ONNX"],
+      skills: ["Computer Vision", "Gen AI", "MLOps", "PEFT", "Vertx AI"],
       relatedProjects: [
         {
           id: "signature-detection",
@@ -56,7 +56,7 @@ const WorkSection: React.FC<SectionProps> = ({ scrollDirection }) => {
         "Achieved performance comparable to full fine-tuning by training less than 1% of model parameters on tasks like dialogue summarization.",
         "Authored technical blog posts on PEFT methodologies and practical applications, published on Hugging Face Community Blog and AI News Brazil."
       ],
-      skills: ["PEFT", "LoRA", "QLoRA", "LLMs", "Technical Writing"],
+      skills: ["Efficient Fine-Tuning", "LLMs", "Technical Writing"],
       relatedProjects: [
         {
           id: "peft-methods",
