@@ -4,7 +4,6 @@ import {
     NNPlaygroundController,
     NetworkConfig,
     TrainingConfig,
-    VisualizationElements
 } from '../lib/nn';
 
 // Type definitions
@@ -568,7 +567,7 @@ const NNPlayground: React.FC = () => {
                             <input
                                 type="range"
                                 min="0.0001"
-                                max="0.1"
+                                max="0.2"
                                 step="0.0001"
                                 className="w-full accent-dark-accent"
                                 value={trainingConfig.learningRate}
@@ -582,9 +581,9 @@ const NNPlayground: React.FC = () => {
                             </label>
                             <input
                                 type="range"
-                                min="100"
+                                min="50"
                                 max="1000"
-                                step="100"
+                                step="50"
                                 className="w-full accent-dark-accent"
                                 value={trainingConfig.numEpochs}
                                 onChange={(e) => updateTrainingConfig('numEpochs', parseInt(e.target.value))}

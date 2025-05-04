@@ -52,6 +52,19 @@ const ExtraCurricularSection: React.FC<SectionProps> = ({ scrollDirection }) => 
             ]
         },
         {
+            title: "Teaching Instructor & Project Member",
+            organization: "Fundação Asimo - UNIFEI Extension Project",
+            period: "Apr 2023 — Jul 2024",
+            description: [
+                "Contributed to an educational equity project aimed at reducing disparities between public and private education by bringing STEAM learning to local public schools.",
+                "Served as an instructor for elementary and high school classes, teaching computer literacy, programming fundamentals, and embedded systems using Arduino and C++.",
+                "Developed hands-on projects with ESP32, Lego Mindstorms, and Arduino to promote practical learning experiences in technology and engineering.",
+                "Created a 4-servo robotic arm controlled through computer vision that tracked hand movements, implementing advanced CV techniques for gesture recognition.",
+                "Mentored students preparing for the Brazilian Robotics Olympiad (OBR), providing guidance on both theoretical knowledge and practical implementation."
+            ],
+            skills: ["STEAM Education", "Arduino", "Computer Vision", "ESP32", "Embedded Systems", "Robotics"]
+        },
+        {
             title: "Competitive Programming Student",
             organization: "UNIFEI",
             period: "Mar 2023 — Jan 2024",
@@ -98,51 +111,50 @@ const ExtraCurricularSection: React.FC<SectionProps> = ({ scrollDirection }) => 
     return (
         <section id="extracurricular" className="py-20 bg-dark-primary">
             <div className="container mx-auto px-4 md:px-6">
-                <motion.h2
-                    className="text-3xl font-bold mb-12 text-center text-dark-text-primary"
+                <motion.div
+                    className="flex items-center justify-center mb-12"
                     initial={{ opacity: 0, y: -20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                     viewport={{ once: true, margin: "-100px" }}
                 >
-                    Extracurricular Activities
-                </motion.h2>
+                    <h2 className="text-3xl font-bold text-dark-text-primary">Extracurricular Activities</h2>
+                </motion.div>
 
-                <div className="max-w-3xl mx-auto">
+                <div className="max-w-4xl mx-auto">
                     <motion.div
-                        className="relative border-l border-dark-border pl-8 ml-4"
                         variants={containerVariants}
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true, margin: "-100px" }}
+                        className="space-y-8"
                     >
                         {activities.map((activity, index) => (
                             <motion.div
                                 key={index}
-                                className="mb-12 relative"
                                 variants={cardVariants}
+                                className="group"
                             >
-                                <div className="absolute -left-12 mt-1.5 h-6 w-6 rounded-full border-4 border-dark-primary bg-dark-accent"></div>
-
                                 <motion.div
-                                    className="bg-dark-tertiary p-6 rounded-lg shadow-sm border border-dark-border hover:shadow-md hover:shadow-black/10 transition-shadow"
+                                    className="bg-dark-tertiary p-6 rounded-lg shadow-md border border-dark-border hover:shadow-lg hover:shadow-black/10 transition-all duration-300"
                                     whileHover={{ scale: 1.01 }}
                                     transition={{ duration: 0.2 }}
                                 >
-                                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4">
-                                        <h3 className="text-xl font-bold text-dark-text-primary">{activity.title}</h3>
-                                        <span className="text-sm text-dark-text-secondary mt-1 sm:mt-0 font-mono">
-                                            {activity.period}
-                                        </span>
+                                    {/* Date badge */}
+                                    <div className="inline-block px-3 py-1 mb-4 bg-dark-secondary rounded-full text-xs font-mono text-dark-text-secondary">
+                                        {activity.period}
                                     </div>
 
-                                    <p className="text-dark-text-secondary font-medium mb-3">{activity.organization}</p>
+                                    <div className="flex flex-col mb-4">
+                                        <h3 className="text-xl font-bold text-dark-text-primary">{activity.title}</h3>
+                                        <p className="text-dark-text-secondary font-medium mt-1">{activity.organization}</p>
+                                    </div>
 
-                                    <div className="mb-4 space-y-2 text-dark-text-secondary">
+                                    <div className="mb-4 text-dark-text-secondary">
                                         {expandedIndex === index ? (
                                             <AnimatePresence>
                                                 <motion.ul
-                                                    className="space-y-2"
+                                                    className="space-y-3 list-disc pl-5"
                                                     initial={{ opacity: 0, height: 0 }}
                                                     animate={{ opacity: 1, height: 'auto' }}
                                                     exit={{ opacity: 0, height: 0 }}
@@ -151,29 +163,26 @@ const ExtraCurricularSection: React.FC<SectionProps> = ({ scrollDirection }) => 
                                                     {activity.description.map((item, idx) => (
                                                         <motion.li
                                                             key={idx}
-                                                            className="flex"
                                                             initial={{ opacity: 0, y: 10 }}
                                                             animate={{ opacity: 1, y: 0 }}
                                                             transition={{ delay: idx * 0.1 }}
                                                         >
-                                                            <span className="mr-2">•</span>
-                                                            <span>{item}</span>
+                                                            {item}
                                                         </motion.li>
                                                     ))}
                                                 </motion.ul>
                                             </AnimatePresence>
                                         ) : (
-                                            <div className="flex">
-                                                <span className="mr-2">•</span>
-                                                <span>{activity.description[0]}...</span>
-                                            </div>
+                                            <p className="line-clamp-2">{activity.description[0]}...</p>
                                         )}
                                     </div>
 
                                     <div className="flex justify-between items-center mb-4">
                                         <button
                                             onClick={() => toggleExpand(index)}
-                                            className="text-sm text-dark-accent hover:text-dark-text-accent flex items-center"
+                                            className="text-sm text-dark-accent hover:text-dark-accent/80 flex items-center transition-colors"
+                                            aria-expanded={expandedIndex === index}
+                                            aria-label={expandedIndex === index ? "Show less" : "Show more"}
                                         >
                                             {expandedIndex === index ? (
                                                 <>
@@ -194,7 +203,7 @@ const ExtraCurricularSection: React.FC<SectionProps> = ({ scrollDirection }) => 
                                             {activity.skills.map(skill => (
                                                 <span
                                                     key={skill}
-                                                    className="px-2 py-1 bg-dark-secondary text-dark-text-secondary text-xs rounded hover:bg-dark-primary hover:text-dark-text-primary transition-colors"
+                                                    className="px-2 py-1 bg-dark-primary text-dark-text-secondary text-xs rounded-md hover:bg-dark-secondary hover:text-dark-text-primary transition-colors duration-200"
                                                 >
                                                     {skill}
                                                 </span>
@@ -210,7 +219,7 @@ const ExtraCurricularSection: React.FC<SectionProps> = ({ scrollDirection }) => 
                                                     <a
                                                         key={idx}
                                                         href={project.url}
-                                                        className="group flex items-center px-3 py-1 bg-dark-primary text-dark-accent text-sm rounded-full hover:bg-dark-accent/10 transition-colors"
+                                                        className="group flex items-center px-3 py-1 bg-dark-secondary text-dark-accent text-sm rounded-full hover:bg-dark-accent/10 transition-colors duration-200"
                                                     >
                                                         <span>{project.name}</span>
                                                         <ExternalLink size={14} className="ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
