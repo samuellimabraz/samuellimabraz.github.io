@@ -2,112 +2,9 @@ import { Project, CodeExample } from '../lib/types';
 
 export const projects: Project[] = [
     {
-        id: "pid-controller",
-        title: "PID Controller for ROS2",
-        description: "Generic, configurable PID controller implemented as a ROS2 node in C++. Designed for versatile control applications including line following, altitude control, position control, velocity control, and heading/yaw control.",
-        tags: ["ROS2", "C++", "Control Systems", "Robotics", "Real-time"],
-        github: "https://github.com/Black-Bee-Drones/pid-controller",
-        image: "https://i.postimg.cc/0y23yL92/Screenshot-from-2025-05-01-00-02-58.png",
-        featured: true,
-        codeExamples: [
-            {
-                path: "include/pid_controller/pid.hpp",
-                description: "PID Controller Class Header",
-                language: "cpp"
-            },
-            {
-                path: "src/pid.cpp",
-                description: "PID Controller Implementation",
-                language: "cpp"
-            },
-            {
-                path: "src/pid_controller_node.cpp",
-                description: "ROS2 Node Implementation",
-                language: "cpp"
-            },
-            {
-                path: "launch/pid_controller.launch.py",
-                description: "Launch File for PID Controller",
-                language: "python"
-            },
-            {
-                path: "src/pid_test_environment.cpp",
-                description: "First Order System Test Environment",
-                language: "python"
-            },
-        ]
-    },
-    {
-        id: "vision-to-mavros",
-        title: "Vision to MAVROS for ROS2",
-        description: "ROS2 adaptation of the vision_to_mavros package that bridges visual pose estimation systems with flight controllers. Enables integration between Intel RealSense T265 tracking cameras and ArduPilot/PX4 via MAVROS with support for various mounting orientations.",
-        tags: ["ROS2", "Robotics", "Drone", "Computer Vision", "ArduPilot", "RealSense"],
-        github: "https://github.com/Black-Bee-Drones/vision_to_mavros",
-        image: "https://i.postimg.cc/c1zMn27L/realsense-photo.jpg",
-        featured: true,
-        codeExamples: [
-            {
-                path: "src/vision_to_mavros.cpp",
-                description: "Main Node Implementation",
-                language: "cpp"
-            },
-            {
-                path: "launch/t265_all_nodes_launch.py",
-                description: "Launch File for Full System",
-                language: "python"
-            },
-            {
-                path: "launch/t265_tf_to_mavros_launch.py",
-                description: "T265 Integration Launch File",
-                language: "python"
-            }
-        ]
-    },
-    {
-        id: "sorting-algorithms",
-        title: "Sorting Algorithms",
-        description: "Comprehensive implementation and performance analysis of various sorting algorithms in C++ with Python visualization. Includes a Tkinter GUI to visualize execution times and a custom SGD linear regression model for curve approximation.",
-        tags: ["C++", "Python", "Algorithms", "Tkinter", "Data Visualization"],
-        github: "https://github.com/samuellimabraz/SortingAlgorithms",
-        image: "https://github.com/samuellimabraz/SortingAlgorithms/raw/main/resource/screenshot.png",
-        featured: true,
-        codeExamples: [
-            {
-                path: "include/BubbleSort.h",
-                description: "Bubble Sort Implementation",
-                language: "cpp"
-            },
-            {
-                path: "include/QuickSort.h",
-                description: "Quick Sort Implementation",
-                language: "cpp"
-            },
-            {
-                path: "include/SortAlgorithm.h",
-                description: "A class for interface sorting algorithms",
-                language: "cpp"
-            },
-            {
-                path: "src/gui.py",
-                description: "Tkinter GUI Implementation",
-                language: "python"
-            },
-            {
-                path: "src/model.py",
-                description: "SGD Linear Regression Model",
-                language: "python"
-            },
-            {
-                path: "src/main.cpp",
-                description: "Main Algorithm Benchmarking Code",
-                language: "cpp"
-            }
-        ]
-    },
-    {
         id: "signature-detection",
         title: "Signature Detection Model",
-        description: "Open-source signature detection model using hybrid datasets and advanced augmentations. Deployed on Azure Container Apps via NVIDIA Triton Inference Server with ONNX/OpenVINO backend.",
+        description: "Developed an open-source signature detection system by building a hybrid dataset with refined public samples and strong augmentations (Albumentations, OpenCV). Benchmarked multiple object detection architectures (YOLOv8–v12, DETR, YOLOS) and fine-tuned YOLOv8s for the best performance-speed trade-off. Used Optuna for hyperparameter optimization, improving F1-score by 7.94%. Deployed on Azure via NVIDIA Triton Inference Server with ONNX/OpenVINO backends, achieving sub-200 ms latency on CPU. Implemented CI/CD with GitHub Actions and tracked experiments using Weights & Biases. Dataset, code, and demo are fully open-source and featured on the Hugging Face blog (>100 upvotes).",
         tags: ["Computer Vision", "PyTorch", "ONNX", "Azure", "OpenVINO"],
         github: "https://github.com/tech4ai/t4ai-signature-detect-server",
         demo: "https://huggingface.co/collections/tech4humans/signature-detection-678b087d8b0ce22ae8c3f60e",
@@ -177,26 +74,9 @@ export const projects: Project[] = [
         ]
     },
     {
-        id: "cv-hangout",
-        title: "Hugging Face - Computer Vision Hangout",
-        description: "Invited presenter at Hugging Face's open 'Computer Vision Hangout', sharing key CV projects and insights. Live demo and code walkthrough published on Hugging Face Spaces.",
-        tags: ["Computer Vision", "Hugging Face", "Open Source", "Community"],
-        demo: "https://huggingface.co/spaces/samuellimabraz/cv-hangout",
-        embedUrl: "https://samuellimabraz-cv-hangout.hf.space",
-        image: "https://media.licdn.com/dms/image/v2/D4E22AQGHKgZwTrxd4w/feedshare-shrink_2048_1536/B4EZY0Fb6oHgAo-/0/1744630563125?e=1749081600&v=beta&t=IzFK5yirtJK7A12pbcBHk4QQTPY8YJjs1RHjWlP7th4",
-        featured: true,
-        codeExamples: [
-            {
-                path: "app.py",
-                description: "Main Gradio application for the CV Hangout demo",
-                language: "python"
-            }
-        ]
-    },
-    {
         id: "cafedl",
         title: "CafeDL: Deep Learning Framework",
-        description: "Java-based deep learning framework implemented from scratch, supporting various neural network architectures and training algorithms.",
+        description: "A Java‑based deep learning library built from scratch (inspired by Keras and “Deep Learning From Scratch”), featuring core layers (Conv2D, Dense, Dropout, etc.), activation/loss/optimizer modules, ND4J‑powered tensor operations, MongoDB persistence via Morphia, and a QuickDraw‑style sketch‑classification game using JavaFX and MVC.",
         tags: ["Java", "Deep Learning", "Framework", "Educational"],
         github: "https://github.com/samuellimabraz/cafedl",
         image: "https://i.postimg.cc/QM7rGZ6H/image-2.png",
@@ -230,6 +110,170 @@ export const projects: Project[] = [
         ]
     },
     {
+        id: "vision-to-mavros",
+        title: "Vision to MAVROS for ROS2",
+        description: "ROS2 adaptation of the vision_to_mavros package that bridges visual pose estimation systems with flight controllers. Enables integration between Intel RealSense T265 tracking cameras and ArduPilot/PX4 via MAVROS with support for various mounting orientations.",
+        tags: ["ROS2", "Robotics", "Drone", "Computer Vision", "ArduPilot", "RealSense"],
+        github: "https://github.com/Black-Bee-Drones/vision_to_mavros",
+        image: "https://i.postimg.cc/c1zMn27L/realsense-photo.jpg",
+        featured: true,
+        codeExamples: [
+            {
+                path: "src/vision_to_mavros.cpp",
+                description: "Main Node Implementation",
+                language: "cpp"
+            },
+            {
+                path: "launch/t265_all_nodes_launch.py",
+                description: "Launch File for Full System",
+                language: "python"
+            },
+            {
+                path: "launch/t265_tf_to_mavros_launch.py",
+                description: "T265 Integration Launch File",
+                language: "python"
+            }
+        ]
+    },
+    {
+        id: "opencv-gui",
+        title: "OpenCV Explorer",
+        description: "Interactive web application that allows real-time experimentation with computer vision techniques using your webcam. Built with OpenCV, Streamlit, and WebRTC.",
+        tags: ["Computer Vision", "OpenCV", "Streamlit", "WebRTC", "Python"],
+        github: "https://github.com/samuellimabraz/OpenCVGUI",
+        demo: "https://huggingface.co/spaces/samuellimabraz/opencv-gui",
+        embedUrl: "https://samuellimabraz-opencv-gui.hf.space",
+        image: "https://i.postimg.cc/050J03qs/opencv-gui-2.png",
+        featured: true,
+        codeExamples: [
+            {
+                path: "src/streamlit_app.py",
+                description: "Main Streamlit application with WebRTC video processing",
+                language: "python"
+            },
+            {
+                path: "src/opencv_utils.py",
+                description: "Implementation of various OpenCV filters and transformations",
+                language: "python"
+            },
+            {
+                path: "src/hand_tracker.py",
+                description: "Hand Tracker Class",
+                language: "python"
+            },
+            {
+                path: "src/face_mesh_tracker.py",
+                description: "Face Mesh Tracker Class",
+                language: "python"
+            }
+        ]
+    },
+    {
+        id: "sorting-algorithms",
+        title: "Sorting Algorithms",
+        description: "Comprehensive implementation and performance analysis of various sorting algorithms in C++ with Python visualization. Includes a Tkinter GUI to visualize execution times and a custom SGD linear regression model for curve approximation.",
+        tags: ["C++", "Python", "Algorithms", "Tkinter", "Data Visualization"],
+        github: "https://github.com/samuellimabraz/SortingAlgorithms",
+        image: "https://github.com/samuellimabraz/SortingAlgorithms/raw/main/resource/screenshot.png",
+        featured: true,
+        codeExamples: [
+            {
+                path: "include/BubbleSort.h",
+                description: "Bubble Sort Implementation",
+                language: "cpp"
+            },
+            {
+                path: "include/QuickSort.h",
+                description: "Quick Sort Implementation",
+                language: "cpp"
+            },
+            {
+                path: "include/SortAlgorithm.h",
+                description: "A class for interface sorting algorithms",
+                language: "cpp"
+            },
+            {
+                path: "src/gui.py",
+                description: "Tkinter GUI Implementation",
+                language: "python"
+            },
+            {
+                path: "src/model.py",
+                description: "SGD Linear Regression Model",
+                language: "python"
+            },
+            {
+                path: "src/main.cpp",
+                description: "Main Algorithm Benchmarking Code",
+                language: "cpp"
+            }
+        ]
+    },
+    {
+        id: "pid-controller",
+        title: "PID Controller for ROS2",
+        description: "Generic, configurable PID controller implemented as a ROS2 node in C++. Designed for versatile control applications including line following, altitude control, position control, velocity control, and heading/yaw control.",
+        tags: ["ROS2", "C++", "Control Systems", "Robotics", "Real-time"],
+        github: "https://github.com/Black-Bee-Drones/pid-controller",
+        image: "https://i.postimg.cc/0y23yL92/Screenshot-from-2025-05-01-00-02-58.png",
+        featured: true,
+        codeExamples: [
+            {
+                path: "include/pid_controller/pid.hpp",
+                description: "PID Controller Class Header",
+                language: "cpp"
+            },
+            {
+                path: "src/pid.cpp",
+                description: "PID Controller Implementation",
+                language: "cpp"
+            },
+            {
+                path: "src/pid_controller_node.cpp",
+                description: "ROS2 Node Implementation",
+                language: "cpp"
+            },
+            {
+                path: "launch/pid_controller.launch.py",
+                description: "Launch File for PID Controller",
+                language: "python"
+            },
+            {
+                path: "src/pid_test_environment.cpp",
+                description: "First Order System Test Environment",
+                language: "python"
+            },
+        ]
+    },
+    {
+        id: "peft-ainews",
+        title: "PEFT Techniques for Fine-Tuning Transformer Models",
+        description: "Academic article published in AINews about Parameter-Efficient Fine-Tuning (PEFT) techniques for Transformer models, exploring efficient methods to adapt large language models with limited computational resources.",
+        tags: ["PEFT", "Transformers", "NLP", "Fine-Tuning", "LoRA", "Academic Paper", "Portuguese"],
+        pdfUrl: "https://ainews.net.br/wp-content/uploads/2025/01/Ajuste-fino-de-modelos-Transformers-atraves-de-tecnicas-PEFT-Parameter-Efficient-Fine-Tuning.pdf",
+        externalUrl: "https://ainews.net.br/ajuste-fino-de-modelos-transformers-atraves-detecnicas-peft-parameter-efficient-fine-tuning/",
+        image: "https://cdn-uploads.huggingface.co/production/uploads/666b9ef5e6c60b6fc4156675/dz0AdSqt4QP7iRjpiXDE1.png",
+        featured: true,
+        languagePt: true,
+    },
+    {
+        id: "cv-hangout",
+        title: "Hugging Face - Computer Vision Hangout",
+        description: "Invited presenter at Hugging Face's open 'Computer Vision Hangout', sharing key CV projects and insights. Live demo and code walkthrough published on Hugging Face Spaces.",
+        tags: ["Computer Vision", "Hugging Face", "Open Source", "Community"],
+        demo: "https://huggingface.co/spaces/samuellimabraz/cv-hangout",
+        embedUrl: "https://samuellimabraz-cv-hangout.hf.space",
+        image: "https://media.licdn.com/dms/image/v2/D4E22AQGHKgZwTrxd4w/feedshare-shrink_2048_1536/B4EZY0Fb6oHgAo-/0/1744630563125?e=1749081600&v=beta&t=IzFK5yirtJK7A12pbcBHk4QQTPY8YJjs1RHjWlP7th4",
+        featured: true,
+        codeExamples: [
+            {
+                path: "app.py",
+                description: "Main Gradio application for the CV Hangout demo",
+                language: "python"
+            }
+        ]
+    },
+    {
         id: "face-api",
         title: "Face API: Facial Recognition System",
         description: "Scalable facial recognition system using DeepFace, FastAPI, and MongoDB Atlas Vector Search for efficient face matching and similarity search.",
@@ -258,7 +302,7 @@ export const projects: Project[] = [
     {
         id: "agent4ai",
         title: "Agent4ai: LLM Agent Framework",
-        description: "Conversational AI agent using Python and LangGraph with advanced RAG pipeline for company onboarding and knowledge management.",
+        description: "A LangGraph‑based conversational agent for Tech4Humans onboarding, leveraging Adaptive, Corrective and Self‑RAG for dynamic document retrieval, real‑time web search (Tavily), Google Calendar integration, and a modular graph architecture to guide new employees through company info, tools and events.",
         tags: ["LLM", "Agents", "RAG", "LangGraph", "Python"],
         github: "https://github.com/samuellimabraz/Agent4ai",
         image: "https://github.com/samuellimabraz/Agent4ai/raw/main/images/Cohere%20Multilingual%20Model.png",
@@ -306,38 +350,5 @@ export const projects: Project[] = [
                 language: "python"
             }
         ]
-    },
-    {
-        id: "opencv-gui",
-        title: "OpenCV Explorer",
-        description: "Interactive web application that allows real-time experimentation with computer vision techniques using your webcam. Built with OpenCV, Streamlit, and WebRTC.",
-        tags: ["Computer Vision", "OpenCV", "Streamlit", "WebRTC", "Python"],
-        github: "https://github.com/samuellimabraz/OpenCVGUI",
-        demo: "https://huggingface.co/spaces/samuellimabraz/opencv-gui",
-        embedUrl: "https://samuellimabraz-opencv-gui.hf.space",
-        image: "https://i.postimg.cc/050J03qs/opencv-gui-2.png",
-        featured: true,
-        codeExamples: [
-            {
-                path: "src/streamlit_app.py",
-                description: "Main Streamlit application with WebRTC video processing",
-                language: "python"
-            },
-            {
-                path: "src/opencv_utils.py",
-                description: "Implementation of various OpenCV filters and transformations",
-                language: "python"
-            },
-            {
-                path: "src/hand_tracker.py",
-                description: "Hand Tracker Class",
-                language: "python"
-            },
-            {
-                path: "src/face_mesh_tracker.py",
-                description: "Face Mesh Tracker Class",
-                language: "python"
-            }
-        ]
-    },
+    }
 ]; 

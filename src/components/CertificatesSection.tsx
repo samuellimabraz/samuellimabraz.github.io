@@ -136,10 +136,12 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
 
   const openCertificate = (certificate: Certificate) => {
     setSelectedCertificate(certificate);
+    document.body.style.overflow = 'hidden'; // Prevent page scrolling
   };
 
   const closeCertificate = () => {
     setSelectedCertificate(null);
+    document.body.style.overflow = 'auto'; // Re-enable page scrolling
   };
 
   // Modal for viewing certificate
@@ -149,22 +151,22 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
     return (
       <AnimatePresence>
         <motion.div
-          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={closeCertificate}
         >
           <motion.div
-            className="relative max-w-4xl w-full"
+            className="relative max-w-4xl w-full max-h-[90vh] flex flex-col"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="bg-dark-tertiary p-4 rounded-lg shadow-lg">
-              <div className="flex justify-between items-center mb-3">
+            <div className="bg-dark-tertiary rounded-lg shadow-lg flex flex-col max-h-[90vh]">
+              <div className="flex justify-between items-center p-4 border-b border-dark-border">
                 <h3 className="text-xl font-semibold text-dark-text-primary">{selectedCertificate.title}</h3>
                 <button
                   onClick={closeCertificate}
@@ -174,30 +176,32 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
                 </button>
               </div>
 
-              <div className="overflow-hidden rounded-md">
-                <img
-                  src={selectedCertificate.image}
-                  alt={`${selectedCertificate.title} Certificate`}
-                  className="w-full h-auto"
-                />
+              <div className="overflow-y-auto flex-1 p-4">
+                <div className="overflow-hidden rounded-md mb-4">
+                  <img
+                    src={selectedCertificate.image}
+                    alt={`${selectedCertificate.title} Certificate`}
+                    className="w-full h-auto"
+                  />
+                </div>
+
+                <div className="mt-4">
+                  <p className="text-dark-text-secondary mb-2">{selectedCertificate.description}</p>
+
+                  {selectedCertificate.details && selectedCertificate.details.length > 0 && (
+                    <div className="mt-3 space-y-2">
+                      <h4 className="text-sm font-semibold text-dark-text-primary">Course Details:</h4>
+                      <ul className="list-disc pl-5 space-y-2 text-sm text-dark-text-secondary">
+                        {selectedCertificate.details.map((detail, idx) => (
+                          <li key={idx}>{parseMarkdownBold(detail)}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
               </div>
 
-              <div className="mt-4">
-                <p className="text-dark-text-secondary mb-2">{selectedCertificate.description}</p>
-
-                {selectedCertificate.details && selectedCertificate.details.length > 0 && (
-                  <div className="mt-3 space-y-2">
-                    <h4 className="text-sm font-semibold text-dark-text-primary">Course Details:</h4>
-                    <ul className="list-disc pl-5 space-y-2 text-sm text-dark-text-secondary">
-                      {selectedCertificate.details.map((detail, idx) => (
-                        <li key={idx}>{parseMarkdownBold(detail)}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-
-              <div className="mt-4 flex justify-between items-center pt-3 border-t border-dark-border">
+              <div className="p-4 flex justify-between items-center border-t border-dark-border">
                 <div>
                   <p className="text-dark-text-secondary font-medium">{selectedCertificate.issuer}</p>
                   <p className="text-dark-text-secondary/70 text-sm">{selectedCertificate.date}</p>
