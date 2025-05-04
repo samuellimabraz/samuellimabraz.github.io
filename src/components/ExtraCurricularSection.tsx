@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, ChevronDown, ChevronUp, Award } from 'lucide-react';
+import { ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
 import { SectionProps } from '../lib/types';
 
 interface RelatedProject {
@@ -105,9 +105,6 @@ const ExtraCurricularSection: React.FC<SectionProps> = ({ scrollDirection }) => 
                     transition={{ duration: 0.5 }}
                     viewport={{ once: true, margin: "-100px" }}
                 >
-                    <div className="bg-dark-accent/10 p-2 rounded-full mr-3">
-                        <Award className="h-6 w-6 text-dark-accent" />
-                    </div>
                     <h2 className="text-3xl font-bold text-dark-text-primary">Extracurricular Activities</h2>
                 </motion.div>
 
