@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, X, Award, Maximize2 } from 'lucide-react';
+import { ExternalLink, X, Maximize2 } from 'lucide-react';
 import { SectionProps } from '../lib/types';
 
 interface Certificate {
@@ -232,21 +232,8 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
           transition={{ duration: 0.5 }}
           viewport={{ once: true, margin: "-100px" }}
         >
-          <div className="bg-dark-accent/10 p-2 rounded-full mr-3">
-            <Award className="h-6 w-6 text-dark-accent" />
-          </div>
           <h2 className="text-3xl font-bold text-dark-text-primary">Certificates & Courses</h2>
         </motion.div>
-
-        <motion.p
-          className="text-center text-lg mb-10 max-w-2xl mx-auto text-dark-text-secondary"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          viewport={{ once: true }}
-        >
-          Continuous education and specialized training in machine learning, deep learning, and AI technologies.
-        </motion.p>
 
         <motion.div
           className="grid gap-6 md:grid-cols-2 max-w-4xl mx-auto"
