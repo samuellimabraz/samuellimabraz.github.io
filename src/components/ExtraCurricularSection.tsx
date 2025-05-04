@@ -52,6 +52,19 @@ const ExtraCurricularSection: React.FC<SectionProps> = ({ scrollDirection }) => 
             ]
         },
         {
+            title: "Teaching Instructor & Project Member",
+            organization: "Fundação Asimo - UNIFEI Extension Project",
+            period: "Apr 2023 — Jul 2024",
+            description: [
+                "Contributed to an educational equity project aimed at reducing disparities between public and private education by bringing STEAM learning to local public schools.",
+                "Served as an instructor for elementary and high school classes, teaching computer literacy, programming fundamentals, and embedded systems using Arduino and C++.",
+                "Developed hands-on projects with ESP32, Lego Mindstorms, and Arduino to promote practical learning experiences in technology and engineering.",
+                "Created a 4-servo robotic arm controlled through computer vision that tracked hand movements, implementing advanced CV techniques for gesture recognition.",
+                "Mentored students preparing for the Brazilian Robotics Olympiad (OBR), providing guidance on both theoretical knowledge and practical implementation."
+            ],
+            skills: ["STEAM Education", "Arduino", "Computer Vision", "ESP32", "Embedded Systems", "Robotics"]
+        },
+        {
             title: "Competitive Programming Student",
             organization: "UNIFEI",
             period: "Mar 2023 — Jan 2024",
