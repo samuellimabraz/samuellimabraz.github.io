@@ -58,7 +58,7 @@ const NNPlayground: React.FC = () => {
         outputActivation: 'linear',
         useBias: true,
         weightInitializer: 'he',
-        layerInitializers: ['he', 'xavier', 'he'], // Include output layer
+        layerInitializers: ['he', 'xavier', 'xavier'], // Include output layer
         optimizer: 'adam'
     });
 
@@ -89,7 +89,7 @@ const NNPlayground: React.FC = () => {
         initializer: WeightInitializer
     }>({
         activation: 'linear',
-        initializer: 'he'
+        initializer: 'xavier'
     });
 
     const [plotlyAvailable, setPlotlyAvailable] = useState(false);
@@ -552,9 +552,9 @@ const NNPlayground: React.FC = () => {
                             </label>
                             <input
                                 type="range"
-                                min="50"
-                                max="1000"
-                                step="50"
+                                min="10"
+                                max="500"
+                                step="10"
                                 className="w-full accent-dark-accent"
                                 value={trainingConfig.numEpochs}
                                 onChange={(e) => updateTrainingConfig('numEpochs', parseInt(e.target.value))}
