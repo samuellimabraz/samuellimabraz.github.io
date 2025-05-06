@@ -4,9 +4,16 @@ import { TrainingHistory } from './network';
 export interface VisualizationElements {
     plot3dDiv: HTMLDivElement;
     lossPlotDiv: HTMLDivElement;
-    contourPlotDiv: HTMLDivElement;  // Will be used for accuracy plot instead
+    contourPlotDiv: HTMLDivElement;
 }
 
+/**
+ * Initialize all visualization plots
+ * @param elements DOM elements for visualization
+ * @param data Training data
+ * @param gridData Grid data for surface plots
+ * @param functionName Name of the function being approximated
+ */
 export function initializeVisualization(
     elements: VisualizationElements,
     data: GeneratedData,
@@ -15,16 +22,18 @@ export function initializeVisualization(
 ) {
     const { plot3dDiv, lossPlotDiv, contourPlotDiv } = elements;
 
-    // Create 3D surface plot
     initialize3DPlot(plot3dDiv, data, gridData, functionName);
-
-    // Create empty loss plot
     initializeLossPlot(lossPlotDiv);
-
-    // Create empty accuracy plot (replacing contour plot)
     initializeAccuracyPlot(contourPlotDiv);
 }
 
+/**
+ * Initialize the 3D surface plot
+ * @param plotDiv Container element
+ * @param data Training data
+ * @param gridData Grid data for surface plot
+ * @param functionName Name of the function being approximated
+ */
 function initialize3DPlot(
     plotDiv: HTMLDivElement,
     data: GeneratedData,
@@ -117,6 +126,10 @@ function initialize3DPlot(
     }
 }
 
+/**
+ * Initialize the loss plot
+ * @param plotDiv Container element
+ */
 function initializeLossPlot(plotDiv: HTMLDivElement) {
     // Create empty loss trace
     const lossTrace = {
@@ -137,7 +150,7 @@ function initializeLossPlot(plotDiv: HTMLDivElement) {
             title: 'Loss',
             type: 'log'
         },
-        margin: { l: 50, r: 50, b: 50, t: 50 },  // Increased margins
+        margin: { l: 50, r: 50, b: 50, t: 50 },
         autosize: true,
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)'
@@ -156,6 +169,10 @@ function initializeLossPlot(plotDiv: HTMLDivElement) {
     }
 }
 
+/**
+ * Initialize the accuracy plot
+ * @param plotDiv Container element
+ */
 function initializeAccuracyPlot(plotDiv: HTMLDivElement) {
     // Create empty accuracy traces
     const trainAccuracyTrace = {
@@ -187,7 +204,7 @@ function initializeAccuracyPlot(plotDiv: HTMLDivElement) {
             range: [0, 1],
             tickformat: '.0%'
         },
-        margin: { l: 50, r: 50, b: 50, t: 50 },  // Increased margins
+        margin: { l: 50, r: 50, b: 50, t: 50 },
         autosize: true,
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)'
@@ -206,6 +223,14 @@ function initializeAccuracyPlot(plotDiv: HTMLDivElement) {
     }
 }
 
+/**
+ * Update all visualization elements with current training data
+ * @param elements DOM elements for visualization
+ * @param history Training history
+ * @param gridData Grid data for surface plot
+ * @param currentEpoch Current training epoch
+ * @param numEpochs Total number of epochs
+ */
 export function updateVisualization(
     elements: VisualizationElements,
     history: TrainingHistory,
@@ -328,7 +353,12 @@ export function updateVisualization(
     }
 }
 
-// Reshape flat predictions to 2D grid
+/**
+ * Reshape flat predictions into a 2D grid
+ * @param predictions Array of predictions
+ * @param gridSize Size of the grid
+ * @returns 2D array of predictions
+ */
 function reshapePredictions(predictions: number[][], gridSize: number): number[][] {
     const result: number[][] = [];
 

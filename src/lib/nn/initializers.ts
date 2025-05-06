@@ -1,10 +1,21 @@
-// Weight initialization strategies for neural networks
-
+/**
+ * Interface for weight initialization strategies
+ */
 export interface WeightInitializer {
+    /**
+     * Initialize weights for a neural network layer
+     * @param inputDim Input dimension (number of neurons in previous layer)
+     * @param outputDim Output dimension (number of neurons in current layer)
+     * @returns 2D array of initialized weights
+     */
     initialize(inputDim: number, outputDim: number): number[][];
 }
 
-// Helper function to generate random numbers from a standard normal distribution
+/**
+ * Helper function to generate random numbers from a standard normal distribution
+ * Uses the Box-Muller transform
+ * @returns Random number from standard normal distribution (mean 0, variance 1)
+ */
 function randn(): number {
     // Box-Muller transform
     const u1 = Math.random();
@@ -12,10 +23,16 @@ function randn(): number {
     return Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
 }
 
-// Random initialization with a custom scale
+/**
+ * Random initialization with a custom scale
+ * Initializes weights with random values scaled by a constant factor
+ */
 export class RandomInitializer implements WeightInitializer {
     private scale: number;
 
+    /**
+     * @param scale Scale factor for random values (default: 0.01)
+     */
     constructor(scale: number = 0.01) {
         this.scale = scale;
     }
@@ -31,7 +48,9 @@ export class RandomInitializer implements WeightInitializer {
     }
 }
 
-// He initialization (good for ReLU)
+/**
+ * He initialization (good for ReLU activation)
+ */
 export class HeInitializer implements WeightInitializer {
     initialize(inputDim: number, outputDim: number): number[][] {
         const std = Math.sqrt(2 / inputDim);
@@ -45,10 +64,12 @@ export class HeInitializer implements WeightInitializer {
     }
 }
 
-// Xavier/Glorot initialization (good for Sigmoid, Tanh)
+/**
+ * Xavier/Glorot initialization (good for Sigmoid, Tanh activations)
+ */
 export class XavierInitializer implements WeightInitializer {
     initialize(inputDim: number, outputDim: number): number[][] {
-        const std =  Math.sqrt(1.0 / (inputDim + outputDim));
+        const std = Math.sqrt(1.0 / (inputDim + outputDim));
 
         const weights: number[][] = [];
         for (let i = 0; i < outputDim; i++) {
@@ -60,7 +81,11 @@ export class XavierInitializer implements WeightInitializer {
     }
 }
 
-// Xavier/Glorot uniform initialization
+/**
+ * Xavier/Glorot uniform initialization
+ * Similar to Xavier initialization but uses a uniform distribution
+ * instead of normal distribution
+ */
 export class XavierUniformInitializer implements WeightInitializer {
     initialize(inputDim: number, outputDim: number): number[][] {
         const limit = Math.sqrt(6 / (inputDim + outputDim));
@@ -74,7 +99,10 @@ export class XavierUniformInitializer implements WeightInitializer {
     }
 }
 
-// Zero initialization
+/**
+ * Zero initialization
+ * Initializes all weights to zero
+ */
 export class ZeroInitializer implements WeightInitializer {
     initialize(inputDim: number, outputDim: number): number[][] {
         const weights: number[][] = [];
@@ -85,7 +113,11 @@ export class ZeroInitializer implements WeightInitializer {
     }
 }
 
-// Get initializer by name
+/**
+ * Factory function to get a weight initializer by name
+ * @param name The name of the initializer
+ * @returns The corresponding weight initializer object
+ */
 export function getInitializer(name: string): WeightInitializer {
     switch (name.toLowerCase()) {
         case 'random':
@@ -104,7 +136,11 @@ export function getInitializer(name: string): WeightInitializer {
     }
 }
 
-// Helper function to get the appropriate initializer for an activation function
+/**
+ * Helper function to get the appropriate initializer for an activation function
+ * @param activationType The type of activation function
+ * @returns The recommended weight initializer for that activation
+ */
 export function getInitializerForActivation(activationType: string): WeightInitializer {
     switch (activationType.toLowerCase()) {
         case 'relu':

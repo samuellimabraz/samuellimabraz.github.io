@@ -1,31 +1,18 @@
-// Export all neural network modules
-
-// Activation functions
 export * from './activation';
-
-// Layer implementation
 export * from './layer';
-
-// Network implementation
 export * from './network';
-
-// Data generation
 export * from './data';
-
-// Visualization
 export * from './visualization';
-
-// Weight initialization strategies
 export * from './initializers';
-
-// Optimizers
 export * from './optimizers';
 
-// Main playground controller
 import { NeuralNetwork, NetworkConfig, TrainingConfig, TrainingHistory } from './network';
 import { generateData, generateGridData, splitTrainTest, GridData, StandardScaler } from './data';
 import { initializeVisualization, updateVisualization, VisualizationElements } from './visualization';
 
+/**
+ * Interface for tracking the current state of the neural network playground
+ */
 export interface PlaygroundState {
     isTraining: boolean;
     currentEpoch: number;
@@ -39,6 +26,10 @@ export interface PlaygroundState {
     scaler: StandardScaler | null;
 }
 
+/**
+ * Controller class for the neural network playground
+ * Manages network configuration, training, and visualization
+ */
 export class NNPlaygroundController {
     private state: PlaygroundState;
     private networkConfig: NetworkConfig;
@@ -55,6 +46,9 @@ export class NNPlaygroundController {
     private trainingStopSignal: (() => boolean) | null = null;
     private currentTrainingPromise: Promise<TrainingHistory> | null = null;
 
+    /**
+     * Create a new playground controller with default settings
+     */
     constructor() {
         this.state = {
             isTraining: false,
@@ -99,10 +93,18 @@ export class NNPlaygroundController {
         };
     }
 
+    /**
+     * Set visualization DOM elements
+     * @param elements Object containing visualization DOM elements
+     */
     setVisualElements(elements: VisualizationElements): void {
         this.visualElements = elements;
     }
 
+    /**
+     * Update network configuration
+     * @param config Partial network configuration to update
+     */
     updateNetworkConfig(config: Partial<NetworkConfig>): void {
         const oldHiddenDimsLength = this.networkConfig.hiddenDims.length;
         this.networkConfig = { ...this.networkConfig, ...config, loss: 'mse' };
@@ -116,10 +118,18 @@ export class NNPlaygroundController {
         }
     }
 
+    /**
+     * Update training configuration
+     * @param config Partial training configuration to update
+     */
     updateTrainingConfig(config: Partial<TrainingConfig>): void {
         this.trainingConfig = { ...this.trainingConfig, ...config };
     }
 
+    /**
+     * Update data generation configuration
+     * @param config Partial data configuration to update
+     */
     updateDataConfig(config: Partial<typeof this.dataConfig>): void {
         this.dataConfig = { ...this.dataConfig, ...config };
         if (config.useNormalization !== undefined) {
@@ -127,6 +137,10 @@ export class NNPlaygroundController {
         }
     }
 
+    /**
+     * Initialize the playground with current configurations
+     * Generates data, creates network, and prepares visualization
+     */
     initialize(): void {
         try {
             const rawData = generateData(
@@ -178,6 +192,11 @@ export class NNPlaygroundController {
         }
     }
 
+    /**
+     * Start or resume training the neural network
+     * @param onEpochEndUiCallback Callback function called at the end of each epoch
+     * @param startEpochOverride Optional starting epoch
+     */
     async startTraining(
         onEpochEndUiCallback?: (epoch: number, loss: number, progress: number) => void,
         startEpochOverride: number = 0
@@ -253,6 +272,9 @@ export class NNPlaygroundController {
         }
     }
 
+    /**
+     * Stop the current training process
+     */
     stopTraining(): void {
         if (this.trainingStopSignal) {
             console.log("Requesting training to stop...");
@@ -260,6 +282,9 @@ export class NNPlaygroundController {
         }
     }
 
+    /**
+     * Reset the playground to initial state
+     */
     reset(): void {
         this.stopTraining();
         this.state.isTraining = false;
@@ -268,6 +293,10 @@ export class NNPlaygroundController {
         this.initialize();
     }
 
+    /**
+     * Set the global weight initializer and reinitialize weights
+     * @param initializer Name of the weight initializer
+     */
     setWeightInitializer(initializer: string): void {
         this.networkConfig.weightInitializer = initializer;
         if (this.state.network) {
@@ -275,6 +304,11 @@ export class NNPlaygroundController {
         }
     }
 
+    /**
+     * Set the weight initializer for a specific layer
+     * @param layerIndex Index of the layer
+     * @param initializer Name of the weight initializer
+     */
     setLayerInitializer(layerIndex: number, initializer: string): void {
         if (!this.networkConfig.layerInitializers) {
             this.networkConfig.layerInitializers = Array(this.networkConfig.hiddenDims.length + 1).fill(this.networkConfig.weightInitializer || 'he');
@@ -290,6 +324,10 @@ export class NNPlaygroundController {
         }
     }
 
+    /**
+     * Set the optimizer for the network
+     * @param optimizerName Name of the optimizer
+     */
     setOptimizer(optimizerName: string): void {
         this.networkConfig.optimizer = optimizerName;
         if (this.state.network) {
@@ -297,6 +335,10 @@ export class NNPlaygroundController {
         }
     }
 
+    /**
+     * Set whether to use data normalization
+     * @param useNormalization Whether to normalize data
+     */
     setUseNormalization(useNormalization: boolean): void {
         if (this.dataConfig.useNormalization !== useNormalization) {
             this.dataConfig.useNormalization = useNormalization;
@@ -304,6 +346,10 @@ export class NNPlaygroundController {
         }
     }
 
+    /**
+     * Get the current state of the playground
+     * @returns Current playground state
+     */
     getState(): PlaygroundState {
         return { ...this.state };
     }

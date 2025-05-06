@@ -65,14 +65,14 @@ const NNPlayground: React.FC = () => {
 
     const [trainingConfig, setTrainingConfig] = useState<TrainingConfig>({
         learningRate: 0.001,
-        numEpochs: 30,
-        batchSize: 32,
+        numEpochs: 20,
+        batchSize: 16,
         noise: 0.1,
     });
 
     const [dataConfig, setDataConfig] = useState<DataConfig>({
         dataFunction: 'saddle',
-        samples: 700,
+        samples: 600,
         testRatio: 0.1,
         xRange: [-3, 3],
         yRange: [-3, 3],
@@ -464,6 +464,7 @@ const NNPlayground: React.FC = () => {
                             <option value="rmsprop">RMSProp</option>
                             <option value="adam">Adam</option>
                             <option value="adagrad">Adagrad</option>
+                            <option value="vsgd">VSGD</option>
                         </select>
                     </div>
 

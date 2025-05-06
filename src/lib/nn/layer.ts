@@ -2,6 +2,10 @@ import { ActivationFn } from './activation';
 import { WeightInitializer, getInitializer, getInitializerForActivation } from './initializers';
 import { Gradients } from './optimizers';
 
+/**
+ * Represents a fully connected layer in a neural network
+ * Performs the core transformation: output = activation(weights * input + bias)
+ */
 export class Layer {
     private inputDim: number;
     private outputDim: number;
@@ -19,6 +23,14 @@ export class Layer {
         output?: number[];
     };
 
+    /**
+     * Creates a fully connected neural network layer
+     * @param inputDim Number of input features
+     * @param outputDim Number of output features (neurons)
+     * @param activation Activation function to use
+     * @param useBias Whether to use bias terms (default: true)
+     * @param initializer Weight initializer strategy or name
+     */
     constructor(
         inputDim: number,
         outputDim: number,
@@ -48,6 +60,12 @@ export class Layer {
         this.bias = Array(outputDim).fill(0);
     }
 
+    /**
+     * Forward pass through the layer
+     * Computes output = activation(weights * input + bias)
+     * @param input Input vector
+     * @returns Output after applying weights, bias and activation
+     */
     forward(input: number[]): number[] {
         // Store input for backpropagation
         this.cache.input = [...input];
@@ -76,6 +94,12 @@ export class Layer {
         return output;
     }
 
+    /**
+     * Backward pass through the layer
+     * Computes gradients for backpropagation
+     * @param dOutput Gradient of the loss with respect to the layer's output
+     * @returns Object containing input gradients and weight/bias gradients
+     */
     backward(dOutput: number[]): { dInput: number[], gradients: Gradients } {
         const input = this.cache.input!;
         const z = this.cache.z!;
@@ -112,6 +136,10 @@ export class Layer {
         };
     }
 
+    /**
+     * Get a copy of the layer's parameters
+     * @returns Deep copy of weights and bias
+     */
     getParameters(): { weights: number[][], bias: number[] } {
         return {
             weights: this.weights.map(row => [...row]),
@@ -119,11 +147,19 @@ export class Layer {
         };
     }
 
+    /**
+     * Set the layer's parameters
+     * @param parameters Object containing weights and bias arrays
+     */
     setParameters(parameters: { weights: number[][], bias: number[] }): void {
         this.weights = parameters.weights.map(row => [...row]);
         this.bias = [...parameters.bias];
     }
 
+    /**
+     * Reinitialize weights with a specified or current initializer
+     * @param initializer Optional new weight initializer to use
+     */
     reinitializeWeights(initializer?: WeightInitializer | string): void {
         if (initializer) {
             if (typeof initializer === 'string') {

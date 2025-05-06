@@ -4,62 +4,187 @@ import { WeightInitializer } from './initializers';
 import { Optimizer, getOptimizer, Gradients } from './optimizers';
 import { Loss, getLoss } from './loss';
 
+/**
+ * Configuration for creating a neural network
+ */
 export interface NetworkConfig {
+    /**
+     * Dimension of the input layer
+     */
     inputDim: number;
+
+    /**
+     * Dimensions of hidden layers
+     */
     hiddenDims: number[];
+
+    /**
+     * Dimension of the output layer
+     */
     outputDim: number;
+
+    /**
+     * Activation functions for hidden layers
+     */
     hiddenActivations: string[];
+
+    /**
+     * Activation function for the output layer
+     */
     outputActivation: string;
+
+    /**
+     * Whether to use bias terms in layers
+     */
     useBias: boolean;
+
+    /**
+     * Global weight initializer for all layers
+     */
     weightInitializer?: string;
+
+    /**
+     * Specific initializers for each layer
+     */
     layerInitializers?: string[];
+
+    /**
+     * Optimizer to use for training
+     */
     optimizer?: string;
+
+    /**
+     * Loss function to use for training
+     */
     loss?: string;
 }
 
+/**
+ * Configuration for the training process
+ */
 export interface TrainingConfig {
+    /**
+     * Learning rate for optimization
+     */
     learningRate: number;
+
+    /**
+     * Number of training epochs
+     */
     numEpochs: number;
+
+    /**
+     * Batch size for mini-batch training
+     */
     batchSize: number;
-    noise: number; // This seems to be for data generation, not directly used in network training
+
+    /**
+     * Noise level for training data
+     */
+    noise: number;
+
+    /**
+     * Starting epoch number (for continued training)
+     */
     startEpoch?: number;
 }
 
+/**
+ * Training history to track performance over time
+ */
 export interface TrainingHistory {
+    /**
+     * Loss values per epoch
+     */
     loss: number[];
+
+    /**
+     * Gradient norm per epoch
+     */
     gradientNorm: number[];
-    selectedWeightsTrace: number[][]; // Weights from specific layers/neurons over epochs
+
+    /**
+     * Tracked weights for visualization
+     */
+    selectedWeightsTrace: number[][];
+
+    /**
+     * Epoch numbers
+     */
     epochs: number[];
-    predictions: number[][][]; // For visualization: predictions[epoch_index_viz] = grid_predictions (number[][])
+
+    /**
+     * Model predictions at specific epochs
+     */
+    predictions: number[][][];
+
+    /**
+     * Training accuracy per epoch
+     */
     trainAccuracy: number[];
+
+    /**
+     * Testing accuracy per epoch
+     */
     testAccuracy: number[];
 }
 
+/**
+ * Network parameters structure
+ */
 export interface NetworkParameters {
+    /**
+     * Weights for all layers
+     */
     weights: number[][][];
+
+    /**
+     * Biases for all layers
+     */
     biases: number[][];
 }
 
+/**
+ * Network gradients structure
+ */
 export interface NetworkGradients {
+    /**
+     * Weight gradients for all layers
+     */
     dWeights: number[][][];
+
+    /**
+     * Bias gradients for all layers
+     */
     dBiases: number[][];
 }
 
+/**
+ * Neural Network implementation with fully connected layers
+ */
 export class NeuralNetwork {
     private layers: Layer[] = [];
     private useBias: boolean;
     private history: TrainingHistory;
     private weightInitializer?: string;
     private layerInitializers?: string[];
-    private optimizerName?: string; // Store the name of the optimizer
-    private optimizerConfig: any = {}; // Store optimizer config like learning rate
-    private layerOptimizers: Optimizer[] = []; // One optimizer instance per layer
+    private optimizerName?: string;
+    private optimizerConfig: any = {};
+    private layerOptimizers: Optimizer[] = [];
     private loss: Loss;
 
+    /**
+     * Create a new neural network
+     * @param useBias Whether to use bias terms in layers
+     * @param weightInitializer Global weight initializer name
+     * @param optimizerName Name of the optimizer to use
+     * @param layerInitializers Specific initializers for each layer
+     * @param lossName Name of the loss function
+     */
     constructor(
         useBias: boolean = true,
         weightInitializer?: string,
-        optimizerName: string = 'sgd', // Optimizer name
+        optimizerName: string = 'sgd',
         layerInitializers?: string[],
         lossName: string = 'mse'
     ) {
@@ -77,9 +202,15 @@ export class NeuralNetwork {
             trainAccuracy: [],
             testAccuracy: []
         };
-        // Optimizers will be created in setOptimizer or when layers are added
     }
 
+    /**
+     * Add a layer to the network
+     * @param outputDim Number of neurons in the layer
+     * @param activation Activation function for the layer
+     * @param inputDim Optional input dimension (required for first layer)
+     * @param layerIndex Optional index of the layer for initializer selection
+     */
     addLayer(
         outputDim: number,
         activation: ActivationFn,
@@ -111,6 +242,11 @@ export class NeuralNetwork {
         }
     }
 
+    /**
+     * Perform forward pass through the network
+     * @param input Input sample
+     * @returns Network output
+     */
     forward(input: number[]): number[] {
         let A = [...input];
         for (const layer of this.layers) {
@@ -119,14 +255,31 @@ export class NeuralNetwork {
         return A;
     }
 
+    /**
+     * Make predictions for multiple input samples
+     * @param X Input samples
+     * @returns Predictions for all samples
+     */
     predict(X: number[][]): number[][] {
         return X.map(x => this.forward(x));
     }
 
+    /**
+     * Compute the cost between predictions and targets
+     * @param predictions Network predictions
+     * @param targets Target values
+     * @returns Loss value
+     */
     computeCost(predictions: number[][], targets: number[][]): number {
         return this.loss.forward(predictions, targets);
     }
 
+    /**
+     * Perform backward pass (backpropagation) through the network
+     * @param X_sample Input sample
+     * @param Y_sample Target sample
+     * @returns Output gradient and layer gradients
+     */
     backward(X_sample: number[], Y_sample: number[]): { dOutput: number[], layerGradients: Gradients[] } {
         const networkOutput = this.forward(X_sample);
         const lossGradientVsOutput = this.loss.backward([networkOutput], [Y_sample])[0];
@@ -139,10 +292,14 @@ export class NeuralNetwork {
             allLayerGradients.unshift(layerGrad);
             dA_prev = dInput; // Gradient of loss wrt activation of previous layer
         }
-        // dOutput here is a bit ambiguous in this context, layerGradients is what we need
         return { dOutput: lossGradientVsOutput, layerGradients: allLayerGradients };
     }
 
+    /**
+     * Set the optimizer for the network
+     * @param optimizerName Name of the optimizer
+     * @param config Configuration for the optimizer
+     */
     setOptimizer(optimizerName: string, config: any = {}): void {
         this.optimizerName = optimizerName;
         this.optimizerConfig = config; // Store config (e.g. learningRate)
@@ -152,6 +309,10 @@ export class NeuralNetwork {
         }
     }
 
+    /**
+     * Update network parameters based on computed gradients
+     * @param allLayerGradients Gradients for all layers
+     */
     updateParameters(allLayerGradients: Gradients[]): void {
         if (allLayerGradients.length !== this.layers.length || allLayerGradients.length !== this.layerOptimizers.length) {
             console.error("Mismatch between gradients, layers, or optimizers count.");
@@ -173,6 +334,11 @@ export class NeuralNetwork {
         }
     }
 
+    /**
+     * Reinitialize weights of specific or all layers
+     * @param initializer Weight initializer to use
+     * @param layerIndex Optional index of layer to reinitialize
+     */
     reinitializeWeights(initializer?: string | WeightInitializer, layerIndex?: number): void {
         if (layerIndex !== undefined && layerIndex >= 0 && layerIndex < this.layers.length) {
             this.layers[layerIndex].reinitializeWeights(initializer);
@@ -195,6 +361,11 @@ export class NeuralNetwork {
         }
     }
 
+    /**
+     * Set initializer for a specific layer
+     * @param layerIndex Index of the layer
+     * @param initializerName Name of the initializer
+     */
     setLayerInitializer(layerIndex: number, initializerName: string): void {
         if (layerIndex >= 0 && layerIndex < this.layers.length) {
             if (!this.layerInitializers || this.layerInitializers.length !== this.layers.length) {
@@ -210,6 +381,11 @@ export class NeuralNetwork {
         }
     }
 
+    /**
+     * Compute the norm of the gradients
+     * @param gradients Gradients for all layers
+     * @returns Gradient norm
+     */
     computeGradientNorm(gradients: Gradients[]): number {
         let totalSum = 0;
         for (const gradientObj of gradients) {
@@ -227,6 +403,10 @@ export class NeuralNetwork {
         return Math.sqrt(totalSum);
     }
 
+    /**
+     * Get the network parameters
+     * @returns Network parameters object
+     */
     getParameters(): any {
         const parameters: any = {};
         for (let i = 0; i < this.layers.length; i++) {
@@ -237,6 +417,10 @@ export class NeuralNetwork {
         return parameters;
     }
 
+    /**
+     * Set the network parameters
+     * @param parameters Network parameters to set
+     */
     setParameters(parameters: any): void {
         for (let i = 0; i < this.layers.length; i++) {
             if (parameters[`W${i + 1}`] && parameters[`b${i + 1}`]) {
@@ -248,11 +432,19 @@ export class NeuralNetwork {
         }
     }
 
+    /**
+     * Get the input dimension of the network
+     * @returns Input dimension
+     */
     getInputDim(): number {
         if (this.layers.length === 0) return 0;
         return this.layers[0].getParameters().weights[0].length;
     }
 
+    /**
+     * Get the training history
+     * @returns Training history object
+     */
     getHistory(): TrainingHistory {
         // Ensure all arrays in history have consistent lengths for plotting
         const maxLength = this.history.epochs.length;
@@ -270,6 +462,11 @@ export class NeuralNetwork {
         };
     }
 
+    /**
+     * Create a network from configuration
+     * @param config Network configuration
+     * @returns Configured neural network
+     */
     static fromConfig(config: NetworkConfig): NeuralNetwork {
         const model = new NeuralNetwork(
             config.useBias,
@@ -305,6 +502,13 @@ export class NeuralNetwork {
         return model;
     }
 
+    /**
+     * Compute accuracy of predictions against targets
+     * @param predictions Network predictions
+     * @param targets Target values
+     * @param threshold Classification threshold (for binary classification)
+     * @returns Accuracy as a decimal
+     */
     computeAccuracy(predictions: number[][], targets: number[][], threshold: number = 0.5): number {
         let correctCount = 0;
         const totalCount = predictions.length;
@@ -328,11 +532,22 @@ export class NeuralNetwork {
         return correctCount / totalCount;
     }
 
+    /**
+     * Train the network on a dataset
+     * @param X Input features
+     * @param Y Target values
+     * @param config Training configuration
+     * @param gridPointsForViz Optional grid points for visualization
+     * @param onEpochEnd Optional callback for epoch end
+     * @param testData Optional test data for evaluation
+     * @param shouldContinue Optional function to check if training should continue
+     * @returns Promise resolving to training history
+     */
     train(
         X: number[][],
         Y: number[][],
         config: TrainingConfig,
-        gridPointsForViz: number[][] | null, // Pass grid points for visualization
+        gridPointsForViz: number[][] | null,
         onEpochEnd?: (epoch: number, loss: number, progress: number) => void,
         testData?: { X: number[][], Y: number[][] },
         shouldContinue?: () => boolean
@@ -405,6 +620,13 @@ export class NeuralNetwork {
         });
     }
 
+    /**
+     * Train the network for one epoch
+     * @param X Input features
+     * @param Y Target values
+     * @param config Training configuration
+     * @returns Object with epoch loss and gradient norm
+     */
     private trainOneEpoch(
         X: number[][], Y: number[][], config: TrainingConfig
     ): { epochLoss: number, epochGradientNorm: number } {
@@ -483,6 +705,10 @@ export class NeuralNetwork {
         return { epochLoss: totalLoss / numBatches, epochGradientNorm: totalGradientNorm / numBatches };
     }
 
+    /**
+     * Get selected weights for visualization
+     * @returns Array of selected weights
+     */
     private getSelectedWeights(): number[] {
         const params = this.getParameters();
         const selectedWeights: number[] = [];
@@ -498,6 +724,10 @@ export class NeuralNetwork {
         return selectedWeights;
     }
 
+    /**
+     * Set the loss function
+     * @param lossName Name or instance of loss function
+     */
     setLoss(lossName: string | Loss): void {
         if (typeof lossName === 'string') {
             this.loss = getLoss(lossName);
@@ -506,6 +736,10 @@ export class NeuralNetwork {
         }
     }
 
+    /**
+     * Get the loss function
+     * @returns Current loss function
+     */
     getLoss(): Loss {
         return this.loss;
     }
