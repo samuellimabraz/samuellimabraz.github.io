@@ -59,12 +59,13 @@ const NNPlayground: React.FC = () => {
         useBias: true,
         weightInitializer: 'he',
         layerInitializers: ['he', 'xavier', 'xavier'], // Include output layer
-        optimizer: 'adam'
+        optimizer: 'adam',
+        loss: 'mse'
     });
 
     const [trainingConfig, setTrainingConfig] = useState<TrainingConfig>({
         learningRate: 0.001,
-        numEpochs: 50,
+        numEpochs: 30,
         batchSize: 32,
         noise: 0.1,
     });

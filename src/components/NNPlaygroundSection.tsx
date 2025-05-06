@@ -3,30 +3,7 @@ import { motion } from 'framer-motion';
 import { SectionProps } from '../lib/types';
 import NNPlayground from './NNPlayground';
 
-const NNPlaygroundSection: React.FC<SectionProps> = ({ scrollDirection }) => {
-    // Animation variants
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.1,
-                delayChildren: 0.2,
-            }
-        }
-    };
-
-    const cardVariants = {
-        hidden: {
-            opacity: 0,
-            y: scrollDirection === 'down' ? 20 : -20
-        },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: { duration: 0.5, ease: "easeOut" }
-        }
-    };
+const NNPlaygroundSection: React.FC<SectionProps> = ({ }) => {
 
     return (
         <section id="nn-playground" className="py-20 bg-dark-secondary">
