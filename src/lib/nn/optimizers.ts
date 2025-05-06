@@ -7,6 +7,9 @@ export interface Gradients {
 
 export interface OptimizerConfig {
     learningRate: number;
+    epsilon?: number;
+    weightDecay?: number;
+    initialAccumulatorValue?: number;
 }
 
 export interface Optimizer {
@@ -209,50 +212,80 @@ export class AdamOptimizer implements Optimizer {
 export class AdagradOptimizer implements Optimizer {
     private learningRate: number;
     private epsilon: number;
-    private cache: { weights: number[][], bias: number[] }[] = [];
+    private weightDecay: number;
+    private initialAccumulatorValue: number;
+    private cache: { weights: number[][], bias: number[] };
 
-    constructor(learningRate: number = 0.01, epsilon: number = 1e-8) {
+    constructor(
+        learningRate: number = 0.01,
+        epsilon: number = 1e-8,
+        weightDecay: number = 0,
+        initialAccumulatorValue: number = 0
+    ) {
         this.learningRate = learningRate;
         this.epsilon = epsilon;
+        this.weightDecay = weightDecay;
+        this.initialAccumulatorValue = initialAccumulatorValue;
+        this.cache = {
+            weights: [],
+            bias: []
+        };
     }
 
     update(weights: number[][], bias: number[], gradients: Gradients): {
         newWeights: number[][],
         newBias: number[]
     } {
-        // Initialize cache if needed
-        if (this.cache.length === 0) {
-            this.cache = [{
-                weights: weights.map(row => Array(row.length).fill(0)),
-                bias: Array(bias.length).fill(0)
-            }];
+        // Initialize cache if needed with initial accumulator value
+        if (this.cache.weights.length === 0) {
+            this.cache = {
+                weights: weights.map(row => Array(row.length).fill(this.initialAccumulatorValue)),
+                bias: Array(bias.length).fill(this.initialAccumulatorValue)
+            };
         }
 
         const newWeights = weights.map((row, i) => {
             return row.map((w, j) => {
-                // Update cache
-                this.cache[0].weights[i][j] += Math.pow(gradients.dWeights[i][j], 2);
+                // Apply L2 regularization/weight decay if needed
+                let dw = gradients.dWeights[i][j];
+                if (this.weightDecay > 0) {
+                    dw += this.weightDecay * w;
+                }
 
-                // Update weights
-                return w - (this.learningRate / Math.sqrt(this.cache[0].weights[i][j] + this.epsilon)) *
-                    gradients.dWeights[i][j];
+                // Update cache by accumulating squared gradients
+                // G_t,i = G_t-1,i + g_t,i^2
+                this.cache.weights[i][j] += Math.pow(dw, 2);
+
+                // Update weights using adaptive learning rate
+                // θ_t+1,i = θ_t,i - (η / sqrt(G_t,i) + ε) * g_t,i
+                return w - (this.learningRate / Math.sqrt(this.cache.weights[i][j] + this.epsilon)) * dw;
             });
         });
 
         const newBias = bias.map((b, i) => {
-            // Update cache
-            this.cache[0].bias[i] += Math.pow(gradients.dBias[i], 2);
+            // Apply L2 regularization/weight decay if needed
+            let db = gradients.dBias[i];
+            if (this.weightDecay > 0) {
+                db += this.weightDecay * b;
+            }
 
-            // Update bias
-            return b - (this.learningRate / Math.sqrt(this.cache[0].bias[i] + this.epsilon)) *
-                gradients.dBias[i];
+            // Update cache by accumulating squared gradients
+            this.cache.bias[i] += Math.pow(db, 2);
+
+            // Update bias using adaptive learning rate
+            return b - (this.learningRate / Math.sqrt(this.cache.bias[i] + this.epsilon)) * db;
         });
 
         return { newWeights, newBias };
     }
 
     getConfig(): OptimizerConfig {
-        return { learningRate: this.learningRate };
+        return {
+            learningRate: this.learningRate,
+            epsilon: this.epsilon,
+            weightDecay: this.weightDecay,
+            initialAccumulatorValue: this.initialAccumulatorValue
+        };
     }
 }
 
@@ -270,8 +303,13 @@ export function getOptimizer(name: string, config: Partial<OptimizerConfig> = {}
         case 'adam':
             return new AdamOptimizer(learningRate);
         case 'adagrad':
-            return new AdagradOptimizer(learningRate);
+            return new AdagradOptimizer(
+                learningRate,
+                config.epsilon || 1e-8,
+                config.weightDecay || 0,
+                config.initialAccumulatorValue || 0
+            );
         default:
             return new SGDOptimizer(learningRate);
     }
-} 
+}
