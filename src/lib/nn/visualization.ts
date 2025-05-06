@@ -1,15 +1,19 @@
-// Visualization functions for neural network playground
-// Note: This assumes that Plotly.js is available globally
-
 import { GeneratedData, GridData, calculateTrueSurface } from './data';
 import { TrainingHistory } from './network';
 
 export interface VisualizationElements {
     plot3dDiv: HTMLDivElement;
     lossPlotDiv: HTMLDivElement;
-    contourPlotDiv: HTMLDivElement;  // Will be used for accuracy plot instead
+    contourPlotDiv: HTMLDivElement;
 }
 
+/**
+ * Initialize all visualization plots
+ * @param elements DOM elements for visualization
+ * @param data Training data
+ * @param gridData Grid data for surface plots
+ * @param functionName Name of the function being approximated
+ */
 export function initializeVisualization(
     elements: VisualizationElements,
     data: GeneratedData,
@@ -18,16 +22,18 @@ export function initializeVisualization(
 ) {
     const { plot3dDiv, lossPlotDiv, contourPlotDiv } = elements;
 
-    // Create 3D surface plot
     initialize3DPlot(plot3dDiv, data, gridData, functionName);
-
-    // Create empty loss plot
     initializeLossPlot(lossPlotDiv);
-
-    // Create empty accuracy plot (replacing contour plot)
     initializeAccuracyPlot(contourPlotDiv);
 }
 
+/**
+ * Initialize the 3D surface plot
+ * @param plotDiv Container element
+ * @param data Training data
+ * @param gridData Grid data for surface plot
+ * @param functionName Name of the function being approximated
+ */
 function initialize3DPlot(
     plotDiv: HTMLDivElement,
     data: GeneratedData,
@@ -120,6 +126,10 @@ function initialize3DPlot(
     }
 }
 
+/**
+ * Initialize the loss plot
+ * @param plotDiv Container element
+ */
 function initializeLossPlot(plotDiv: HTMLDivElement) {
     // Create empty loss trace
     const lossTrace = {
@@ -140,7 +150,7 @@ function initializeLossPlot(plotDiv: HTMLDivElement) {
             title: 'Loss',
             type: 'log'
         },
-        margin: { l: 50, r: 50, b: 50, t: 50 },  // Increased margins
+        margin: { l: 50, r: 50, b: 50, t: 50 },
         autosize: true,
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)'
@@ -159,6 +169,10 @@ function initializeLossPlot(plotDiv: HTMLDivElement) {
     }
 }
 
+/**
+ * Initialize the accuracy plot
+ * @param plotDiv Container element
+ */
 function initializeAccuracyPlot(plotDiv: HTMLDivElement) {
     // Create empty accuracy traces
     const trainAccuracyTrace = {
@@ -190,7 +204,7 @@ function initializeAccuracyPlot(plotDiv: HTMLDivElement) {
             range: [0, 1],
             tickformat: '.0%'
         },
-        margin: { l: 50, r: 50, b: 50, t: 50 },  // Increased margins
+        margin: { l: 50, r: 50, b: 50, t: 50 },
         autosize: true,
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)'
@@ -209,6 +223,14 @@ function initializeAccuracyPlot(plotDiv: HTMLDivElement) {
     }
 }
 
+/**
+ * Update all visualization elements with current training data
+ * @param elements DOM elements for visualization
+ * @param history Training history
+ * @param gridData Grid data for surface plot
+ * @param currentEpoch Current training epoch
+ * @param numEpochs Total number of epochs
+ */
 export function updateVisualization(
     elements: VisualizationElements,
     history: TrainingHistory,
@@ -219,151 +241,124 @@ export function updateVisualization(
     const { plot3dDiv, lossPlotDiv, contourPlotDiv } = elements;
 
     // Update 3D plot if we have predictions
-    if (history.predictions.length > 0) {
-        // Find the best prediction to use for the current epoch
-        // First try to find the exact epoch
-        const exactEpochIndex = history.epochs.indexOf(currentEpoch);
+    if (history.predictions && history.predictions.length > 0 && history.epochs.length > 0) {
+        const vizEpochs = history.epochs.filter((epoch, index) => history.predictions[index] && history.predictions[index].length > 0);
+        const vizPredictions = history.predictions.filter(p => p && p.length > 0);
 
-        // If exact epoch isn't found, find the closest lower epoch
-        let closestLowerEpochIndex = -1;
-        if (exactEpochIndex < 0) {
-            for (let i = 0; i < history.epochs.length; i++) {
-                if (history.epochs[i] <= currentEpoch &&
-                    (closestLowerEpochIndex < 0 || history.epochs[i] > history.epochs[closestLowerEpochIndex])) {
-                    closestLowerEpochIndex = i;
+        if (vizEpochs.length > 0 && vizPredictions.length > 0) {
+            let targetEpoch = currentEpoch;
+            // If currentEpoch is beyond the last epoch with prediction, use the last available one
+            if (currentEpoch > vizEpochs[vizEpochs.length - 1]) {
+                targetEpoch = vizEpochs[vizEpochs.length - 1];
+            }
+
+            let validIndex = vizEpochs.findIndex(e => e === targetEpoch);
+            if (validIndex === -1) {
+                // Find closest lower epoch if exact not found
+                for (let i = vizEpochs.length - 1; i >= 0; i--) {
+                    if (vizEpochs[i] <= targetEpoch) {
+                        validIndex = i;
+                        break;
+                    }
                 }
             }
-        }
+            // If still not found (e.g. targetEpoch is before any vizEpoch), use the first available
+            if (validIndex === -1 && vizPredictions.length > 0) {
+                validIndex = 0;
+            }
 
-        // Use exact match if available, otherwise the closest one, or the last one
-        let validIndex: number;
-        if (exactEpochIndex >= 0) {
-            validIndex = exactEpochIndex;
-        } else if (closestLowerEpochIndex >= 0) {
-            validIndex = closestLowerEpochIndex;
+            if (validIndex !== -1 && vizPredictions[validIndex]) {
+                const predictionsForEpoch = vizPredictions[validIndex];
+
+                if (predictionsForEpoch && predictionsForEpoch.length > 0) {
+                    const zPredGrid = reshapePredictions(predictionsForEpoch, gridData.xGrid.length);
+                    console.log('Updating 3D plot with predictions', {
+                        shape: `${zPredGrid.length}x${zPredGrid[0]?.length || 0}`,
+                        epochForViz: vizEpochs[validIndex],
+                        gridSize: gridData.xGrid.length,
+                        numPredictions: predictionsForEpoch.length
+                    });
+                    try {
+                        const plotlyDiv = plot3dDiv as any;
+                        if (plotlyDiv.data && plotlyDiv.data[1]) {
+                            plotlyDiv.data[1].z = zPredGrid;
+                            Plotly.redraw(plot3dDiv);
+                        } else {
+                            throw new Error('Surface trace not found for update');
+                        }
+                        if ((window as any).Plotly && plot3dDiv) {
+                            (window as any).Plotly.Plots.resize(plot3dDiv);
+                        }
+                    } catch (error) {
+                        console.error('Error updating 3D plot:', error);
+                        try {
+                            const newData = {
+                                type: 'surface',
+                                x: gridData.xGrid[0],
+                                y: gridData.yGrid.map(row => row[0]),
+                                z: zPredGrid,
+                                colorscale: 'Viridis',
+                                opacity: 0.7,
+                                showscale: false,
+                                name: 'Neural Network Prediction'
+                            };
+                            Plotly.deleteTraces(plot3dDiv, 1);
+                            Plotly.addTraces(plot3dDiv, newData, 1);
+                            console.log('Surface plot recreated successfully');
+                        } catch (secondError) {
+                            console.error('Failed to recreate surface plot:', secondError);
+                        }
+                    }
+                }
+            } else {
+                // console.warn("Could not find a valid prediction index for 3D plot update.");
+            }
         } else {
-            validIndex = history.predictions.length - 1;
-        }
-
-        const predictions = history.predictions[validIndex];
-
-        if (predictions) {
-            // Reshape predictions to 2D grid
-            const zPredGrid = reshapePredictions(predictions, gridData.xGrid.length);
-
-            // Check if zPredGrid has the correct format
-            console.log('Updating 3D plot with predictions', {
-                shape: `${zPredGrid.length}x${zPredGrid[0]?.length || 0}`,
-                epochIndex: validIndex,
-                epoch: history.epochs[validIndex],
-                minValue: Math.min(...zPredGrid.flat()),
-                maxValue: Math.max(...zPredGrid.flat())
-            });
-
-            // Update prediction surface
-            try {
-                // Instead of using Plotly.update which might not work correctly with surface plots
-                // Let's directly update the data source
-                // Type assertion to access Plotly's data property on the div
-                const plotlyDiv = plot3dDiv as any;
-                if (plotlyDiv.data && plotlyDiv.data[1]) {
-                    // Update the z values for the surface trace (index 1)
-                    plotlyDiv.data[1].z = zPredGrid;
-
-                    // Use Plotly.redraw which is faster and more reliable for surface plots
-                    // @ts-ignore - Plotly is loaded externally
-                    Plotly.redraw(plot3dDiv);
-
-                    console.log('Surface plot updated successfully using redraw');
-                } else {
-                    // Fallback to recreating the trace 
-                    throw new Error('Surface trace not found, falling back to recreate');
-                }
-
-                // Resize plot to fit container
-                if ((window as any).Plotly && plot3dDiv) {
-                    (window as any).Plotly.Plots.resize(plot3dDiv);
-                }
-            } catch (error) {
-                console.error('Error updating 3D plot:', error);
-
-                // If update fails, try recreating the surface
-                try {
-                    const newData = {
-                        type: 'surface',
-                        x: gridData.xGrid[0],
-                        y: gridData.yGrid.map(row => row[0]),
-                        z: zPredGrid,
-                        colorscale: 'Viridis',
-                        opacity: 0.7,
-                        showscale: false,
-                        name: 'Neural Network Prediction'
-                    };
-
-                    // @ts-ignore - Plotly is loaded externally
-                    Plotly.deleteTraces(plot3dDiv, 1); // Delete the prediction trace (index 1)
-                    // @ts-ignore - Plotly is loaded externally
-                    Plotly.addTraces(plot3dDiv, newData, 1); // Add it back at the same index
-
-                    console.log('Surface plot recreated successfully');
-                } catch (secondError) {
-                    console.error('Failed to recreate surface plot:', secondError);
-                }
-            }
+            // console.warn("No valid epochs or predictions for 3D plot update.");
         }
     }
 
     // Update loss plot
     if (history.loss.length > 0) {
-        const epochs = Array.from({ length: history.loss.length }, (_, i) => i);
+        const epochs = history.epochs.slice(0, history.loss.length); // Ensure x and y have same length
         const update = {
             x: [epochs],
             y: [history.loss]
         };
-
-        // @ts-ignore - Plotly is loaded externally
         Plotly.update(lossPlotDiv, update, {}, [0]);
-
-        // Resize plot to fit container
         if ((window as any).Plotly && lossPlotDiv) {
             (window as any).Plotly.Plots.resize(lossPlotDiv);
         }
     }
 
-    // Update accuracy plot (replacing contour plot)
+    // Update accuracy plot
     if (history.trainAccuracy.length > 0) {
-        const epochs = Array.from({ length: history.trainAccuracy.length }, (_, i) => i);
-
-        // Prepare update for train accuracy
+        const epochs = history.epochs.slice(0, history.trainAccuracy.length);
         const trainAccuracyUpdate = {
             x: [epochs],
             y: [history.trainAccuracy]
         };
-
-        // Prepare update for test accuracy if available
         const testAccuracyUpdate = {
             x: [epochs],
-            y: [history.testAccuracy.length > 0 ? history.testAccuracy : []]
+            y: [history.testAccuracy.length === epochs.length ? history.testAccuracy : epochs.map(() => NaN)] // Pad if necessary
         };
-
-        // @ts-ignore - Plotly is loaded externally
         Plotly.update(contourPlotDiv,
-            {
-                x: [trainAccuracyUpdate.x[0], testAccuracyUpdate.x[0]],
-                y: [trainAccuracyUpdate.y[0], testAccuracyUpdate.y[0]]
-            },
+            { x: [trainAccuracyUpdate.x[0], testAccuracyUpdate.x[0]], y: [trainAccuracyUpdate.y[0], testAccuracyUpdate.y[0]] },
             {},
             [0, 1]
         );
-
-        // Resize plot to fit container
         if ((window as any).Plotly && contourPlotDiv) {
             (window as any).Plotly.Plots.resize(contourPlotDiv);
         }
     }
 }
 
-// Reshape flat predictions to 2D grid
+/**
+ * Reshape flat predictions into a 2D grid
+ * @param predictions Array of predictions
+ * @param gridSize Size of the grid
+ * @returns 2D array of predictions
+ */
 function reshapePredictions(predictions: number[][], gridSize: number): number[][] {
     const result: number[][] = [];
 

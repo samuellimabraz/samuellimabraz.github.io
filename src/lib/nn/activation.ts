@@ -1,12 +1,25 @@
-// Activation functions for neural networks
-
-// Base interface for activation functions
+/**
+ * Interface for activation functions (non-linearity to the network)
+ */
 export interface ActivationFn {
+    /**
+     * Apply the activation function to input values
+     * @param x Input array of values
+     * @returns Activated values
+     */
     activate: (x: number[]) => number[];
+
+    /**
+     * Calculate the derivative of the activation function
+     * @param x Input array of values
+     * @returns Derivatives at the input values
+     */
     derivative: (x: number[]) => number[];
 }
 
-// Sigmoid activation function: 1 / (1 + e^(-x))
+/**
+ * Sigmoid activation function: 1 / (1 + e^(-x))
+ */
 export class Sigmoid implements ActivationFn {
     activate(x: number[]): number[] {
         return x.map(val => 1 / (1 + Math.exp(-Math.min(Math.max(val, -500), 500))));
@@ -18,7 +31,9 @@ export class Sigmoid implements ActivationFn {
     }
 }
 
-// ReLU activation function: max(0, x)
+/**
+ * ReLU (Rectified Linear Unit) activation function: max(0, x)
+ */
 export class ReLU implements ActivationFn {
     activate(x: number[]): number[] {
         return x.map(val => Math.max(0, val));
@@ -29,7 +44,9 @@ export class ReLU implements ActivationFn {
     }
 }
 
-// Tanh activation function: tanh(x)
+/**
+ * Tanh (Hyperbolic Tangent) activation function: tanh(x)
+ */
 export class Tanh implements ActivationFn {
     activate(x: number[]): number[] {
         return x.map(val => Math.tanh(val));
@@ -40,7 +57,9 @@ export class Tanh implements ActivationFn {
     }
 }
 
-// Linear activation function: f(x) = x
+/**
+ * Linear activation function: f(x) = x
+ */
 export class Linear implements ActivationFn {
     activate(x: number[]): number[] {
         return [...x];
@@ -51,7 +70,11 @@ export class Linear implements ActivationFn {
     }
 }
 
-// Function to get activation function by name
+/**
+ * Factory function to get an activation function by name
+ * @param name The name of the activation function
+ * @returns The corresponding activation function object
+ */
 export function getActivation(name: string): ActivationFn {
     switch (name.toLowerCase()) {
         case 'sigmoid':

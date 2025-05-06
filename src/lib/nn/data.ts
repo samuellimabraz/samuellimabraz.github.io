@@ -1,18 +1,42 @@
-// Data generation functions for neural network training
-
-// Interface for generated data
+/**
+ * Interface for generated data sets
+ */
 export interface GeneratedData {
-    X: number[][];  // Input features
-    Y: number[][];  // Output values
+    /**
+     * Input features matrix where each row is a sample and each column a feature
+     */
+    X: number[][];
+
+    /**
+     * Output values matrix where each row corresponds to a sample
+     */
+    Y: number[][];
 }
 
+/**
+ * Interface for grid data used in function visualization
+ */
 export interface GridData {
+    /**
+     * Flattened grid points as [x, y] pairs
+     */
     gridPoints: number[][];
+
+    /**
+     * X-coordinates of the grid
+     */
     xGrid: number[][];
+
+    /**
+     * Y-coordinates of the grid
+     */
     yGrid: number[][];
 }
 
-// Standard Scaler for data normalization
+/**
+ * StandardScaler for data normalization
+ * Normalizes data to have zero mean and unit variance
+ */
 export class StandardScaler {
     private xMean: number[] = [];
     private xStd: number[] = [];
@@ -21,7 +45,11 @@ export class StandardScaler {
     private isXFit: boolean = false;
     private isYFit: boolean = false;
 
-    // Fit scaler to the data (compute mean and standard deviation)
+    /**
+     * Fit scaler to both input and output data
+     * @param X Input features matrix
+     * @param Y Optional output values matrix
+     */
     fit(X: number[][], Y?: number[][]): void {
         this.fitX(X);
         if (Y) {
@@ -29,7 +57,10 @@ export class StandardScaler {
         }
     }
 
-    // Fit scaler to X features
+    /**
+     * Fit scaler to input features
+     * @param X Input features matrix
+     */
     fitX(X: number[][]): void {
         if (X.length === 0) return;
 
@@ -48,7 +79,6 @@ export class StandardScaler {
             this.xMean[i] /= X.length;
         }
 
-        // Calculate standard deviation
         for (const x of X) {
             for (let i = 0; i < dims; i++) {
                 this.xStd[i] += Math.pow(x[i] - this.xMean[i], 2);
@@ -56,8 +86,7 @@ export class StandardScaler {
         }
 
         for (let i = 0; i < dims; i++) {
-            this.xStd[i] = Math.sqrt(this.xStd[i] / X.length);
-            // Avoid division by zero
+            this.xStd[i] = Math.sqrt(this.xStd[i] / X.length)
             if (this.xStd[i] === 0) {
                 this.xStd[i] = 1;
             }
@@ -66,7 +95,10 @@ export class StandardScaler {
         this.isXFit = true;
     }
 
-    // Fit scaler to Y values
+    /**
+     * Fit scaler to output values
+     * @param Y Output values matrix
+     */
     fitY(Y: number[][]): void {
         if (Y.length === 0) return;
 
@@ -74,7 +106,6 @@ export class StandardScaler {
         this.yMean = Array(dims).fill(0);
         this.yStd = Array(dims).fill(0);
 
-        // Calculate mean
         for (const y of Y) {
             for (let i = 0; i < dims; i++) {
                 this.yMean[i] += y[i];
@@ -85,7 +116,6 @@ export class StandardScaler {
             this.yMean[i] /= Y.length;
         }
 
-        // Calculate standard deviation
         for (const y of Y) {
             for (let i = 0; i < dims; i++) {
                 this.yStd[i] += Math.pow(y[i] - this.yMean[i], 2);
@@ -94,7 +124,6 @@ export class StandardScaler {
 
         for (let i = 0; i < dims; i++) {
             this.yStd[i] = Math.sqrt(this.yStd[i] / Y.length);
-            // Avoid division by zero
             if (this.yStd[i] === 0) {
                 this.yStd[i] = 1;
             }
@@ -103,7 +132,11 @@ export class StandardScaler {
         this.isYFit = true;
     }
 
-    // Transform X features (normalize)
+    /**
+     * Transform input features by normalizing them
+     * @param X Input features matrix
+     * @returns Normalized features
+     */
     transformX(X: number[][]): number[][] {
         if (!this.isXFit) {
             throw new Error('Scaler not fit for X. Call fitX first.');
@@ -114,7 +147,11 @@ export class StandardScaler {
         });
     }
 
-    // Transform Y values (normalize)
+    /**
+     * Transform output values by normalizing them
+     * @param Y Output values matrix
+     * @returns Normalized output values
+     */
     transformY(Y: number[][]): number[][] {
         if (!this.isYFit) {
             throw new Error('Scaler not fit for Y. Call fitY first.');
@@ -125,7 +162,11 @@ export class StandardScaler {
         });
     }
 
-    // Inverse transform X features (denormalize)
+    /**
+     * Inverse transform input features (denormalize)
+     * @param X Normalized input features
+     * @returns Original scale features
+     */
     inverseTransformX(X: number[][]): number[][] {
         if (!this.isXFit) {
             throw new Error('Scaler not fit for X. Call fitX first.');
@@ -136,7 +177,11 @@ export class StandardScaler {
         });
     }
 
-    // Inverse transform Y values (denormalize)
+    /**
+     * Inverse transform output values (denormalize)
+     * @param Y Normalized output values
+     * @returns Original scale output values
+     */
     inverseTransformY(Y: number[][]): number[][] {
         if (!this.isYFit) {
             throw new Error('Scaler not fit for Y. Call fitY first.');
@@ -147,7 +192,10 @@ export class StandardScaler {
         });
     }
 
-    // Get parameters for later reuse
+    /**
+     * Get scaling parameters for later reuse
+     * @returns Object containing mean and standard deviation values
+     */
     getParams(): { xMean: number[], xStd: number[], yMean: number[], yStd: number[] } {
         return {
             xMean: [...this.xMean],
@@ -157,7 +205,9 @@ export class StandardScaler {
         };
     }
 
-    // Reset the scaler
+    /**
+     * Reset the scaler to its initial state
+     */
     reset(): void {
         this.xMean = [];
         this.xStd = [];
@@ -168,27 +218,52 @@ export class StandardScaler {
     }
 }
 
-// Saddle function: f(x, y) = x^2 - y^2
+/**
+ * Saddle function: f(x, y) = x^2 - y^2
+ * @param x X coordinate
+ * @param y Y coordinate
+ * @returns Function value at (x,y)
+ */
 export function saddleFunction(x: number, y: number): number {
     return x * x - y * y;
 }
 
-// Rosenbrock function: f(x, y) = (1 - x)^2 + 100 * (y - x^2)^2
+/**
+ * Rosenbrock function: f(x, y) = (1 - x)^2 + 100 * (y - x^2)^2
+ * Classic optimization test function with a narrow curved valley
+ * @param x X coordinate
+ * @param y Y coordinate
+ * @returns Function value at (x,y)
+ */
 export function rosenbrockFunction(x: number, y: number): number {
     return Math.pow(1 - x, 2) + 100 * Math.pow(y - x * x, 2);
 }
 
-// Sine function: f(x, y) = sin(x) * cos(y)
+/**
+ * Sine function: f(x, y) = sin(x) * cos(y)
+ * @param x X coordinate
+ * @param y Y coordinate
+ * @returns Function value at (x,y)
+ */
 export function sineFunction(x: number, y: number): number {
     return Math.sin(x) * Math.cos(y);
 }
 
-// Circle function: f(x, y) = x^2 + y^2
+/**
+ * Circle function: f(x, y) = x^2 + y^2
+ * @param x X coordinate
+ * @param y Y coordinate
+ * @returns Function value at (x,y)
+ */
 export function circleFunction(x: number, y: number): number {
     return x * x + y * y;
 }
 
-// Get function by name
+/**
+ * Get function by name
+ * @param name Function name
+ * @returns The corresponding function
+ */
 export function getFunctionByName(name: string): (x: number, y: number) => number {
     switch (name.toLowerCase()) {
         case 'saddle':
@@ -200,11 +275,19 @@ export function getFunctionByName(name: string): (x: number, y: number) => numbe
         case 'circle':
             return circleFunction;
         default:
-            return saddleFunction;
+            return sineFunction;
     }
 }
 
-// Generate training data from a function
+/**
+ * Generate synthetic data for a 2D function
+ * @param functionName Name of the function to generate data for
+ * @param samples Number of data points to generate
+ * @param xRange Range of x values [min, max]
+ * @param yRange Range of y values [min, max]
+ * @param noise Amount of Gaussian noise to add
+ * @returns Generated data points
+ */
 export function generateData(
     functionName: string,
     samples: number,
@@ -220,11 +303,9 @@ export function generateData(
 
     // Generate random points
     for (let i = 0; i < samples; i++) {
-        // Generate random x and y coordinates within the specified ranges
         const x = Math.random() * (xRange[1] - xRange[0]) + xRange[0];
         const y = Math.random() * (yRange[1] - yRange[0]) + yRange[0];
 
-        // Calculate z value with optional noise
         let z = func(x, y);
         if (noise > 0) {
             // Add Gaussian noise
@@ -238,7 +319,13 @@ export function generateData(
     return { X, Y };
 }
 
-// Generate grid data for visualization
+/**
+ * Generate a grid for function visualization
+ * @param xRange Range of x values [min, max]
+ * @param yRange Range of y values [min, max]
+ * @param gridSize Number of points in each dimension
+ * @returns Grid data structure
+ */
 export function generateGridData(
     xRange: [number, number] = [-3, 3],
     yRange: [number, number] = [-3, 3],
@@ -248,7 +335,6 @@ export function generateGridData(
     const xGrid: number[][] = [];
     const yGrid: number[][] = [];
 
-    // Create grid lines
     const xValues = Array.from({ length: gridSize }, (_, i) =>
         xRange[0] + (xRange[1] - xRange[0]) * i / (gridSize - 1)
     );
@@ -257,7 +343,6 @@ export function generateGridData(
         yRange[0] + (yRange[1] - yRange[0]) * i / (gridSize - 1)
     );
 
-    // Create meshgrid
     for (let i = 0; i < gridSize; i++) {
         xGrid.push([]);
         yGrid.push([]);
@@ -272,7 +357,12 @@ export function generateGridData(
     return { gridPoints, xGrid, yGrid };
 }
 
-// Split data into training and testing sets
+/**
+ * Split dataset into training and testing sets
+ * @param data Complete dataset
+ * @param testRatio Proportion of data to use for testing
+ * @returns Object containing training and testing datasets
+ */
 export function splitTrainTest(
     data: GeneratedData,
     testRatio: number = 0.2
@@ -281,7 +371,6 @@ export function splitTrainTest(
     const numTest = Math.floor(numSamples * testRatio);
     const numTrain = numSamples - numTest;
 
-    // Create shallow copies of the arrays
     const X = [...data.X];
     const Y = [...data.Y];
 
@@ -304,7 +393,13 @@ export function splitTrainTest(
     };
 }
 
-// Calculate true function values on a grid
+/**
+ * Calculate true function values on a grid for visualization
+ * @param functionName Name of the function to evaluate
+ * @param xGrid X-coordinates grid
+ * @param yGrid Y-coordinates grid
+ * @returns Matrix of function values
+ */
 export function calculateTrueSurface(
     functionName: string,
     xGrid: number[][],
