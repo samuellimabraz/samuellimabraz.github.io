@@ -79,7 +79,7 @@ export const projects: Project[] = [
         description: "A Java‑based deep learning library built from scratch (inspired by Keras and “Deep Learning From Scratch”), featuring core layers (Conv2D, Dense, Dropout, etc.), activation/loss/optimizer modules, ND4J‑powered tensor operations, MongoDB persistence via Morphia, and a QuickDraw‑style sketch‑classification game using JavaFX and MVC.",
         tags: ["Java", "Deep Learning", "Framework", "Educational"],
         github: "https://github.com/samuellimabraz/cafedl",
-        image: "https://i.postimg.cc/QM7rGZ6H/image-2.png",
+        image: "../../assets/cafe-dl.png",
         featured: true,
         codeExamples: [
             {
@@ -115,7 +115,7 @@ export const projects: Project[] = [
         description: "ROS2 adaptation of the vision_to_mavros package that bridges visual pose estimation systems with flight controllers. Enables integration between Intel RealSense T265 tracking cameras and ArduPilot/PX4 via MAVROS with support for various mounting orientations.",
         tags: ["ROS2", "Robotics", "Drone", "Computer Vision", "ArduPilot", "RealSense"],
         github: "https://github.com/Black-Bee-Drones/vision_to_mavros",
-        image: "https://i.postimg.cc/c1zMn27L/realsense-photo.jpg",
+        image: "../../assets/realsense-photo.jpg",
         featured: true,
         codeExamples: [
             {
@@ -143,7 +143,7 @@ export const projects: Project[] = [
         github: "https://github.com/samuellimabraz/OpenCVGUI",
         demo: "https://huggingface.co/spaces/samuellimabraz/opencv-gui",
         embedUrl: "https://samuellimabraz-opencv-gui.hf.space",
-        image: "https://i.postimg.cc/050J03qs/opencv-gui-2.png",
+        image: "../../assets/opencv-gui-2.png",
         featured: true,
         codeExamples: [
             {
@@ -215,7 +215,7 @@ export const projects: Project[] = [
         description: "Generic, configurable PID controller implemented as a ROS2 node in C++. Designed for versatile control applications including line following, altitude control, position control, velocity control, and heading/yaw control.",
         tags: ["ROS2", "C++", "Control Systems", "Robotics", "Real-time"],
         github: "https://github.com/Black-Bee-Drones/pid-controller",
-        image: "https://i.postimg.cc/0y23yL92/Screenshot-from-2025-05-01-00-02-58.png",
+        image: "../../assets/pid.png",
         featured: true,
         codeExamples: [
             {
@@ -263,7 +263,7 @@ export const projects: Project[] = [
         tags: ["Computer Vision", "Hugging Face", "Open Source", "Community"],
         demo: "https://huggingface.co/spaces/samuellimabraz/cv-hangout",
         embedUrl: "https://samuellimabraz-cv-hangout.hf.space",
-        image: "https://media.licdn.com/dms/image/v2/D4E22AQGHKgZwTrxd4w/feedshare-shrink_2048_1536/B4EZY0Fb6oHgAo-/0/1744630563125?e=1749081600&v=beta&t=IzFK5yirtJK7A12pbcBHk4QQTPY8YJjs1RHjWlP7th4",
+        image: "../../assets/hf-hangout.png",
         featured: true,
         codeExamples: [
             {
@@ -279,7 +279,7 @@ export const projects: Project[] = [
         description: "Scalable facial recognition system using DeepFace, FastAPI, and MongoDB Atlas Vector Search for efficient face matching and similarity search.",
         tags: ["Facial Recognition", "FastAPI", "MongoDB", "Vector Search"],
         github: "https://github.com/samuellimabraz/face-api",
-        image: "https://i.postimg.cc/02SGwtH7/Screenshot-from-2025-04-30-22-42-31.png",
+        image: "../../assets/face-api.png",
         featured: false,
         codeExamples: [
             {
@@ -336,7 +336,7 @@ export const projects: Project[] = [
         description: "Python application for real-time mouse control via hand gestures using OpenCV and Google MediaPipe for accessibility and hands-free computing.",
         tags: ["Computer Vision", "MediaPipe", "Python"],
         github: "https://github.com/samuellimabraz/HandMouseController",
-        image: "https://i.postimg.cc/3wxGkFqT/Screenshot-from-2025-04-30-22-47-42.png",
+        image: "../../assets/hand-controller.png",
         featured: false,
         codeExamples: [
             {
