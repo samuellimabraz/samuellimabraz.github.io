@@ -263,7 +263,7 @@ export const projects: Project[] = [
         tags: ["Computer Vision", "Hugging Face", "Open Source", "Community"],
         demo: "https://huggingface.co/spaces/samuellimabraz/cv-hangout",
         embedUrl: "https://samuellimabraz-cv-hangout.hf.space",
-        image: "https://samuellimabraz.github.io/assets/hf-hangout.png",
+        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/hf-hangout.png",
         featured: true,
         codeExamples: [
             {
