@@ -160,7 +160,7 @@ const AboutSection: React.FC<SectionProps> = ({ scrollDirection }) => {
                     <h3 className="text-lg font-bold text-dark-text-primary">Computer Vision</h3>
                   </div>
                   <p className="text-dark-text-secondary mb-4">
-                    Creating production-ready vision systems from object detection to autonomous navigation. Projects include signature detection models featured on Hugging Face Blog.
+                    Creating production-ready vision systems from object detection to autonomous navigation.
                   </p>
                   <div className="flex flex-wrap gap-2 mt-2">
                     <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">OpenCV</span>
