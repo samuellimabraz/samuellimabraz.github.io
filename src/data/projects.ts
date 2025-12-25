@@ -429,5 +429,46 @@ export const projects: Project[] = [
                 language: "python"
             }
         ]
+    },
+    {
+        id: "board-bringup",
+        title: "Board Bring-Up PIC18F4550",
+        description: "PCB board bring-up and validation project for PIC18F4550 microcontroller. Built firmware with state machine architecture, LCD display, ADC monitoring, RTC clock, I2C communication, and USB serial control. Features multilingual IHM menu with alarm system.",
+        tags: ["Embedded Systems", "C", "PIC18F4550", "State Machine", "I2C", "MPLAB X"],
+        github: "https://github.com/samuellimabraz/BoardBring-Up-PIC18F4550",
+        image: "https://raw.githubusercontent.com/samuellimabraz/BoardBring-Up-PIC18F4550/main/docs/DiagramaDeEstados.png",
+        featured: false,
+        codeExamples: [
+            {
+                path: "src/main.c",
+                description: "Main Application Entry Point",
+                language: "c"
+            },
+            {
+                path: "src/stateMachine.c",
+                description: "State Machine Implementation",
+                language: "c"
+            },
+            {
+                path: "src/lcd.c",
+                description: "LCD Driver",
+                language: "c"
+            },
+            {
+                path: "src/adc.c",
+                description: "ADC Driver",
+                language: "c"
+            },
+            {
+                path: "src/var.c",
+                description: "Storing system variables",
+                language: "c"
+            },
+            {
+                path: "src/serial.c",
+                description: "Serial Communication",
+                language: "c"
+            }
+        ]
     }
 ]; 
