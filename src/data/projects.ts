@@ -2,6 +2,39 @@ import { Project, CodeExample } from '../lib/types';
 
 export const projects: Project[] = [
     {
+        id: "quantum-assistant",
+        title: "Quantum Assistant: Multimodal VLM for Quantum Computing",
+        description: "Specializing multimodal vision-language models for quantum computing with Qiskit through synthetic data generation, efficient fine-tuning (rsLoRA), and evaluation. Built an 8,366-sample multimodal dataset (45% with images) achieving +11-17pp improvement on Qiskit HumanEval benchmark. Fine-tuned Qwen3-VL-8B models available on HuggingFace.",
+        tags: ["VLM", "Multimodal", "PEFT", "LoRA", "Qiskit", "Quantum Computing", "Python"],
+        github: "https://github.com/samuellimabraz/quantum-assistant",
+        demo: "https://huggingface.co/spaces/samuellimabraz/quantum-assistant",
+        embedUrl: "https://samuellimabraz-quantum-assistant.hf.space",
+        image: "https://media.githubusercontent.com/media/samuellimabraz/quantum-assistant/main/assets/images/synthetic-pipeline.png",
+        featured: true,
+        codeExamples: [
+            {
+                path: "src/synthetic_data/generators/stages/answer.py",
+                description: "Answer Generation Stage for Synthetic Data Pipeline",
+                language: "python"
+            },
+            {
+                path: "src/evaluate/evaluators/code.py",
+                description: "Code Evaluator with Pass@k Metrics",
+                language: "python"
+            },
+            {
+                path: "src/finetune/preparer.py",
+                description: "Fine-tuning Data Preparation for ms-swift",
+                language: "python"
+            },
+            {
+                path: "src/models/client.py",
+                description: "LLM/VLM Client for OpenAI-compatible APIs",
+                language: "python"
+            }
+        ]
+    },
+    {
         id: "signature-detection",
         title: "Signature Detection Model",
         description: "Developed an open-source signature detection system by building a hybrid dataset with refined public samples and strong augmentations (Albumentations, OpenCV). Benchmarked multiple object detection architectures (YOLOv8–v12, DETR, YOLOS) and fine-tuned YOLOv8s for the best performance-speed trade-off. Used Optuna for hyperparameter optimization, improving F1-score by 7.94%. Deployed on Azure via NVIDIA Triton Inference Server with ONNX/OpenVINO backends, achieving sub-200 ms latency on CPU. Implemented CI/CD with GitHub Actions and tracked experiments using Weights & Biases. Dataset, code, and demo are fully open-source and featured on the Hugging Face blog (>100 upvotes).",
@@ -300,6 +333,52 @@ export const projects: Project[] = [
         ]
     },
     {
+        id: "educai",
+        title: "EducAI: AI Math Assistant",
+        description: "AI-powered mathematics platform with natural language chat, OCR for handwritten problems, graph visualization, and step-by-step problem solving. Built with FastAPI, React, OlmOCR, and Qwen Math LLM served via vLLM. Developed as a team project at UNIFEI.",
+        tags: ["FastAPI", "React", "LLM", "OCR", "vLLM", "Docker", "Math"],
+        github: "https://github.com/samuellimabraz/EducAI",
+        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/educai-home.png",
+        featured: false,
+        codeExamples: [
+            {
+                path: "docker/models/Dockerfile.vllm",
+                description: "Dockerfile for vLLM models",
+                language: "docker"
+            },
+            {
+                path: "backend/app/main.py",
+                description: "FastAPI Main Application",
+                language: "python"
+            },
+            {
+                path: "backend/app/services/llm_service.py",
+                description: "LLM Service with vLLM",
+                language: "python"
+            },
+            {
+                path: "backend/app/services/ocr_service.py",
+                description: "OCR Service for image to text conversion",
+                language: "python"
+            },
+            {
+                path: "frontend/src/components/ChatInterface.js",
+                description: "React Chat Interface",
+                language: "javascript"
+            },
+            {
+                path: "frontend/src/components/GraphVisualizer.js",
+                description: "React Graph Visualizer",
+                language: "javascript"
+            },
+            {
+                path: "frontend/src/components/SketchPad.js",
+                description: "React Sketch Pad",
+                language: "javascript"
+            }
+        ]
+    },
+    {
         id: "agent4ai",
         title: "Agent4ai: LLM Agent Framework",
         description: "A LangGraph‑based conversational agent for Tech4Humans onboarding, leveraging Adaptive, Corrective and Self‑RAG for dynamic document retrieval, real‑time web search (Tavily), Google Calendar integration, and a modular graph architecture to guide new employees through company info, tools and events.",
@@ -348,6 +427,47 @@ export const projects: Project[] = [
                 path: "src/main.py",
                 description: "Main hand tracking and mouse control logic",
                 language: "python"
+            }
+        ]
+    },
+    {
+        id: "board-bringup",
+        title: "Board Bring-Up PIC18F4550",
+        description: "PCB board bring-up and validation project for PIC18F4550 microcontroller. Built firmware with state machine architecture, LCD display, ADC monitoring, RTC clock, I2C communication, and USB serial control. Features multilingual IHM menu with alarm system.",
+        tags: ["Embedded Systems", "C", "PIC18F4550", "State Machine", "I2C", "MPLAB X"],
+        github: "https://github.com/samuellimabraz/BoardBring-Up-PIC18F4550",
+        image: "https://raw.githubusercontent.com/samuellimabraz/BoardBring-Up-PIC18F4550/main/docs/DiagramaDeEstados.png",
+        featured: false,
+        codeExamples: [
+            {
+                path: "src/main.c",
+                description: "Main Application Entry Point",
+                language: "c"
+            },
+            {
+                path: "src/stateMachine.c",
+                description: "State Machine Implementation",
+                language: "c"
+            },
+            {
+                path: "src/lcd.c",
+                description: "LCD Driver",
+                language: "c"
+            },
+            {
+                path: "src/adc.c",
+                description: "ADC Driver",
+                language: "c"
+            },
+            {
+                path: "src/var.c",
+                description: "Storing system variables",
+                language: "c"
+            },
+            {
+                path: "src/serial.c",
+                description: "Serial Communication",
+                language: "c"
             }
         ]
     }

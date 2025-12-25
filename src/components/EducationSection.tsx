@@ -14,7 +14,7 @@ const EducationSection: React.FC<SectionProps> = ({ scrollDirection }) => {
     {
       degree: "Bachelor's degree in Computer Engineering",
       institution: "Universidade Federal de Itajubá",
-      period: "Mar 2022 — Present",
+      period: "Mar 2022 — Dec 2025",
       description: "Pursuing Computer Engineering with focus on Artificial Intelligence, Machine Learning, and Computer Vision applications."
     },
     {

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Github, ExternalLink, FileCode, Code, X, Loader2, AlertTriangle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Github, ExternalLink, FileCode, Code, X, Loader2, AlertTriangle, ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { Project, CodeExample, SectionProps } from '../lib/types';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -8,6 +8,7 @@ import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import { useMultipleGithubStars } from '../hooks/useGithubStars';
 
 interface ProjectsCarouselProps extends SectionProps {
     projects: Project[];
@@ -20,6 +21,10 @@ interface CodeContent {
 }
 
 const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDirection }) => {
+    // Fetch GitHub stars for all projects
+    const repoUrls = projects.map(p => p.github).filter(Boolean) as string[];
+    const starsMap = useMultipleGithubStars(repoUrls);
+
     // Modal functionality
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
     const [modalType, setModalType] = useState<'demo' | 'repo' | 'article' | 'pdf' | null>(null);
@@ -294,6 +299,12 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                 {project.languagePt && (
                     <div className="absolute top-2 right-2 bg-dark-tertiary text-dark-text-secondary px-2 py-1 text-xs rounded-md border border-dark-border">
                         🇧🇷 PT-BR
+                    </div>
+                )}
+                {project.github && starsMap.get(project.github) !== undefined && starsMap.get(project.github)! > 0 && (
+                    <div className="absolute bottom-2 right-2 bg-dark-tertiary/90 backdrop-blur-sm text-dark-text-primary px-2 py-1 text-xs rounded-md border border-dark-border flex items-center gap-1 z-10">
+                        <Star size={12} className="text-yellow-400 fill-yellow-400" />
+                        <span className="font-medium">{starsMap.get(project.github)}</span>
                     </div>
                 )}
                 <div className="absolute inset-0 bg-dark-primary bg-opacity-80 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-3 transition-opacity">

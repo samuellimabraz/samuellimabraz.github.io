@@ -32,12 +32,13 @@ const ExtraCurricularSection: React.FC<SectionProps> = ({ scrollDirection }) => 
             period: "Apr 2023 — Present",
             description: [
                 "Developed autonomous drone software for the IMAV competition using Python and C++, contributing to a 3rd place win with fully autonomous flight capabilities.",
-                "Specialized in indoor autonomous navigation within GPS-denied environments using the ROS framework, implementing SLAM algorithms with sensors like Intel RealSense T265 and PX4 Flow.",
-                "Implemented computer vision algorithms using OpenCV for tasks such as line following, ArUco marker detection, and object position estimation.",
-                "Developed and deployed lightweight object detection models optimized for real-time execution on resource-constrained drone hardware.",
-                "Engineered navigation logic integrating sensor/vision-based data for indoor flight and GPS data for outdoor scenarios."
+                "Built indoor autonomous navigation systems for GPS denied environments using Jetson Orin Nano Super, Isaac ROS VSLAM, and Intel RealSense D435i depth cameras.",
+                "Optimized object detection models for edge AI deployment using TensorRT, OpenVINO, ONNX conversion, pruning, and quantization techniques.",
+                "Developed object detection models and PID controllers for competition tasks: gate passage, mobile landing, figure identification, package delivery, and precise rope delivery.",
+                "Implemented computer vision algorithms using OpenCV for line following, ArUco marker detection, and object position estimation.",
+                "Created post processing strategies for detection models to improve accuracy in real time scenarios.",
             ],
-            skills: ["ROS", "SLAM", "Computer Vision", "OpenCV", "Autonomous Navigation", "C++", "Python"],
+            skills: ["ROS2", "Isaac ROS", "Jetson", "TensorRT", "OpenVINO", "SLAM", "Computer Vision", "Edge AI", "C++", "Python"],
             relatedProjects: [
                 {
                     id: "pid-controller",

@@ -27,9 +27,35 @@ const WorkSection: React.FC<SectionProps> = ({ scrollDirection }) => {
 
   const experiences: WorkExperience[] = [
     {
+      title: "Machine Learning Engineer — Summer Intern",
+      company: "Chunkr",
+      period: "Jul 2025 — Present",
+      description: [
+        "Developing state-of-the-art Document Layout Analysis (DLA) solutions for intelligent document processing.",
+        "Created synthetic document datasets and benchmarks for training and evaluating layout detection models.",
+        "Developed Chunkr Layout 1, a document layout detection model with multi-GPU training, fine-tuning, and scaling strategies.",
+        "Implemented human reading order prediction algorithms and post-processing detection strategies.",
+        "Deployed models using NVIDIA Triton Inference Server for production-grade inference.",
+        "Conducted research on document understanding, studying articles and implementing novel algorithms for synthetic data generation."
+      ],
+      skills: ["Document AI", "Computer Vision", "Multi-GPU Training", "Triton Server", "Synthetic Data", "Research"],
+      relatedProjects: [
+        {
+          id: "chunkr-layout",
+          name: "Chunkr Layout 1 — SOTA Document Layout Analysis",
+          url: "https://chunkr.ai/blog/introducing-chunkr-layout-1-state-of-the-art-document-layout-analysis"
+        },
+        {
+          id: "chunkr-bench",
+          name: "Chunkr Layout Bench Dataset",
+          url: "https://huggingface.co/datasets/ChunkrAI/chunkr-layout-bench-oss"
+        }
+      ]
+    },
+    {
       title: "ML Engineer",
       company: "Tech4Humans",
-      period: "Aug 2024 — Present",
+      period: "Aug 2024 — Jul 2025",
       description: [
         "Engineered an open-source signature detection model using hybrid datasets and advanced augmentations.",
         "Benchmarked YOLO (v8–v12), DETR, and YOLOS models, selecting YOLOv8s for optimal accuracy/inference speed trade-off.",
@@ -37,7 +63,7 @@ const WorkSection: React.FC<SectionProps> = ({ scrollDirection }) => {
         "Fine-tuned Vision-Language Models (VLMs) for structured data extraction from Brazilian documents using PEFT techniques.",
         "Built AI inference gateways and model-monitoring pipelines with LiteLLM and LangFuse."
       ],
-      skills: ["Computer Vision", "Gen AI", "MLOps", "PEFT", "Vertx AI"],
+      skills: ["Computer Vision", "Gen AI", "MLOps", "PEFT", "Vertex AI"],
       relatedProjects: [
         {
           id: "signature-detection",
