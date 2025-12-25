@@ -51,13 +51,13 @@ const AboutSection: React.FC<SectionProps> = ({ scrollDirection }) => {
             >
               <div className="prose prose-lg max-w-none text-dark-text-secondary">
                 <p>
-                  Specializing in custom AI model development with PyTorch and Transformers, with particular expertise in Parameter-Efficient Fine-Tuning (PEFT) techniques that achieve excellent results with minimal computational resources.
+                  I build and deploy machine learning models. My work spans object detection systems, document layout analysis, generative model fine tuning with LoRA and QLoRA, and edge AI optimization using TensorRT, OpenVINO, and quantization techniques.
                 </p>
                 <p>
-                  From production-ready computer vision systems to autonomous drone navigation in GPS-denied environments, the focus remains on creating technology that bridges theoretical AI concepts with practical applications.
+                  I've also spent a good amount of time on robotics, developing autonomous drones that navigate indoors without GPS using RealSense cameras, SLAM algorithms, and custom PID controllers.
                 </p>
                 <p>
-                  Beyond technical skills, there's a commitment to knowledge sharing through open-source contributions, publications, and comprehensive documentation—the best AI is open.
+                  I like sharing what I learn through open source projects and writing. The best AI is open.
                 </p>
                 <blockquote className="border-l-4 border-dark-accent pl-4 italic my-6 text-dark-text-secondary">
                   "We are stardust brought to life, then empowered by the universe to figure itself out – and we have only just begun."
@@ -124,7 +124,7 @@ const AboutSection: React.FC<SectionProps> = ({ scrollDirection }) => {
               variants={cardVariants}
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Expertise Card 1 */}
+                {/* Expertise Card 1 - Model Fine-tuning */}
                 <motion.div
                   className="bg-dark-secondary border border-dark-border rounded-lg p-6 hover:shadow-md hover:shadow-dark-accent/10 transition-shadow"
                   whileHover={{ scale: 1.03 }}
@@ -134,20 +134,20 @@ const AboutSection: React.FC<SectionProps> = ({ scrollDirection }) => {
                     <svg className="w-6 h-6 mr-3 text-dark-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                     </svg>
-                    <h3 className="text-lg font-bold text-dark-text-primary">Model Engineering</h3>
+                    <h3 className="text-lg font-bold text-dark-text-primary">Model Fine-tuning</h3>
                   </div>
                   <p className="text-dark-text-secondary mb-4">
-                    Custom AI model development with PyTorch and Transformers. Specializing in PEFT techniques that achieve state-of-the-art results with minimal computational resources.
+                    Fine-tuning LLMs and Vision Language Models with PEFT techniques. Worked with LoRA, QLoRA, rsLoRA, and IA3 for efficient training with multi-GPU setups.
                   </p>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">PyTorch</span>
-                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">Transformers</span>
-                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">LoRA/QLoRA</span>
-                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">Unsloth</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">LoRA</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">QLoRA</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">VLMs</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">ms-swift</span>
                   </div>
                 </motion.div>
 
-                {/* Expertise Card 2 */}
+                {/* Expertise Card 2 - Computer Vision & Document AI */}
                 <motion.div
                   className="bg-dark-secondary border border-dark-border rounded-lg p-6 hover:shadow-md hover:shadow-dark-accent/10 transition-shadow"
                   whileHover={{ scale: 1.03 }}
@@ -160,16 +160,17 @@ const AboutSection: React.FC<SectionProps> = ({ scrollDirection }) => {
                     <h3 className="text-lg font-bold text-dark-text-primary">Computer Vision</h3>
                   </div>
                   <p className="text-dark-text-secondary mb-4">
-                    Creating production-ready vision systems from object detection to autonomous navigation.
+                    Object detection with YOLO and DETR, document layout analysis, signature detection. Building vision systems from training to production.
                   </p>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">OpenCV</span>
                     <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">YOLO</span>
-                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">ONNX</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">DETR</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">OpenCV</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">Document AI</span>
                   </div>
                 </motion.div>
 
-                {/* Expertise Card 3 */}
+                {/* Expertise Card 3 - Deployment & Optimization */}
                 <motion.div
                   className="bg-dark-secondary border border-dark-border rounded-lg p-6 hover:shadow-md hover:shadow-dark-accent/10 transition-shadow"
                   whileHover={{ scale: 1.03 }}
@@ -182,17 +183,17 @@ const AboutSection: React.FC<SectionProps> = ({ scrollDirection }) => {
                     <h3 className="text-lg font-bold text-dark-text-primary">Deployment</h3>
                   </div>
                   <p className="text-dark-text-secondary mb-4">
-                    Expertise in optimizing and deploying ML models to production. Experienced with Azure, GCP, Docker, and specialized inference servers like Triton and vLLM.
+                    Model optimization with TensorRT, OpenVINO, ONNX, pruning and quantization. Deploying to Triton Server, vLLM, Azure and GCP.
                   </p>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">Docker</span>
-                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">Azure/GCP</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">TensorRT</span>
                     <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">Triton</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">OpenVINO</span>
                     <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">vLLM</span>
                   </div>
                 </motion.div>
 
-                {/* Expertise Card 4 */}
+                {/* Expertise Card 4 - Robotics & Edge AI */}
                 <motion.div
                   className="bg-dark-secondary border border-dark-border rounded-lg p-6 hover:shadow-md hover:shadow-dark-accent/10 transition-shadow"
                   whileHover={{ scale: 1.03 }}
@@ -202,16 +203,16 @@ const AboutSection: React.FC<SectionProps> = ({ scrollDirection }) => {
                     <svg className="w-6 h-6 mr-3 text-dark-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
-                    <h3 className="text-lg font-bold text-dark-text-primary">Robotics</h3>
+                    <h3 className="text-lg font-bold text-dark-text-primary">Robotics & Edge AI</h3>
                   </div>
                   <p className="text-dark-text-secondary mb-4">
-                    Building autonomous drone systems with ROS and computer vision algorithms that enable navigation in GPS-denied environments. Contributed to winning 3rd place at IMAV competition.
+                    Autonomous drones with ROS2 and Isaac ROS. Indoor navigation using VSLAM, RealSense cameras on Jetson and Raspberry Pi. 3rd place at IMAV.
                   </p>
                   <div className="flex flex-wrap gap-2 mt-2">
                     <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">ROS2</span>
-                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">C++</span>
-                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">SLAM</span>
-                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">Optical Flow</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">Isaac ROS</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">Jetson</span>
+                    <span className="px-2 py-1 bg-dark-tertiary text-dark-text-accent rounded-md text-xs font-medium">VSLAM</span>
                   </div>
                 </motion.div>
               </div>
