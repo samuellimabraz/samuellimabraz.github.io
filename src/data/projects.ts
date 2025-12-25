@@ -2,6 +2,39 @@ import { Project, CodeExample } from '../lib/types';
 
 export const projects: Project[] = [
     {
+        id: "quantum-assistant",
+        title: "Quantum Assistant: Multimodal VLM for Quantum Computing",
+        description: "Specializing multimodal vision-language models for quantum computing with Qiskit through synthetic data generation, efficient fine-tuning (rsLoRA), and evaluation. Built an 8,366-sample multimodal dataset (45% with images) achieving +11-17pp improvement on Qiskit HumanEval benchmark. Fine-tuned Qwen3-VL-8B models available on HuggingFace.",
+        tags: ["VLM", "Multimodal", "PEFT", "LoRA", "Qiskit", "Quantum Computing", "Python"],
+        github: "https://github.com/samuellimabraz/quantum-assistant",
+        demo: "https://huggingface.co/spaces/samuellimabraz/quantum-assistant",
+        embedUrl: "https://samuellimabraz-quantum-assistant.hf.space",
+        image: "https://media.githubusercontent.com/media/samuellimabraz/quantum-assistant/main/assets/images/synthetic-pipeline.png",
+        featured: true,
+        codeExamples: [
+            {
+                path: "src/synthetic_data/generators/stages/answer.py",
+                description: "Answer Generation Stage for Synthetic Data Pipeline",
+                language: "python"
+            },
+            {
+                path: "src/evaluate/evaluators/code.py",
+                description: "Code Evaluator with Pass@k Metrics",
+                language: "python"
+            },
+            {
+                path: "src/finetune/preparer.py",
+                description: "Fine-tuning Data Preparation for ms-swift",
+                language: "python"
+            },
+            {
+                path: "src/models/client.py",
+                description: "LLM/VLM Client for OpenAI-compatible APIs",
+                language: "python"
+            }
+        ]
+    },
+    {
         id: "signature-detection",
         title: "Signature Detection Model",
         description: "Developed an open-source signature detection system by building a hybrid dataset with refined public samples and strong augmentations (Albumentations, OpenCV). Benchmarked multiple object detection architectures (YOLOv8–v12, DETR, YOLOS) and fine-tuned YOLOv8s for the best performance-speed trade-off. Used Optuna for hyperparameter optimization, improving F1-score by 7.94%. Deployed on Azure via NVIDIA Triton Inference Server with ONNX/OpenVINO backends, achieving sub-200 ms latency on CPU. Implemented CI/CD with GitHub Actions and tracked experiments using Weights & Biases. Dataset, code, and demo are fully open-source and featured on the Hugging Face blog (>100 upvotes).",

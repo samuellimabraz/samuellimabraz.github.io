@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Github, ExternalLink, X, Loader2, AlertTriangle, Code, FileCode, Download, Filter, Tag, Bookmark, BookmarkCheck } from 'lucide-react';
+import { Github, ExternalLink, X, Loader2, AlertTriangle, Code, FileCode, Download, Filter, Tag, Bookmark, BookmarkCheck, Star } from 'lucide-react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { useMultipleGithubStars } from '../hooks/useGithubStars';
 
 interface Project {
   id: string;
@@ -47,6 +48,39 @@ const ProjectsSection: React.FC = () => {
   const [showFilters, setShowFilters] = useState(false);
 
   const projects: Project[] = [
+    {
+      id: "quantum-assistant",
+      title: "Quantum Assistant: Multimodal VLM for Quantum Computing",
+      description: "Specializing multimodal vision-language models for quantum computing with Qiskit through synthetic data generation, efficient fine-tuning (rsLoRA), and evaluation. Built an 8,366-sample multimodal dataset (45% with images) achieving +11-17pp improvement on Qiskit HumanEval benchmark. Fine-tuned Qwen3-VL-8B models available on HuggingFace.",
+      tags: ["VLM", "Multimodal", "PEFT", "LoRA", "Qiskit", "Quantum Computing", "Python"],
+      github: "https://github.com/samuellimabraz/quantum-assistant",
+      demo: "https://huggingface.co/spaces/samuellimabraz/quantum-assistant",
+      embedUrl: "https://samuellimabraz-quantum-assistant.hf.space",
+      image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/synthetic-pipeline_en.png",
+      featured: true,
+      codeExamples: [
+        {
+          path: "src/synthetic_data/generators/stages/answer.py",
+          description: "Answer Generation Stage for Synthetic Data Pipeline",
+          language: "python"
+        },
+        {
+          path: "src/evaluate/evaluators/code.py",
+          description: "Code Evaluator with Pass@k Metrics",
+          language: "python"
+        },
+        {
+          path: "src/finetune/preparer.py",
+          description: "Fine-tuning Data Preparation for ms-swift",
+          language: "python"
+        },
+        {
+          path: "src/models/client.py",
+          description: "LLM/VLM Client for OpenAI-compatible APIs",
+          language: "python"
+        }
+      ]
+    },
     {
       id: "pid-controller",
       title: "PID Controller for ROS2",
@@ -389,6 +423,10 @@ const ProjectsSection: React.FC = () => {
     },
   ];
 
+  // Fetch GitHub stars for all projects
+  const repoUrls = projects.map(p => p.github).filter(Boolean) as string[];
+  const starsMap = useMultipleGithubStars(repoUrls);
+
   // Extract all unique tags from projects
   const allTags = useMemo(() => {
     const tagSet = new Set<string>();
@@ -678,6 +716,12 @@ const ProjectsSection: React.FC = () => {
                     <span className="bg-black text-white text-xs px-2 py-1 rounded-md font-medium">
                       Featured
                     </span>
+                  </div>
+                )}
+                {project.github && starsMap.get(project.github) !== undefined && starsMap.get(project.github)! > 0 && (
+                  <div className="absolute bottom-2 right-2 bg-white/90 backdrop-blur-sm text-gray-800 px-2 py-1 text-xs rounded-md border border-gray-200 flex items-center gap-1 z-10 shadow-sm">
+                    <Star size={12} className="text-yellow-500 fill-yellow-500" />
+                    <span className="font-medium">{starsMap.get(project.github)}</span>
                   </div>
                 )}
               </div>
