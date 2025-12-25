@@ -9,6 +9,7 @@ import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import { useMultipleGithubStars } from '../hooks/useGithubStars';
+import { parseGitHubRepoUrl, safeLocalStorageGet, safeLocalStorageSet } from '../lib/github';
 
 interface ProjectsCarouselProps extends SectionProps {
     projects: Project[];
@@ -18,6 +19,8 @@ interface CodeContent {
     content: string;
     loading: boolean;
     error: string | null;
+    branch?: string;
+    htmlUrl?: string;
 }
 
 const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDirection }) => {
@@ -203,24 +206,80 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
         try {
             setCodeContent({ content: '', loading: true, error: null });
 
-            // Extract owner and repo name from GitHub URL
-            const [owner, repo] = repoUrl.replace('https://github.com/', '').split('/');
+            const ref = parseGitHubRepoUrl(repoUrl);
+            if (!ref) {
+                throw new Error('Invalid GitHub repository URL');
+            }
 
-            // GitHub API endpoint for getting file contents
+            const { owner, repo } = ref;
+            const cacheKey = `gh_code_cache_v1:${owner}/${repo}:${filePath}`;
+            const cachedRaw = safeLocalStorageGet(cacheKey);
+            if (cachedRaw) {
+                try {
+                    const cached = JSON.parse(cachedRaw) as { content?: unknown; timestamp?: unknown; branch?: unknown; htmlUrl?: unknown };
+                    if (typeof cached.content === 'string' && typeof cached.timestamp === 'number') {
+                        // 24h cache for code examples
+                        if (Date.now() - cached.timestamp < 24 * 60 * 60 * 1000) {
+                            setCodeContent({
+                                content: cached.content,
+                                loading: false,
+                                error: null,
+                                branch: typeof cached.branch === 'string' ? cached.branch : undefined,
+                                htmlUrl: typeof cached.htmlUrl === 'string' ? cached.htmlUrl : undefined
+                            });
+                            return;
+                        }
+                    }
+                } catch {
+                    // ignore invalid cache
+                }
+            }
+
+            const tryRaw = async (branch: string) => {
+                const rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${filePath}`;
+                const resp = await fetch(rawUrl, { headers: { Accept: 'text/plain' } });
+                if (!resp.ok) return null;
+                const text = await resp.text();
+                return { content: text, branch, htmlUrl: `${repoUrl}/blob/${branch}/${filePath}` };
+            };
+
+            // Prefer raw.githubusercontent.com (no API rate limit for typical use)
+            const rawResult = (await tryRaw('main')) ?? (await tryRaw('master'));
+            if (rawResult) {
+                safeLocalStorageSet(cacheKey, JSON.stringify({ ...rawResult, timestamp: Date.now() }));
+                setCodeContent({ content: rawResult.content, loading: false, error: null, branch: rawResult.branch, htmlUrl: rawResult.htmlUrl });
+                return;
+            }
+
+            // Fallback to GitHub API (can be rate-limited; also limited to 1MB base64)
             const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
-
-            const response = await fetch(apiUrl);
-
+            const response = await fetch(apiUrl, { headers: { Accept: 'application/vnd.github+json' } });
             if (!response.ok) {
                 throw new Error(`Failed to fetch file: ${response.status}`);
             }
 
             const data = await response.json();
 
-            // GitHub API returns content as Base64 encoded
-            const decodedContent = atob(data.content);
+            // If available, prefer download_url (raw) since content may be missing/truncated for large files
+            if (typeof data?.download_url === 'string') {
+                const dlResp = await fetch(data.download_url, { headers: { Accept: 'text/plain' } });
+                if (!dlResp.ok) throw new Error(`Failed to download file: ${dlResp.status}`);
+                const text = await dlResp.text();
+                const htmlUrl = typeof data?.html_url === 'string' ? data.html_url : `${repoUrl}`;
+                safeLocalStorageSet(cacheKey, JSON.stringify({ content: text, timestamp: Date.now(), htmlUrl }));
+                setCodeContent({ content: text, loading: false, error: null, htmlUrl });
+                return;
+            }
 
-            setCodeContent({ content: decodedContent, loading: false, error: null });
+            if (typeof data?.content === 'string' && (data?.encoding === 'base64' || typeof data?.encoding === 'string')) {
+                const decodedContent = atob(String(data.content).replace(/\n/g, ''));
+                const htmlUrl = typeof data?.html_url === 'string' ? data.html_url : `${repoUrl}`;
+                safeLocalStorageSet(cacheKey, JSON.stringify({ content: decodedContent, timestamp: Date.now(), htmlUrl }));
+                setCodeContent({ content: decodedContent, loading: false, error: null, htmlUrl });
+                return;
+            }
+
+            throw new Error('Unsupported GitHub API response');
         } catch (error) {
             console.error('Error fetching file content:', error);
             setCodeContent({
@@ -830,7 +889,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                                         Copy Code
                                                     </button>
                                                     <a
-                                                        href={`${selectedProject.github}/blob/main/${selectedCodeExample.path}`}
+                                                        href={codeContent.htmlUrl || `${selectedProject.github}/blob/main/${selectedCodeExample.path}`}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                         className="flex items-center p-1 px-2 rounded text-xs bg-dark-tertiary hover:bg-dark-tertiary/70 transition-colors text-dark-text-secondary"
