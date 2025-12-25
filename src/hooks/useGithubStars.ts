@@ -114,7 +114,7 @@ export function useMultipleGithubStars(repoUrls: (string | undefined)[]): Map<st
             }
 
             await Promise.all(fetchPromises);
-            setStarsMap(new Map([...starsMap, ...newStarsMap]));
+            setStarsMap(prev => new Map([...prev, ...newStarsMap]));
         };
 
         fetchAllStars();

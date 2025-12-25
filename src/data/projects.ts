@@ -35,6 +35,52 @@ export const projects: Project[] = [
         ]
     },
     {
+        id: "educai",
+        title: "EducAI: AI Math Assistant",
+        description: "AI-powered mathematics platform with natural language chat, OCR for handwritten problems, graph visualization, and step-by-step problem solving. Built with FastAPI, React, OlmOCR, and Qwen Math LLM served via vLLM. Developed as a team project at UNIFEI.",
+        tags: ["FastAPI", "React", "LLM", "OCR", "vLLM", "Docker", "Math"],
+        github: "https://github.com/samuellimabraz/EducAI",
+        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/educai-home.png",
+        featured: false,
+        codeExamples: [
+            {
+                path: "docker/models/Dockerfile.vllm",
+                description: "Dockerfile for vLLM models",
+                language: "docker"
+            },
+            {
+                path: "backend/app/main.py",
+                description: "FastAPI Main Application",
+                language: "python"
+            },
+            {
+                path: "backend/app/services/llm_service.py",
+                description: "LLM Service with vLLM",
+                language: "python"
+            },
+            {
+                path: "backend/app/services/ocr_service.py",
+                description: "OCR Service for image to text conversion",
+                language: "python"
+            },
+            {
+                path: "frontend/src/components/ChatInterface.js",
+                description: "React Chat Interface",
+                language: "javascript"
+            },
+            {
+                path: "frontend/src/components/GraphVisualizer.js",
+                description: "React Graph Visualizer",
+                language: "javascript"
+            },
+            {
+                path: "frontend/src/components/SketchPad.js",
+                description: "React Sketch Pad",
+                language: "javascript"
+            }
+        ]
+    },
+    {
         id: "signature-detection",
         title: "Signature Detection Model",
         description: "Developed an open-source signature detection system by building a hybrid dataset with refined public samples and strong augmentations (Albumentations, OpenCV). Benchmarked multiple object detection architectures (YOLOv8–v12, DETR, YOLOS) and fine-tuned YOLOv8s for the best performance-speed trade-off. Used Optuna for hyperparameter optimization, improving F1-score by 7.94%. Deployed on Azure via NVIDIA Triton Inference Server with ONNX/OpenVINO backends, achieving sub-200 ms latency on CPU. Implemented CI/CD with GitHub Actions and tracked experiments using Weights & Biases. Dataset, code, and demo are fully open-source and featured on the Hugging Face blog (>100 upvotes).",
