@@ -8,17 +8,17 @@ export default {
         mono: ['"JetBrains Mono"', 'monospace'],
       },
       colors: {
-        dark: {
-          primary: '#0C0F19',
-          secondary: '#161A2C',
-          tertiary: '#1F2336',
-          accent: '#6D77F6',
+        light: {
+          primary: '#FFFFFF',
+          secondary: '#F6F8FA',
+          tertiary: '#FFFFFF',
+          accent: '#0969DA',
           text: {
-            primary: '#E6E8F0',
-            secondary: '#A0A3B1',
-            accent: '#7D82F0'
+            primary: '#24292F',
+            secondary: '#57606A',
+            accent: '#0969DA'
           },
-          border: '#2A2F45'
+          border: '#D0D7DE'
         }
       },
       animation: {

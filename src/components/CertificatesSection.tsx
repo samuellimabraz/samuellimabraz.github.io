@@ -165,14 +165,14 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="bg-dark-tertiary rounded-lg shadow-lg flex flex-col max-h-[90vh]">
-              <div className="flex justify-between items-center p-4 border-b border-dark-border">
-                <h3 className="text-xl font-semibold text-dark-text-primary">{selectedCertificate.title}</h3>
+            <div className="bg-light-tertiary  shadow-lg flex flex-col max-h-[90vh]">
+              <div className="flex justify-between items-center p-4 border-b border-light-border">
+                <h3 className="text-xl font-semibold text-light-text-primary">{selectedCertificate.title}</h3>
                 <button
                   onClick={closeCertificate}
-                  className="p-1 rounded-full hover:bg-dark-primary/40 transition-colors"
+                  className="p-1  hover:bg-light-primary/40 transition-colors"
                 >
-                  <X className="h-6 w-6 text-dark-text-secondary" />
+                  <X className="h-6 w-6 text-light-text-secondary" />
                 </button>
               </div>
 
@@ -186,12 +186,12 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
                 </div>
 
                 <div className="mt-4">
-                  <p className="text-dark-text-secondary mb-2">{selectedCertificate.description}</p>
+                  <p className="text-light-text-secondary mb-2">{selectedCertificate.description}</p>
 
                   {selectedCertificate.details && selectedCertificate.details.length > 0 && (
                     <div className="mt-3 space-y-2">
-                      <h4 className="text-sm font-semibold text-dark-text-primary">Course Details:</h4>
-                      <ul className="list-disc pl-5 space-y-2 text-sm text-dark-text-secondary">
+                      <h4 className="text-sm font-semibold text-light-text-primary">Course Details:</h4>
+                      <ul className="list-disc pl-5 space-y-2 text-sm text-light-text-secondary">
                         {selectedCertificate.details.map((detail, idx) => (
                           <li key={idx}>{parseMarkdownBold(detail)}</li>
                         ))}
@@ -201,17 +201,17 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
                 </div>
               </div>
 
-              <div className="p-4 flex justify-between items-center border-t border-dark-border">
+              <div className="p-4 flex justify-between items-center border-t border-light-border">
                 <div>
-                  <p className="text-dark-text-secondary font-medium">{selectedCertificate.issuer}</p>
-                  <p className="text-dark-text-secondary/70 text-sm">{selectedCertificate.date}</p>
+                  <p className="text-light-text-secondary font-medium">{selectedCertificate.issuer}</p>
+                  <p className="text-light-text-secondary/70 text-sm">{selectedCertificate.date}</p>
                 </div>
                 {selectedCertificate.credential && (
                   <a
                     href={selectedCertificate.credential}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center px-4 py-2 bg-dark-accent/10 hover:bg-dark-accent/20 text-dark-accent rounded-md transition-colors"
+                    className="flex items-center px-4 py-2 bg-light-accent/10 hover:bg-light-accent/20 text-light-accent rounded-md transition-colors"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <ExternalLink size={16} className="mr-2" />
@@ -227,7 +227,7 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
   };
 
   return (
-    <section id="certificates" className="py-20 bg-dark-secondary">
+    <section id="certificates" className="py-20 bg-light-secondary">
       <div className="container mx-auto px-4 md:px-6">
         <motion.div
           className="flex items-center justify-center mb-8"
@@ -236,7 +236,7 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
           transition={{ duration: 0.5 }}
           viewport={{ once: true, margin: "-100px" }}
         >
-          <h2 className="text-3xl font-bold text-dark-text-primary">Certificates & Courses</h2>
+          <h2 className="text-3xl font-bold text-light-text-primary">Certificates & Courses</h2>
         </motion.div>
 
         <motion.div
@@ -253,34 +253,34 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
               variants={cardVariants}
             >
               <div
-                className="bg-dark-tertiary rounded-lg border border-dark-border shadow-sm hover:shadow-md hover:shadow-black/10 transition-all duration-300 overflow-hidden cursor-pointer"
+                className="bg-light-tertiary  border border-light-border shadow-sm hover:shadow-md hover:shadow-black/10 transition-all duration-300 overflow-hidden cursor-pointer"
                 onClick={() => openCertificate(certificate)}
               >
                 <div className="flex flex-col md:flex-row">
                   {/* Certificate preview (about 1/4 of the card) */}
-                  <div className="md:w-1/4 h-24 md:h-auto relative overflow-hidden bg-dark-primary">
+                  <div className="md:w-1/4 h-24 md:h-auto relative overflow-hidden bg-light-primary">
                     <div className="absolute inset-0 flex justify-center items-center">
                       <img
                         src={certificate.image}
                         alt={`${certificate.title} preview`}
                         className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent to-dark-primary/80 md:bg-gradient-to-l md:from-transparent md:to-dark-primary/80" />
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent to-light-primary/80 md:bg-gradient-to-l md:from-transparent md:to-light-primary/80" />
                     </div>
-                    <div className="absolute bottom-2 right-2 bg-dark-primary/80 p-1 rounded-full">
-                      <Maximize2 className="h-4 w-4 text-dark-accent" />
+                    <div className="absolute bottom-2 right-2 bg-light-primary/80 p-1 ">
+                      <Maximize2 className="h-4 w-4 text-light-accent" />
                     </div>
                   </div>
 
                   {/* Certificate info (about 3/4 of the card) */}
                   <div className="p-5 md:w-3/4">
                     <div className="flex justify-between items-start mb-3">
-                      <h3 className="text-lg font-bold text-dark-text-primary">{certificate.title}</h3>
-                      <span className="text-sm text-dark-text-secondary font-mono">{certificate.date}</span>
+                      <h3 className="text-lg font-bold text-light-text-primary">{certificate.title}</h3>
+                      <span className="text-sm text-light-text-secondary font-mono">{certificate.date}</span>
                     </div>
 
-                    <p className="text-dark-text-secondary font-medium mb-2">{certificate.issuer}</p>
-                    <p className="text-dark-text-secondary mb-4 text-sm line-clamp-2">{certificate.description}</p>
+                    <p className="text-light-text-secondary font-medium mb-2">{certificate.issuer}</p>
+                    <p className="text-light-text-secondary mb-4 text-sm line-clamp-2">{certificate.description}</p>
 
                     <div className="flex justify-end items-center">
                       {certificate.credential && (
@@ -288,11 +288,11 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
                           href={certificate.credential}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center text-sm text-dark-text-secondary hover:text-dark-text-primary transition-colors group"
+                          className="flex items-center text-sm text-light-text-secondary hover:text-light-text-primary transition-colors group"
                           onClick={(e) => e.stopPropagation()}
                         >
-                          <ExternalLink size={14} className="mr-1 group-hover:text-dark-accent" />
-                          <span className="group-hover:text-dark-accent">Verify</span>
+                          <ExternalLink size={14} className="mr-1 group-hover:text-light-accent" />
+                          <span className="group-hover:text-light-accent">Verify</span>
                         </a>
                       )}
                     </div>

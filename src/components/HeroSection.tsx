@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { SectionProps } from '../lib/types';
-import { FaBrain } from 'react-icons/fa';
 
 interface Node {
   x: number;
@@ -84,13 +83,13 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
     let mouseX = 0;
     let mouseY = 0;
 
-    // Use custom colors for nodes that match your tech stack and dark theme
+    // Use custom colors for nodes that match light theme
     const colors = [
-      'rgba(109, 119, 246, 0.7)', // dark-accent
-      'rgba(125, 130, 240, 0.7)',  // dark-text-accent
-      'rgba(200, 100, 255, 0.7)', // pink/purple
-      'rgba(64, 185, 169, 0.7)', // green-ish
-      'rgba(245, 158, 11, 0.7)',  // amber
+      'rgba(9, 105, 218, 0.4)', // light-accent (blue)
+      'rgba(9, 105, 218, 0.3)',  // lighter blue
+      'rgba(87, 96, 106, 0.3)', // gray
+      'rgba(36, 41, 47, 0.2)', // dark gray
+      'rgba(9, 105, 218, 0.2)',  // very light blue
     ];
 
     const nodeCount = 400; // Increased for more visual density
@@ -197,7 +196,7 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
 
         ctx.beginPath();
         ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
-        ctx.fillStyle = node.color || 'rgba(109, 119, 246, 0.5)';
+        ctx.fillStyle = node.color || 'rgba(9, 105, 218, 0.3)';
         ctx.fill();
       });
 
@@ -218,8 +217,8 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
 
           // Use gradient colors for connections
           const gradient = ctx.createLinearGradient(fromNode.x, fromNode.y, toNode.x, toNode.y);
-          gradient.addColorStop(0, fromNode.color || 'rgba(109, 119, 246, 0.2)');
-          gradient.addColorStop(1, toNode.color || 'rgba(109, 119, 246, 0.2)');
+          gradient.addColorStop(0, fromNode.color || 'rgba(9, 105, 218, 0.15)');
+          gradient.addColorStop(1, toNode.color || 'rgba(9, 105, 218, 0.15)');
 
           ctx.strokeStyle = gradient;
           ctx.lineWidth = 0.5;
@@ -279,25 +278,9 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
     },
   };
 
-  // Pulsing animation for Neural Network button
-  const pulseVariants = {
-    pulse: {
-      scale: [1, 1.03, 1],
-      boxShadow: [
-        "0 0 0 0 rgba(109, 119, 246, 0.4)",
-        "0 0 0 10px rgba(109, 119, 246, 0)",
-        "0 0 0 0 rgba(109, 119, 246, 0)"
-      ],
-      transition: {
-        duration: 2,
-        repeat: Infinity,
-        repeatType: "loop" as const,
-      },
-    },
-  };
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-dark-primary">
+    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-light-primary">
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full z-0"
@@ -311,7 +294,7 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
       >
         <motion.div className="max-w-3xl mx-auto text-center">
           <motion.h1
-            className="text-4xl md:text-6xl font-bold mb-6 tracking-tight text-dark-text-primary"
+            className="text-4xl md:text-6xl font-bold mb-6 tracking-tight text-light-text-primary"
             variants={itemVariants}
           >
             <motion.div className="flex flex-col md:flex-row md:justify-center items-center">
@@ -322,7 +305,7 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
                 Samuel Lima
               </motion.span>
               <motion.span
-                className="font-mono text-3xl md:text-5xl opacity-80 text-dark-text-secondary"
+                className="font-mono text-3xl md:text-5xl opacity-80 text-light-text-secondary"
                 variants={itemVariants}
               >
                 Braz
@@ -334,9 +317,9 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
             className="text-lg md:text-xl mb-8 font-light leading-relaxed h-8 flex justify-center items-center"
             variants={itemVariants}
           >
-            <span className="font-medium text-dark-text-accent">{typedText}</span>
+            <span className="font-medium text-light-text-accent">{typedText}</span>
             <motion.span
-              className="w-1 h-6 ml-1 inline-block bg-dark-text-accent"
+              className="w-1 h-6 ml-1 inline-block bg-light-text-accent"
               variants={cursorVariants}
               animate="blinking"
             />
@@ -348,7 +331,7 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
           >
             <motion.a
               href="#projects"
-              className="px-8 py-3 bg-dark-accent text-dark-text-primary font-medium rounded-md hover:bg-dark-text-accent transition-colors"
+              className="px-8 py-3 bg-light-accent text-white font-medium border border-light-accent hover:bg-light-text-accent transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -356,29 +339,18 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
             </motion.a>
             <motion.a
               href="#about"
-              className="px-8 py-3 bg-dark-tertiary text-dark-text-primary font-medium rounded-md border border-dark-border hover:bg-dark-secondary transition-colors"
+              className="px-8 py-3 bg-light-primary text-light-text-primary font-medium border border-light-border hover:bg-light-secondary transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               About Me
-            </motion.a>
-            <motion.a
-              href="#nn-playground"
-              className="px-8 py-3 text-dark-text-primary font-medium rounded-md flex items-center justify-center bg-dark-secondary"
-              whileHover={{ scale: 1.05, backgroundColor: "#273045" }}
-              whileTap={{ scale: 0.95 }}
-              variants={pulseVariants}
-              animate="pulse"
-            >
-              <FaBrain className="mr-2 text-lg text-dark-accent" />
-              Neural Network
             </motion.a>
           </motion.div>
         </motion.div>
       </motion.div>
 
       <motion.div
-        className="absolute bottom-8 left-0 right-0 flex justify-center text-dark-text-secondary"
+        className="absolute bottom-8 left-0 right-0 flex justify-center text-light-text-secondary"
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
       >

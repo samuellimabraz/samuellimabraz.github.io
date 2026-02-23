@@ -35,8 +35,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
     { id: 'about', label: 'About' },
     { id: 'nn-playground', label: 'NN Playground' },
     { id: 'projects', label: 'Projects' },
-    { id: 'work', label: 'Work' },
-    { id: 'extracurricular', label: 'Activities' },
+    { id: 'experience', label: 'Experience' },
     { id: 'education', label: 'Education' },
     { id: 'certificates', label: 'Certificates' }
   ];
@@ -44,7 +43,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
   return (
     <motion.header
       className={`fixed top-0 left-0 w-full z-50 ${isScrolled
-        ? 'bg-dark-secondary/90 backdrop-blur-md shadow-md shadow-black/20'
+        ? 'bg-light-secondary/90 backdrop-blur-md shadow-md shadow-black/20'
         : 'bg-transparent'
         }`}
       initial={{ y: -100 }}
@@ -54,7 +53,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between h-16">
           <motion.div
-            className="font-bold text-xl text-dark-text-primary"
+            className="font-bold text-xl text-light-text-primary"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -84,14 +83,14 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
                       scrollToSection(item.id);
                     }}
                     className={`px-1 py-2 text-sm font-medium transition-all duration-300 relative ${activeSection === item.id
-                      ? 'text-dark-text-primary'
-                      : 'text-dark-text-secondary hover:text-dark-text-primary'
+                      ? 'text-light-text-primary'
+                      : 'text-light-text-secondary hover:text-light-text-primary'
                       }`}
                   >
                     {item.label}
                     {activeSection === item.id && (
                       <motion.span
-                        className="absolute inset-x-0 -bottom-1 h-0.5 bg-dark-accent"
+                        className="absolute inset-x-0 -bottom-1 h-0.5 bg-light-accent"
                         layoutId="underline"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -110,7 +109,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
 
           <div className="md:hidden">
             <motion.button
-              className="p-2 rounded-md text-dark-text-primary"
+              className="p-2  text-light-text-primary"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               whileTap={{ scale: 0.9 }}
             >
@@ -132,7 +131,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden bg-dark-secondary/95 backdrop-blur-lg shadow-lg"
+            className="md:hidden bg-light-secondary/95 backdrop-blur-lg shadow-lg"
           >
             <motion.ul
               className="px-4 py-4 space-y-2"
@@ -159,9 +158,9 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
                       e.preventDefault();
                       scrollToSection(item.id);
                     }}
-                    className={`block w-full text-left px-4 py-3 rounded-md text-sm font-medium transition-colors ${activeSection === item.id
-                      ? 'bg-dark-accent text-dark-text-primary'
-                      : 'hover:bg-dark-tertiary text-dark-text-secondary hover:text-dark-text-primary'
+                    className={`block w-full text-left px-4 py-3  text-sm font-medium transition-colors ${activeSection === item.id
+                      ? 'bg-light-accent text-light-text-primary'
+                      : 'hover:bg-light-tertiary text-light-text-secondary hover:text-light-text-primary'
                       }`}
                   >
                     {item.label}
