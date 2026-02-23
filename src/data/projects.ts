@@ -2,6 +2,57 @@ import { Project, CodeExample } from '../lib/types';
 
 export const projects: Project[] = [
     {
+        id: "nectar-sdk",
+        title: "Nectar SDK: ROS 2 SDK for Autonomous Aerial Systems",
+        description: "ROS 2 software development kit providing unified interfaces for flight control, computer vision, and object detection. Built for Black Bee Drones team to standardize drone control, camera abstraction, and AI detection across competition missions. Implements factory-based architecture for extensible drone types (MAVROS/ArduPilot, PX4, Bebop), camera drivers (RealSense, OAK-D, OpenCV), and detection frameworks (YOLO, DETR, RF-DETR). Includes PID navigation with GPS waypoint missions, obstacle avoidance system, line detection with multiple estimation methods, and Qt6 desktop interface for testing without code.",
+        tags: ["ROS2", "Robotics", "Drone Control", "Computer Vision", "Python", "C++", "MAVROS", "OpenCV"],
+        github: "https://github.com/Black-Bee-Drones/nectar-sdk",
+        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/bb-photo.jpg",
+        featured: true,
+        codeExamples: [
+            {
+                path: "nectar/nectar/control/mavros/drone.py",
+                description: "MAVROS Drone Implementation - Flight control with PID navigation and GPS waypoints",
+                language: "python"
+            },
+            {
+                path: "nectar/nectar/control/base.py",
+                description: "Abstract Base Drone - Protocol definition for all drone implementations",
+                language: "python"
+            },
+            {
+                path: "nectar/nectar/control/mavros/navigator.py",
+                description: "MavrosNavigator - PID and setpoint navigation strategies",
+                language: "python"
+            },
+            {
+                path: "nectar/nectar/vision/camera/handler.py",
+                description: "ImageHandler - Camera abstraction with ROS 2 timer-based frame polling",
+                language: "python"
+            },
+            {
+                path: "nectar/nectar/vision/camera/drivers/realsense_cam.py",
+                description: "RealSense Camera Driver - Depth camera integration with pyrealsense2",
+                language: "python"
+            },
+            {
+                path: "nectar/nectar/vision/algorithms/line/line_detector.py",
+                description: "Line Detector - Multiple estimation methods (Hough, RANSAC, rotated rect, ellipse)",
+                language: "python"
+            },
+            {
+                path: "nectar/nectar/control/bebop/drone.py",
+                description: "Bebop Drone Implementation - Parrot Bebop 2 control interface",
+                language: "python"
+            },
+            {
+                path: "nectar/nectar/control/mavros/gps_utils.py",
+                description: "GPS Utilities - EGM96 geoid correction for AMSL altitude",
+                language: "python"
+            }
+        ]
+    },
+    {
         id: "quantum-assistant",
         title: "Quantum Assistant: Multimodal VLM for Quantum Computing",
         description: "Specializing multimodal vision-language models for quantum computing with Qiskit through synthetic data generation, efficient fine-tuning (rsLoRA), and evaluation. Built an 8,366-sample multimodal dataset (45% with images) achieving +11-17pp improvement on Qiskit HumanEval benchmark. Fine-tuned Qwen3-VL-8B models available on HuggingFace.",
