@@ -5,9 +5,8 @@ import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import NNPlaygroundSection from './components/NNPlaygroundSection';
 import AboutSection from './components/AboutSection';
-import WorkSection from './components/WorkSection';
+import ExperienceSection from './components/ExperienceSection';
 import EducationSection from './components/EducationSection';
-import ExtraCurricularSection from './components/ExtraCurricularSection';
 import ProjectsCarousel from './components/ProjectsCarousel';
 import CertificatesSection from './components/CertificatesSection';
 import Footer from './components/Footer';
@@ -41,8 +40,9 @@ function MainLayout() {
     'nn': 'nn-playground', 
     'nn-playground': 'nn-playground',
     'projects': 'projects',
-    'work': 'work',
-    'extracurricular': 'extracurricular',
+    'work': 'experience',
+    'extracurricular': 'experience',
+    'experience': 'experience',
     'education': 'education',
     'certificates': 'certificates'
   };
@@ -99,17 +99,16 @@ function MainLayout() {
   }, [lastScrollY, location.hash]);
 
   return (
-    <div className={`min-h-screen bg-dark-primary text-dark-text-primary ${isMounted ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
+    <div className={`min-h-screen bg-light-primary text-light-text-primary ${isMounted ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
       <Navbar activeSection={activeSection} />
 
       <main className="pt-16 overflow-hidden">
         <AnimatePresence mode="wait">
           <HeroSection key="hero" scrollDirection={scrollDirection} />
           <AboutSection key="about" scrollDirection={scrollDirection} />
-          <NNPlaygroundSection key="nn" scrollDirection={scrollDirection} />
           <ProjectsCarousel key="projects" projects={projects} scrollDirection={scrollDirection} />
-          <WorkSection key="work" scrollDirection={scrollDirection} />
-          <ExtraCurricularSection key="extra" scrollDirection={scrollDirection} />
+          <NNPlaygroundSection key="nn" scrollDirection={scrollDirection} />
+          <ExperienceSection key="experience" scrollDirection={scrollDirection} />
           <EducationSection key="education" scrollDirection={scrollDirection} />
           <CertificatesSection key="certificates" scrollDirection={scrollDirection} />
         </AnimatePresence>
