@@ -408,18 +408,14 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
             key={project.id}
             className="flex-shrink-0 w-80 bg-light-primary overflow-hidden border border-light-border transition-all hover:shadow-md hover:border-light-accent/50 hover:scale-[1.02] mx-3 my-3 flex flex-col cursor-pointer"
             onClick={() => {
-                // For PEFT Methods project, open article view if available
                 if (project.id === "peft-methods" && project.article) {
                     openProjectModal(project, 'article');
                 } else if (project.pdfUrl) {
-                    // For projects with PDF articles
                     openProjectModal(project, 'pdf');
-                } else if (project.embedUrl) {
-                    // For other projects with embedUrl, open demo view
-                    openProjectModal(project, 'demo');
                 } else if (project.github && project.codeExamples) {
-                    // Otherwise, open repo view if available
                     openProjectModal(project, 'repo');
+                } else if (project.embedUrl) {
+                    openProjectModal(project, 'demo');
                 }
             }}
         >

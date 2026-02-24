@@ -59,6 +59,7 @@ export const projects: Project[] = [
         tags: ["VLM", "Multimodal", "PEFT", "LoRA", "Qiskit", "Quantum Computing", "Python"],
         github: "https://github.com/samuellimabraz/quantum-assistant",
         demo: "https://huggingface.co/spaces/samuellimabraz/quantum-assistant",
+        article: "https://dx.doi.org/10.2139/ssrn.6271408",
         embedUrl: "https://samuellimabraz-quantum-assistant.hf.space",
         image: "https://media.githubusercontent.com/media/samuellimabraz/quantum-assistant/main/assets/images/synthetic-pipeline.png",
         featured: true,
