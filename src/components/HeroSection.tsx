@@ -1,32 +1,40 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { SectionProps } from '../lib/types';
 
-interface Node {
-  x: number;
-  y: number;
-  radius: number;
-  vx: number;
-  vy: number;
-  color?: string;
+interface MosaicVideo {
+  src: string;
+  /** CSS grid-column span */
+  colSpan: string;
+  /** CSS grid-row span */
+  rowSpan: string;
+  /** Mobile: CSS grid-column span */
+  mobileColSpan: string;
+  /** Mobile: CSS grid-row span */
+  mobileRowSpan: string;
 }
 
-interface Connection {
-  from: number;
-  to: number;
-}
+const MOSAIC_VIDEOS: MosaicVideo[] = [
+  // Row 1
+  { src: 'videos/drone_line_following_video.mp4', colSpan: 'span 3', rowSpan: 'span 1', mobileColSpan: 'span 2', mobileRowSpan: 'span 1' },
+  { src: 'videos/cafedl-game.mp4', colSpan: 'span 2', rowSpan: 'span 1', mobileColSpan: 'span 1', mobileRowSpan: 'span 1' },
+  { src: 'videos/cbr-test.mp4', colSpan: 'span 1', rowSpan: 'span 2', mobileColSpan: 'span 1', mobileRowSpan: 'span 2' },
+  // Row 2
+  { src: 'videos/escola-bebop-1.mp4', colSpan: 'span 2', rowSpan: 'span 1', mobileColSpan: 'span 1', mobileRowSpan: 'span 1' },
+  { src: 'videos/indoor-test-23-t265.mp4', colSpan: 'span 2', rowSpan: 'span 1', mobileColSpan: 'span 1', mobileRowSpan: 'span 1' },
+  { src: 'videos/isaac-ros.mp4', colSpan: 'span 1', rowSpan: 'span 1', mobileColSpan: 'span 2', mobileRowSpan: 'span 1' },
+  // Row 3
+  { src: 'videos/black-bee-ui.mp4', colSpan: 'span 3', rowSpan: 'span 1', mobileColSpan: 'span 1', mobileRowSpan: 'span 1' },
+  { src: 'videos/signature.mp4', colSpan: 'span 3', rowSpan: 'span 1', mobileColSpan: 'span 1', mobileRowSpan: 'span 1' },
+];
 
-const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+const HeroSection: React.FC<SectionProps> = ({ scrollDirection: _scrollDirection }) => {
   const [typedText, setTypedText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [textIndex, setTextIndex] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(150);
-  const nodesRef = useRef<Node[]>([]);
-  const connectionsRef = useRef<Connection[]>([]);
-  const animationFrameRef = useRef<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // List of expertise areas to display in the typing animation
   const expertiseAreas = [
     "Machine Learning Engineer",
     "Computer Vision",
@@ -39,220 +47,48 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
     "Model Optimization"
   ];
 
+  // Detect mobile breakpoint
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
   // Typing animation effect
   useEffect(() => {
     const currentText = expertiseAreas[textIndex];
 
     const typingEffect = () => {
       if (isDeleting) {
-        // Deleting mode
         setTypedText(currentText.substring(0, typedText.length - 1));
-        setTypingSpeed(20); // Faster when deleting
+        setTypingSpeed(20);
       } else {
-        // Typing mode
         setTypedText(currentText.substring(0, typedText.length + 1));
-        setTypingSpeed(80); // Slower when typing
+        setTypingSpeed(80);
       }
 
-      // If we've completed typing the word
       if (!isDeleting && typedText === currentText) {
-        // Pause at the end of typing before starting to delete
         setTimeout(() => setIsDeleting(true), 1500);
       }
 
-      // If we've deleted the word
       if (isDeleting && typedText === '') {
         setIsDeleting(false);
-        // Move to the next word
         setTextIndex((prev) => (prev + 1) % expertiseAreas.length);
       }
     };
 
     const timer = setTimeout(typingEffect, typingSpeed);
-
     return () => clearTimeout(timer);
   }, [typedText, isDeleting, textIndex, typingSpeed, expertiseAreas]);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let mouseX = 0;
-    let mouseY = 0;
-
-    // Use custom colors for nodes that match light theme
-    const colors = [
-      'rgba(9, 105, 218, 0.4)', // light-accent (blue)
-      'rgba(9, 105, 218, 0.3)',  // lighter blue
-      'rgba(87, 96, 106, 0.3)', // gray
-      'rgba(36, 41, 47, 0.2)', // dark gray
-      'rgba(9, 105, 218, 0.2)',  // very light blue
-    ];
-
-    const nodeCount = 400; // Increased for more visual density
-
-    // Initialize canvas and generate nodes/connections
-    const initializeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      // Clear previous nodes and connections
-      nodesRef.current = [];
-      connectionsRef.current = [];
-
-      // Generate new nodes based on current canvas dimensions
-      for (let i = 0; i < nodeCount; i++) {
-        nodesRef.current.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          radius: Math.random() * 3 + 1,
-          vx: Math.random() * 1 - 0.5,
-          vy: Math.random() * 1 - 0.5,
-          color: colors[Math.floor(Math.random() * colors.length)]
-        });
-      }
-
-      // Create connections
-      for (let i = 0; i < nodeCount; i++) {
-        for (let j = i + 1; j < nodeCount; j++) {
-          if (Math.random() > 0.95) { // Slightly increased connection probability
-            connectionsRef.current.push({
-              from: i,
-              to: j
-            });
-          }
-        }
-      }
-    };
-
-    // Initialize canvas on mount
-    initializeCanvas();
-
-    // Resize handler
-    const handleResize = () => {
-      const oldWidth = canvas.width;
-      const oldHeight = canvas.height;
-
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      // Scale existing nodes to new dimensions
-      if (nodesRef.current.length > 0) {
-        nodesRef.current.forEach(node => {
-          // Scale coordinates proportionally
-          node.x = (node.x / oldWidth) * canvas.width;
-          node.y = (node.y / oldHeight) * canvas.height;
-
-          // Ensure nodes stay within boundaries
-          node.x = Math.min(Math.max(node.x, 0), canvas.width);
-          node.y = Math.min(Math.max(node.y, 0), canvas.height);
-        });
-      } else {
-        // If no nodes exist (this shouldn't happen), initialize them
-        initializeCanvas();
-      }
-    };
-
-    // Interactive effect - nodes respond to mouse
-    const handleMouseMove = (event: MouseEvent) => {
-      mouseX = event.clientX;
-      mouseY = event.clientY;
-    };
-
-    const render = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      nodesRef.current.forEach((node, idx) => {
-        // Apply slight attraction to mouse position
-        const dx = mouseX - node.x;
-        const dy = mouseY - node.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance < 200) {
-          const force = 0.02;
-          node.vx += (dx / distance) * force;
-          node.vy += (dy / distance) * force;
-        }
-
-        // Apply some damping to prevent too much acceleration
-        node.vx *= 0.99;
-        node.vy *= 0.99;
-
-        node.x += node.vx;
-        node.y += node.vy;
-
-        // Bounce off edges - ensure nodes stay within the canvas
-        if (node.x < 0 || node.x > canvas.width) {
-          node.vx *= -1;
-          node.x = Math.min(Math.max(node.x, 0), canvas.width);
-        }
-        if (node.y < 0 || node.y > canvas.height) {
-          node.vy *= -1;
-          node.y = Math.min(Math.max(node.y, 0), canvas.height);
-        }
-
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
-        ctx.fillStyle = node.color || 'rgba(9, 105, 218, 0.3)';
-        ctx.fill();
-      });
-
-      connectionsRef.current.forEach(connection => {
-        const fromNode = nodesRef.current[connection.from];
-        const toNode = nodesRef.current[connection.to];
-
-        if (!fromNode || !toNode) return;
-
-        const dx = toNode.x - fromNode.x;
-        const dy = toNode.y - fromNode.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance < 200) {
-          ctx.beginPath();
-          ctx.moveTo(fromNode.x, fromNode.y);
-          ctx.lineTo(toNode.x, toNode.y);
-
-          // Use gradient colors for connections
-          const gradient = ctx.createLinearGradient(fromNode.x, fromNode.y, toNode.x, toNode.y);
-          gradient.addColorStop(0, fromNode.color || 'rgba(9, 105, 218, 0.15)');
-          gradient.addColorStop(1, toNode.color || 'rgba(9, 105, 218, 0.15)');
-
-          ctx.strokeStyle = gradient;
-          ctx.lineWidth = 0.5;
-          ctx.stroke();
-        }
-      });
-
-      animationFrameRef.current = requestAnimationFrame(render);
-    };
-
-    window.addEventListener('resize', handleResize);
-    canvas.addEventListener('mousemove', handleMouseMove);
-
-    // Start animation loop
-    animationFrameRef.current = requestAnimationFrame(render);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      canvas.removeEventListener('mousemove', handleMouseMove);
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, []);
-
-  // Animation variants for text elements
+  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.3,
-      }
+      transition: { staggerChildren: 0.2, delayChildren: 0.3 }
     }
   };
 
@@ -265,7 +101,6 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
     }
   };
 
-  // Blinking cursor animation
   const cursorVariants = {
     blinking: {
       opacity: [0, 1, 0],
@@ -278,14 +113,51 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
     },
   };
 
-
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-light-primary">
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full z-0"
-      />
+    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
+      {/* Video Mosaic Grid */}
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(6, 1fr)',
+          gridTemplateRows: isMobile ? 'repeat(5, 1fr)' : 'repeat(3, 1fr)',
+          gap: '2px',
+        }}
+      >
+        {MOSAIC_VIDEOS.map((video) => (
+          <div
+            key={video.src}
+            style={{
+              gridColumn: isMobile ? video.mobileColSpan : video.colSpan,
+              gridRow: isMobile ? video.mobileRowSpan : video.rowSpan,
+              overflow: 'hidden',
+              position: 'relative',
+              backgroundColor: '#111',
+            }}
+          >
+            <video
+              src={video.src}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                display: 'block',
+              }}
+            />
+          </div>
+        ))}
+      </div>
 
+      {/* Dark overlay for text contrast */}
+      <div className="absolute inset-0 z-[1] bg-black/55" />
+
+      {/* Text overlay */}
       <motion.div
         className="container mx-auto px-4 md:px-6 z-10"
         initial="hidden"
@@ -294,18 +166,15 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
       >
         <motion.div className="max-w-3xl mx-auto text-center">
           <motion.h1
-            className="text-4xl md:text-6xl font-bold mb-6 tracking-tight text-light-text-primary"
+            className="text-4xl md:text-6xl font-bold mb-6 tracking-tight text-white"
             variants={itemVariants}
           >
             <motion.div className="flex flex-col md:flex-row md:justify-center items-center">
-              <motion.span
-                className="md:mr-3"
-                variants={itemVariants}
-              >
+              <motion.span className="md:mr-3" variants={itemVariants}>
                 Samuel Lima
               </motion.span>
               <motion.span
-                className="font-mono text-3xl md:text-5xl opacity-80 text-light-text-secondary"
+                className="font-mono text-3xl md:text-5xl opacity-80 text-gray-300"
                 variants={itemVariants}
               >
                 Braz
@@ -317,9 +186,9 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
             className="text-lg md:text-xl mb-8 font-light leading-relaxed h-8 flex justify-center items-center"
             variants={itemVariants}
           >
-            <span className="font-medium text-light-text-accent">{typedText}</span>
+            <span className="font-medium text-blue-400">{typedText}</span>
             <motion.span
-              className="w-1 h-6 ml-1 inline-block bg-light-text-accent"
+              className="w-1 h-6 ml-1 inline-block bg-blue-400"
               variants={cursorVariants}
               animate="blinking"
             />
@@ -331,7 +200,7 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
           >
             <motion.a
               href="#projects"
-              className="px-8 py-3 bg-light-accent text-white font-medium border border-light-accent hover:bg-light-text-accent transition-colors"
+              className="px-8 py-3 bg-blue-600 text-white font-medium border border-blue-600 hover:bg-blue-700 transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -339,7 +208,7 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
             </motion.a>
             <motion.a
               href="#about"
-              className="px-8 py-3 bg-light-primary text-light-text-primary font-medium border border-light-border hover:bg-light-secondary transition-colors"
+              className="px-8 py-3 bg-transparent text-white font-medium border border-gray-400 hover:bg-white/10 transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -349,8 +218,9 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection }) => {
         </motion.div>
       </motion.div>
 
+      {/* Scroll indicator */}
       <motion.div
-        className="absolute bottom-8 left-0 right-0 flex justify-center text-light-text-secondary"
+        className="absolute bottom-8 left-0 right-0 flex justify-center text-gray-300"
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
       >

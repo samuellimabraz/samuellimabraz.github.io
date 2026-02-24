@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Github, ExternalLink, FileCode, Code, X, Loader2, AlertTriangle, ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { Project, CodeExample, SectionProps } from '../lib/types';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Download } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
@@ -817,8 +817,12 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                                                 const match = /language-(\w+)/.exec(className || '');
                                                                 return match ? (
                                                                     <SyntaxHighlighter
-                                                                        style={tomorrow as any}
+                                                                        style={oneLight as any}
                                                                         language={match[1]}
+                                                                        customStyle={{
+                                                                            background: '#ffffff',
+                                                                            color: '#24292F',
+                                                                        }}
                                                                         {...props}
                                                                     >
                                                                         {String(children).replace(/\n$/, '')}
@@ -1001,7 +1005,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                                 <div className="h-full overflow-auto">
                                                     <SyntaxHighlighter
                                                         language={selectedCodeExample.language || getLanguageFromPath(selectedCodeExample.path)}
-                                                        style={tomorrow}
+                                                        style={oneLight}
                                                         showLineNumbers={true}
                                                         customStyle={{
                                                             margin: 0,
@@ -1010,6 +1014,13 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                                             height: 'auto',
                                                             minHeight: '100%',
                                                             background: '#ffffff',
+                                                            color: '#24292F',
+                                                        }}
+                                                        codeTagProps={{
+                                                            style: {
+                                                                color: '#24292F',
+                                                                fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace',
+                                                            }
                                                         }}
                                                     >
                                                         {codeContent.content}

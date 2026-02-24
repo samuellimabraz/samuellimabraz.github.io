@@ -106,8 +106,8 @@ function MainLayout() {
         <AnimatePresence mode="wait">
           <HeroSection key="hero" scrollDirection={scrollDirection} />
           <AboutSection key="about" scrollDirection={scrollDirection} />
-          <NNPlaygroundSection key="nn" scrollDirection={scrollDirection} />
           <ProjectsCarousel key="projects" projects={projects} scrollDirection={scrollDirection} />
+          <NNPlaygroundSection key="nn" scrollDirection={scrollDirection} />
           <ExperienceSection key="experience" scrollDirection={scrollDirection} />
           <EducationSection key="education" scrollDirection={scrollDirection} />
           <CertificatesSection key="certificates" scrollDirection={scrollDirection} />

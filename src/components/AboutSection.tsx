@@ -50,13 +50,13 @@ const AboutSection: React.FC<SectionProps> = ({ scrollDirection }) => {
           >
             <div className="prose prose-lg max-w-none text-light-text-secondary">
               <p>
-                I build and deploy machine learning models. My work spans object detection and segmentation systems, document layout analysis, and fine-tuning large language models (LLMs) and vision-language models (VLMs) using parameter-efficient techniques like LoRA and QLoRA. I optimize models for production using TensorRT, OpenVINO, and quantization techniques.
+                I work on applied machine learning and autonomous robotics. I started in industrial automation, joined a university drone team for indoor flight competitions, and have been building perception and navigation systems ever since. That means writing PID controllers, integrating visual odometry and depth cameras, implementing classical image processing with OpenCV, and running object detection and segmentation models on embedded hardware, integrating complex systems with ROS 2, all to make real drones fly themselves in indoor environments and complete missions fully autonomously.
               </p>
               <p>
-              I also dedicate a significant amount of time to robotics, developing fully autonomous drones for indoor environments in competitions and research. My work involves VIO, vSLAM, tracking and depth cameras, PID controllers, and model optimization. I use tools such as ROS2, OpenCV, Mavros, RealSense, and Isaac ROS to develop real missions that integrate computer vision and robust control systems.
+                On the ML side, I care about the full path from training to production. I fine-tune detection models and vision-language models using parameter-efficient techniques, optimize them through quantization and runtimes like OpenVINO and TensorRT, and deploy them to serve real users at scale. I also like building things from scratch when I want to understand them deeply.
               </p>
               <p>
-                I like sharing what I learn through open source projects and writing. The best AI is open.
+                I publish my work openly: code, models, datasets, and technical writing. I think this field moves faster when people share what they learn.
               </p>
               <blockquote className="border-l-4 border-light-accent pl-4 italic my-6 text-light-text-secondary">
                 "We are stardust brought to life, then empowered by the universe to figure itself out – and we have only just begun."
