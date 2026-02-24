@@ -37,7 +37,7 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
       title: "Deep Learning Specialization",
       issuer: "DeepLearning.AI",
       date: "Jan 2024 — Jul 2024",
-      description: "Comprehensive 5-course specialization by Andrew Ng covering the complete deep learning pipeline from neural network fundamentals to advanced architectures and deployment strategies.",
+      description: "5-course specialization by Andrew Ng covering the deep learning pipeline from neural network fundamentals to advanced architectures and deployment strategies.",
       details: [
         "**Course 1 - Neural Networks and Deep Learning:** Built foundational understanding of deep learning, implemented core neural network components (forward/backward propagation, vectorization), and constructed shallow and deep networks.",
         "**Course 2 - Improving Deep Neural Networks:** Mastered practical aspects like hyperparameter tuning, regularization (L2, dropout), optimization algorithms (Adam, RMSprop, Momentum), batch normalization, and introductory TensorFlow implementation.",
@@ -53,7 +53,7 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
       title: "Machine Learning Specialization",
       issuer: "DeepLearning.AI",
       date: "Sep 2023 — Nov 2023",
-      description: "Comprehensive 3-course specialization by Andrew Ng providing a solid foundation in machine learning concepts, algorithms, and practical applications with Python implementation.",
+      description: "3-course specialization by Andrew Ng on machine learning fundamentals, algorithms, and practical applications with Python.",
       details: [
         "**Course 1 - Supervised Machine Learning:** Covered foundational supervised algorithms like linear and logistic regression, gradient descent, feature engineering, regularization, and practical implementation using Python (NumPy, Scikit-Learn).",
         "**Course 2 - Advanced Learning Algorithms:** Explored neural networks (TensorFlow/NumPy implementation, activation functions, multiclass classification), decision trees, and ensemble methods (Random Forests, XGBoost), alongside ML development best practices.",
@@ -67,7 +67,7 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
       title: "Generative AI with Large Language Models",
       issuer: "Amazon Web Services",
       date: "Dec 2024",
-      description: "Comprehensive, hands-on course covering the fundamentals and advanced aspects of generative AI, including transformer architectures, fine-tuning techniques, and responsible AI deployment.",
+      description: "Hands-on course on generative AI fundamentals, transformer architectures, fine-tuning techniques, and responsible AI deployment.",
       details: [
         "Week 1: Explored generative AI use cases, transformer architecture, prompt engineering, and LLM pre-training fundamentals. Completed a hands-on lab on dialogue summarization.",
         "Week 2: Mastered instruction fine-tuning, model evaluation techniques, and parameter-efficient fine-tuning methods (PEFT) including LoRA and soft prompts.",
@@ -97,7 +97,7 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
       title: "OpenCV Bootcamp",
       issuer: "OpenCV University",
       date: "Jun 2024",
-      description: "Comprehensive program covering essential computer vision techniques using OpenCV, from basic image processing to advanced deep learning integration for practical applications.",
+      description: "Program covering essential computer vision techniques using OpenCV, from basic image processing to deep learning integration for practical applications.",
       details: [
         "**Fundamentals:** Mastered image representation, manipulation, annotation, and enhancement techniques. Worked with color spaces, histograms, and basic transformations for creating image processing pipelines.",
         "**Video Processing:** Implemented video capture, processing, and writing capabilities for analyzing video streams, including camera access for real-time applications.",
