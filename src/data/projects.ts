@@ -126,7 +126,7 @@ export const projects: Project[] = [
     {
         id: "peft-methods",
         title: "PEFT: Parameter-Efficient Fine-Tuning Methods for LLMs",
-        description: "Comprehensive technical article exploring efficient fine-tuning methods for Large Language Models, with practical implementation in a Colab notebook comparing Full Fine-Tuning, LoRA, QLoRA, and IA³, demonstrating comparable results with just 1% of trainable parameters.",
+        description: "Technical article exploring efficient fine-tuning methods for Large Language Models, with practical implementation in a Colab notebook comparing Full Fine-Tuning, LoRA, QLoRA, and IA³, demonstrating comparable results with just 1% of trainable parameters.",
         tags: ["LLM", "PEFT", "LoRA", "QLoRA", "IA³", "Fine-Tuning", "NLP"],
         article: "https://huggingface.co/blog/samuellimabraz/peft-methods",
         articlePt: "https://medium.com/@samuel.lima_75652/peft-m%C3%A9todos-de-fine-tuning-eficiente-para-llms-ffac60ac9d15",
@@ -306,7 +306,7 @@ export const projects: Project[] = [
     {
         id: "quantum-assistant",
         title: "Quantum Assistant: Multimodal VLM for Quantum Computing",
-        description: "Specializing multimodal vision-language models for quantum computing with Qiskit through synthetic data generation, efficient fine-tuning (rsLoRA), and evaluation. Built an 8,366-sample multimodal dataset (45% with images) achieving +11-17pp improvement on Qiskit HumanEval benchmark. Fine-tuned Qwen3-VL-8B models available on HuggingFace.",
+        description: "Specializing vision-language models for quantum computing with Qiskit through synthetic data generation, efficient fine-tuning (rsLoRA), and evaluation. Built an 8,366-sample multimodal dataset (45% with images) achieving +11-17pp improvement on Qiskit HumanEval benchmark. Fine-tuned Qwen3-VL-8B models available on HuggingFace.",
         tags: ["VLM", "Multimodal", "PEFT", "LoRA", "Qiskit", "Quantum Computing", "Python"],
         github: "https://github.com/samuellimabraz/quantum-assistant",
         demo: "https://huggingface.co/spaces/samuellimabraz/quantum-assistant",
