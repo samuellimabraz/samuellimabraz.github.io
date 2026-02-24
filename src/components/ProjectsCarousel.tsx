@@ -50,7 +50,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
     const bottomRowSpeed = 25; // Reduzido de 40 para 25 (mais lento)
 
     // State to pause animation on hover
-    const [isPaused, setIsPaused] = useState(false);
+    const [isPaused, setIsPaused] = useState(true);
 
     // Store the current scroll positions persistently
     const topPositionRef = useRef(0);
