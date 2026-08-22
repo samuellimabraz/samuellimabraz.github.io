@@ -32,16 +32,14 @@ const ExperienceSection: React.FC<SectionProps> = ({ scrollDirection }) => {
     {
       title: "Machine Learning Engineer — Summer Intern",
       organization: "Chunkr",
-      period: "Jul 2025 — Present",
+      period: "Jul 2025 — Jul 2026",
       type: 'work',
       logo: '/assets/chunkr_logo.jpeg',
       description: [
-        "Developing state-of-the-art Document Layout Analysis (DLA) solutions for intelligent document processing.",
-        "Created synthetic document datasets and benchmarks for training and evaluating layout detection models.",
-        "Developed Chunkr Layout 1, a document layout detection model with multi-GPU training, fine-tuning, and scaling strategies.",
-        "Implemented human reading order prediction algorithms and post-processing detection strategies.",
-        "Deployed models using NVIDIA Triton Inference Server for production-grade inference.",
-        "Conducted research on document understanding, studying articles and implementing novel algorithms for synthetic data generation."
+        "Built a synthetic document-layout generator from statistics of real pages (positions, co-occurrence, size), with an SQLite element pool, vectorized search, and multiprocessing.",
+        "Pretrained YOLO and RF-DETR on 500K+ synthetic samples mixed with real data, then fine-tuned. Stratified rare classes, multi-GPU training, TensorBoard.",
+        "After training: per-class confidence filters, statistical anomaly checks, and box refinement from pixel density. Compared WBF, soft-NMS, and DIoU-NMS and kept a merge that corrected class confusions, raising F1 on every class.",
+        "Built a reading-order model: 88.1% exact match and 98.2% Kendall's τ on the open benchmark (733 samples, 16 document categories). Served models on NVIDIA Triton with Redis workers.",
       ],
       skills: [],
       relatedProjects: [
@@ -54,6 +52,11 @@ const ExperienceSection: React.FC<SectionProps> = ({ scrollDirection }) => {
           id: "chunkr-bench",
           name: "Chunkr Layout Bench Dataset",
           url: "https://huggingface.co/datasets/ChunkrAI/chunkr-layout-bench-oss"
+        },
+        {
+          id: "chunkr-reading-order",
+          name: "Reading-Order Benchmark",
+          url: "https://huggingface.co/datasets/ChunkrAI/chunkr-reading-order-bench-oss"
         }
       ]
     },
@@ -102,17 +105,17 @@ const ExperienceSection: React.FC<SectionProps> = ({ scrollDirection }) => {
     },
     // Extracurricular Activities
     {
-      title: "Software Engineer",
-      organization: "Black Bee Drones - UNIFEI",
-      period: "Apr 2023 — Present",
+      title: "Robotics Software Engineer",
+      organization: "Black Bee Drones — UNIFEI",
+      period: "Apr 2023 — Jun 2026",
       type: 'extracurricular',
       logo: '/assets/black_bee_drones_logo.jpeg',
       description: [
-        "Compete in national (CBR, SAE Electroquad) and international (IMAV) autonomous drone competitions, winning 3rd place indoor at IMAV 2023 and 2025 and the best autonomous indoor flight award in 2023.",
-        "Lead developer of Nectar SDK, the team's open-source ROS 2 framework for flight control, computer vision, and AI detection that became the shared foundation for all competition missions.",
-        "Built indoor autonomous navigation for GPS-denied environments using VIO with Intel RealSense T265, vSLAM with Isaac ROS and RealSense D435i, and Jetson Orin Nano for onboard compute.",
-        "Implemented PID controllers and computer vision algorithms (line following, ArUco detection, object position estimation with OpenCV) for competition tasks: gate passage, mobile landing, figure identification, package delivery, and precise rope delivery.",
-        "Optimized object detection models for edge deployment using TensorRT, OpenVINO, ONNX conversion, pruning, and quantization, with post-processing strategies for real-time accuracy.",
+        "Competed in IMAV, CBR, and SAE Eletroquad. 3rd place indoor at IMAV 2023 (stacking challenge) and IMAV 2025. Special Achievement Award at IMAV 2023 for highly automated MAV operation during the stacking challenge. 2nd place at SAE Eletroquad 2026.",
+        "Lead developer of Nectar SDK, the team's open-source ROS 2 stack for flight, cameras, and detection. Volunteer contributor since June 2026.",
+        "Built indoor GPS-denied navigation: VIO with Intel RealSense T265 on a Raspberry Pi, then vSLAM with Isaac ROS and RealSense D435i on a Jetson Orin Nano, feeding ArduPilot.",
+        "Implemented PID position control and computer vision on the vehicle (line estimates, ArUco, distance from detections). Same missions in Gazebo SITL before flight.",
+        "Trained YOLO, DETR, and RF-DETR for competition tasks; converted with TensorRT, OpenVINO, and ONNX.",
       ],
       skills: [],
       relatedProjects: [

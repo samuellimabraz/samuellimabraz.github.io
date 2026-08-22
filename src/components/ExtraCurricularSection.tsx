@@ -27,16 +27,15 @@ const ExtraCurricularSection: React.FC<SectionProps> = ({ scrollDirection }) => 
 
     const activities: ExtraCurricularItem[] = [
         {
-            title: "Software Engineer",
-            organization: "Black Bee Drones - UNIFEI",
-            period: "Apr 2023 — Present",
+            title: "Robotics Software Engineer",
+            organization: "Black Bee Drones — UNIFEI",
+            period: "Apr 2023 — Jun 2026",
             description: [
-                "Developed autonomous drone software for the IMAV competition using Python and C++, contributing to a 3rd place win with fully autonomous flight capabilities.",
-                "Built indoor autonomous navigation systems for GPS denied environments using Jetson Orin Nano Super, Isaac ROS VSLAM, and Intel RealSense D435i depth cameras.",
-                "Optimized object detection models for edge AI deployment using TensorRT, OpenVINO, ONNX conversion, pruning, and quantization techniques.",
-                "Developed object detection models and PID controllers for competition tasks: gate passage, mobile landing, figure identification, package delivery, and precise rope delivery.",
-                "Implemented computer vision algorithms using OpenCV for line following, ArUco marker detection, and object position estimation.",
-                "Created post processing strategies for detection models to improve accuracy in real time scenarios.",
+                "Competed in IMAV, CBR, and SAE Eletroquad. 3rd place indoor at IMAV 2023 (stacking challenge) and IMAV 2025. Special Achievement Award at IMAV 2023 for highly automated MAV operation during the stacking challenge. 2nd place at SAE Eletroquad 2026.",
+                "Lead developer of Nectar SDK, the team's open-source ROS 2 stack for flight, cameras, and detection. Volunteer contributor since June 2026.",
+                "Built indoor GPS-denied navigation: VIO with Intel RealSense T265 on a Raspberry Pi, then vSLAM with Isaac ROS and RealSense D435i on a Jetson Orin Nano, feeding ArduPilot.",
+                "Implemented PID position control and computer vision on the vehicle (line estimates, ArUco, distance from detections). Same missions in Gazebo SITL before flight.",
+                "Trained YOLO, DETR, and RF-DETR for competition tasks; converted with TensorRT, OpenVINO, and ONNX.",
             ],
             skills: ["ROS2", "Isaac ROS", "Jetson", "TensorRT", "OpenVINO", "SLAM", "Computer Vision", "Edge AI", "C++", "Python"],
             relatedProjects: [
