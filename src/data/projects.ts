@@ -306,11 +306,11 @@ export const projects: Project[] = [
     {
         id: "quantum-assistant",
         title: "Quantum Assistant: Multimodal VLM for Quantum Computing",
-        description: "Specializing vision-language models for quantum computing with Qiskit through synthetic data generation, efficient fine-tuning (rsLoRA), and evaluation. Built an 8,366-sample multimodal dataset (45% with images) achieving +11-17pp improvement on Qiskit HumanEval benchmark. Fine-tuned Qwen3-VL-8B models available on HuggingFace.",
+        description: "Specializing vision-language models for quantum computing with Qiskit through synthetic data generation, efficient fine-tuning (rsLoRA), and evaluation. Built an 8,366-sample multimodal dataset (45% with images) achieving +11-17pp improvement on Qiskit HumanEval benchmark. Fine-tuned Qwen3-VL-8B models available on HuggingFace. Published in Expert Systems with Applications (Elsevier).",
         tags: ["VLM", "Multimodal", "PEFT", "LoRA", "Qiskit", "Quantum Computing", "Python"],
         github: "https://github.com/samuellimabraz/quantum-assistant",
         demo: "https://huggingface.co/spaces/samuellimabraz/quantum-assistant",
-        article: "https://dx.doi.org/10.2139/ssrn.6271408",
+        article: "https://www.sciencedirect.com/science/article/pii/S0957417426028381",
         embedUrl: "https://samuellimabraz-quantum-assistant.hf.space",
         image: "https://media.githubusercontent.com/media/samuellimabraz/quantum-assistant/main/assets/images/synthetic-pipeline.png",
         featured: true,

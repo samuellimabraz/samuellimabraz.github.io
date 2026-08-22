@@ -81,7 +81,7 @@ npm run preview
 
 - GitHub: [samuellimabraz](https://github.com/samuellimabraz)
 - LinkedIn: [Samuel Lima Braz](https://linkedin.com/in/samuel-lima-braz)
-- Email: [contact@samuellima.dev](mailto:contact@samuellima.dev)
+- Email: [samuellimabraz@gmail.com](mailto:samuellimabraz@gmail.com)
 
 ## License
 
