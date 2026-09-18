@@ -9,7 +9,9 @@ export interface Project {
     tags: string[];
     github?: string;
     demo?: string;
+    docs?: string;
     article?: string;
+    articleLabel?: string;
     articlePt?: string;
     image: string;
     embedUrl?: string;
@@ -30,4 +32,4 @@ export interface CodeContent {
     content: string;
     loading: boolean;
     error: string | null;
-} 
+}

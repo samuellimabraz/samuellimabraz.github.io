@@ -1,54 +1,85 @@
-import { Project, CodeExample } from '../lib/types';
+import { Project } from '../lib/types';
 
 export const projects: Project[] = [
-    // === Top row (first half) ===
     {
         id: "nectar-sdk",
-        title: "Nectar SDK: ROS 2 SDK for Autonomous Aerial Systems",
-        description: "ROS 2 software development kit providing unified interfaces for flight control, computer vision, and object detection. Built for Black Bee Drones team to standardize drone control, camera abstraction, and AI detection across competition missions. Implements factory-based architecture for extensible drone types (MAVROS/ArduPilot, PX4, Bebop), camera drivers (RealSense, OAK-D, OpenCV), and detection frameworks (YOLO, DETR, RF-DETR). Includes PID navigation with GPS waypoint missions, obstacle avoidance system, line detection with multiple estimation methods, and Qt6 desktop interface for testing without code.",
-        tags: ["ROS2", "Robotics", "Drone Control", "Computer Vision", "Python", "C++", "MAVROS", "OpenCV"],
+        title: "Nectar SDK",
+        description: "ROS 2 kit with one flight interface for ArduPilot and PX4 (MAVROS, MAVLink, uXRCE-DDS), plus Bebop and Crazyflie; a camera factory (RealSense, OAK-D, USB, ROS topics); and detection, segmentation, and classification (YOLO, DETR, RF-DETR). PID navigation with GPS waypoint missions, obstacle handling from a depth camera, Gazebo SITL, and Docker images for x86_64 and ARM64. Built for Black Bee Drones as the shared software for competition missions.",
+        tags: ["ROS 2", "Robotics", "Computer Vision", "Python", "C++", "OpenCV"],
         github: "https://github.com/Black-Bee-Drones/nectar-sdk",
+        docs: "https://black-bee-drones.github.io/nectar-sdk/",
         image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/bb-photo.jpg",
         featured: true,
         codeExamples: [
             {
-                path: "nectar/nectar/control/mavros/drone.py",
-                description: "MAVROS Drone Implementation - Flight control with PID navigation and GPS waypoints",
-                language: "python"
-            },
-            {
                 path: "nectar/nectar/control/base.py",
-                description: "Abstract Base Drone - Protocol definition for all drone implementations",
+                description: "Abstract base drone: protocol used by every vehicle implementation",
                 language: "python"
             },
             {
-                path: "nectar/nectar/control/mavros/navigator.py",
-                description: "MavrosNavigator - PID and setpoint navigation strategies",
+                path: "nectar/nectar/control/mavros/drone.py",
+                description: "MAVROS drone: flight control through MAVROS",
                 language: "python"
             },
             {
-                path: "nectar/nectar/vision/camera/handler.py",
-                description: "ImageHandler - Camera abstraction with ROS 2 timer-based frame polling",
+                path: "nectar/nectar/control/vehicle/navigator.py",
+                description: "Navigator: PID and setpoint strategies in body, world, and takeoff frames",
+                language: "python"
+            },
+            {
+                path: "nectar/nectar/control/vehicle/gps_utils.py",
+                description: "GPS utilities: EGM96 geoid correction for AMSL altitude",
+                language: "python"
+            },
+            {
+                path: "nectar/nectar/control/obstacles/depth_camera.py",
+                description: "Depth camera obstacle detector",
                 language: "python"
             },
             {
                 path: "nectar/nectar/vision/camera/drivers/realsense_cam.py",
-                description: "RealSense Camera Driver - Depth camera integration with pyrealsense2",
+                description: "RealSense camera driver",
                 language: "python"
             },
             {
                 path: "nectar/nectar/vision/algorithms/line/line_detector.py",
-                description: "Line Detector - Multiple estimation methods (Hough, RANSAC, rotated rect, ellipse)",
+                description: "Line detector: Hough, RANSAC, rotated rect, ellipse",
+                language: "python"
+            }
+        ]
+    },
+    {
+        id: "quantum-assistant",
+        title: "Quantum Assistant",
+        description: "Published in Expert Systems with Applications (Elsevier). Synthetic multimodal data and PEFT (rsLoRA) on Qwen3-VL-8B for Qiskit (circuit diagrams, Bloch spheres, histograms). 8,366-sample dataset, about 45% with images. On Qiskit HumanEval / Hard the fine-tuned model reached 41.72% / 30.46% Pass@1, +17.22 / +15.89 pp over the Qwen3-VL-8B base. Graduation project at UNIFEI.",
+        tags: ["VLM", "PEFT", "Qiskit", "Python"],
+        github: "https://github.com/samuellimabraz/quantum-assistant",
+        demo: "https://huggingface.co/spaces/samuellimabraz/quantum-assistant",
+        article: "https://www.sciencedirect.com/science/article/pii/S0957417426028381",
+        articleLabel: "Paper",
+        pdfUrl: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6271408",
+        embedUrl: "https://samuellimabraz-quantum-assistant.hf.space",
+        image: "https://media.githubusercontent.com/media/samuellimabraz/quantum-assistant/main/assets/images/synthetic-pipeline.png",
+        featured: true,
+        codeExamples: [
+            {
+                path: "src/synthetic_data/generators/stages/answer.py",
+                description: "Answer generation stage for the synthetic data pipeline",
                 language: "python"
             },
             {
-                path: "nectar/nectar/control/bebop/drone.py",
-                description: "Bebop Drone Implementation - Parrot Bebop 2 control interface",
+                path: "src/evaluate/evaluators/code.py",
+                description: "Code evaluator with Pass@k metrics",
                 language: "python"
             },
             {
-                path: "nectar/nectar/control/mavros/gps_utils.py",
-                description: "GPS Utilities - EGM96 geoid correction for AMSL altitude",
+                path: "src/finetune/preparer.py",
+                description: "Fine-tuning data preparation for ms-swift",
+                language: "python"
+            },
+            {
+                path: "src/models/client.py",
+                description: "LLM/VLM client for OpenAI-compatible APIs",
                 language: "python"
             }
         ]
@@ -56,116 +87,207 @@ export const projects: Project[] = [
     {
         id: "signature-detection",
         title: "Signature Detection Model",
-        description: "Developed an open-source signature detection system by building a hybrid dataset with refined public samples and strong augmentations (Albumentations, OpenCV). Benchmarked multiple object detection architectures (YOLOv8–v12, DETR, YOLOS) and fine-tuned YOLOv8s for the best performance-speed trade-off. Used Optuna for hyperparameter optimization, improving F1-score by 7.94%. Deployed on Azure via NVIDIA Triton Inference Server with ONNX/OpenVINO backends, achieving sub-200 ms latency on CPU. Implemented CI/CD with GitHub Actions and tracked experiments using Weights & Biases. Dataset, code, and demo are fully open-source and featured on the Hugging Face blog (>100 upvotes).",
-        tags: ["Computer Vision", "PyTorch", "ONNX", "Azure", "OpenVINO"],
+        description: "Open-source signature detector. Hybrid dataset with public samples and Albumentations/OpenCV augmentations. Compared YOLO (v8 to v12), DETR, and YOLOS; chose YOLOv8s. Optuna search added 7.94 percentage points F1. Served on NVIDIA Triton with ONNX/OpenVINO, under 200 ms on CPU. Code, weights, data, and report are public. Hugging Face blog post with more than 100 upvotes.",
+        tags: ["Computer Vision", "PyTorch", "ONNX", "OpenVINO", "Triton"],
         github: "https://github.com/tech4ai/t4ai-signature-detect-server",
         demo: "https://huggingface.co/collections/tech4humans/signature-detection-678b087d8b0ce22ae8c3f60e",
         article: "https://huggingface.co/blog/samuellimabraz/signature-detection-model",
+        articleLabel: "Post",
         embedUrl: "https://tech4humans-signature-detection.hf.space",
         image: "https://cdn-uploads.huggingface.co/production/uploads/666b9ef5e6c60b6fc4156675/6AnC1ut7EOLa6EjibXZXY.webp",
         featured: true,
         codeExamples: [
             {
                 path: "signature-detection/inference/inference_onnx.py",
-                description: "Inference ONNX Model",
+                description: "ONNX inference",
                 language: "python"
             },
             {
                 path: "signature-detection/models/postprocess/1/model.py",
-                description: "Post Process in Ensemble Model",
+                description: "Post-process in the ensemble model",
                 language: "python"
             },
             {
                 path: "signature-detection/inference/predictors.py",
-                description: "Predictors Class (Http, Vertex, Triton Client)",
+                description: "Predictors (HTTP, Vertex, Triton client)",
                 language: "python"
             },
             {
                 path: "Dockerfile",
                 description: "Dockerfile for Triton Inference Server",
                 language: "python"
-            },
+            }
         ]
     },
     {
+        id: "vision-to-mavros",
+        title: "Vision to MAVROS for ROS 2",
+        description: "ROS 2 C++ package that bridges visual pose estimation (Intel RealSense T265) with ArduPilot and PX4 through MAVROS, including ENU/NED conversion and covariance. Used for indoor GPS-denied flight on Black Bee vehicles.",
+        tags: ["ROS 2", "Robotics", "ArduPilot", "RealSense", "C++"],
+        github: "https://github.com/Black-Bee-Drones/vision_to_mavros",
+        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/realsense-photo.jpg",
+        featured: true,
+        codeExamples: [
+            {
+                path: "src/vision_to_mavros.cpp",
+                description: "Main node",
+                language: "cpp"
+            },
+            {
+                path: "launch/t265_all_nodes_launch.py",
+                description: "Launch file for the full system",
+                language: "python"
+            },
+            {
+                path: "launch/t265_tf_to_mavros_launch.py",
+                description: "T265 to MAVROS launch file",
+                language: "python"
+            }
+        ]
+    },
+    {
+        id: "chunkr-layout",
+        title: "Chunkr Layout 1",
+        description: "Synthetic document-layout generator from statistics of real pages (positions, co-occurrence, size), with an element pool in SQLite. Pretrained YOLO and RF-DETR on 500K+ synthetic samples mixed with real data, then fine-tuned. Fine-tuned LayoutLMv3-Large for reading order: 88.1% exact match and 98.2% Kendall's tau on an open benchmark (733 samples, 16 document categories). Served on NVIDIA Triton.",
+        tags: ["Computer Vision", "Synthetic Data", "YOLO", "Triton"],
+        article: "https://chunkr.ai/blog/introducing-chunkr-layout-1-state-of-the-art-document-layout-analysis%20",
+        articleLabel: "Post",
+        demo: "https://huggingface.co/datasets/ChunkrAI/chunkr-reading-order-bench-oss",
+        image: "/assets/chunkr-layout-detect.jpg",
+        featured: true
+    },
+    {
+        id: "pid-controller",
+        title: "PID Controller for ROS 2",
+        description: "Generic PID controller as a ROS 2 node in C++, with gains that can be changed live. Used for line following, altitude, position, velocity, and yaw.",
+        tags: ["ROS 2", "C++", "Control", "Robotics"],
+        github: "https://github.com/Black-Bee-Drones/pid-controller",
+        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/pid.png",
+        featured: true,
+        codeExamples: [
+            {
+                path: "include/pid_controller/pid.hpp",
+                description: "PID controller class header",
+                language: "cpp"
+            },
+            {
+                path: "src/pid.cpp",
+                description: "PID controller implementation",
+                language: "cpp"
+            },
+            {
+                path: "src/pid_controller_node.cpp",
+                description: "ROS 2 node",
+                language: "cpp"
+            },
+            {
+                path: "launch/pid_controller.launch.py",
+                description: "Launch file",
+                language: "python"
+            }
+        ]
+    },
+    {
+        id: "roboarm",
+        title: "RoboArm",
+        description: "4-DOF RoboCore arm controlled from a webcam. MediaPipe hand landmarks and OpenCV map gestures to base rotation, height, reach, and gripper, sent to an Arduino Uno over Firmata (pyFirmata2). Built at Fundação Asimo to teach computer vision in public schools.",
+        tags: ["Computer Vision", "MediaPipe", "OpenCV", "Arduino", "Python"],
+        github: "https://github.com/Fundacao-Asimo/RoboArm",
+        image: "/assets/roboarm.png",
+        featured: true,
+        codeExamples: [
+            {
+                path: "src/main.py",
+                description: "Webcam loop and gesture-to-servo mapping",
+                language: "python"
+            },
+            {
+                path: "src/model/HandTracker.py",
+                description: "MediaPipe hand tracker",
+                language: "python"
+            },
+            {
+                path: "src/control/RoboArm.py",
+                description: "Arm control over Firmata",
+                language: "python"
+            }
+        ]
+    },
+    {
+        id: "tinyml",
+        title: "TinyML Capacitor Counting",
+        description: "Object detection for capacitor counting on a Seeed XIAO ESP32S3 Sense (OV2640). Edge Impulse FOMO at 96x96 RGB, exported as an int8 Arduino library with the EON Compiler. Validation F1 82.1%, precision 98%, recall 71%. Test accuracy 75.58%, precision 97%, recall 73%, F1 83%. About 1.1 s inference and 229 KB RAM on device. UNIFEI IESTI01 final project, with José Anderson dos Reis and Tony Albert Lima.",
+        tags: ["TinyML", "Edge Impulse", "FOMO", "ESP32", "Object Detection"],
+        pdfUrl: "/docs/tinyml-capacitor-counting.pdf",
+        image: "/assets/tinyml-preview-01.png",
+        featured: true
+    },
+    {
+        id: "cv-hangout",
+        title: "Hugging Face Computer Vision Hangout",
+        description: "Invited presenter at Hugging Face's Computer Vision Hangout. Live demo and walkthrough published on Hugging Face Spaces.",
+        tags: ["Computer Vision", "Hugging Face"],
+        demo: "https://huggingface.co/spaces/samuellimabraz/cv-hangout",
+        embedUrl: "https://samuellimabraz-cv-hangout.hf.space",
+        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/hf-hangout.png",
+        featured: true,
+        codeExamples: [
+            {
+                path: "app.py",
+                description: "Gradio application for the hangout demo",
+                language: "python"
+            }
+        ]
+    },
+    {
+        id: "peft-methods",
+        title: "PEFT Methods for Language Models",
+        description: "Technical writing on parameter-efficient fine-tuning (full fine-tuning, LoRA, QLoRA, IA3). On dialogue summarization, training less than 1% of parameters matched full fine-tuning closely enough to be useful. English on the Hugging Face Community Blog; Portuguese in AI News Brazil.",
+        tags: ["PEFT", "LoRA", "QLoRA", "NLP"],
+        article: "https://huggingface.co/blog/samuellimabraz/peft-methods",
+        articleLabel: "Post",
+        articlePt: "https://ainews.net.br/ajuste-fino-de-modelos-transformers-atraves-detecnicas-peft-parameter-efficient-fine-tuning/",
+        pdfUrl: "https://ainews.net.br/wp-content/uploads/2025/01/Ajuste-fino-de-modelos-Transformers-atraves-de-tecnicas-PEFT-Parameter-Efficient-Fine-Tuning.pdf",
+        demo: "https://colab.research.google.com/drive/1B9RsKLMa8SwTxLsxRT8g9OedK10zfBEP?usp=sharing",
+        image: "https://cdn-uploads.huggingface.co/production/uploads/666b9ef5e6c60b6fc4156675/K26QSN3Y5dE-rY2bGKymc.jpeg",
+        featured: true
+    },
+    {
         id: "cafedl",
-        title: "CafeDL: Deep Learning Framework",
-        description: "A Java‑based deep learning library built from scratch (inspired by Keras and 'Deep Learning From Scratch'), featuring core layers (Conv2D, Dense, Dropout, etc.), activation/loss/optimizer modules, ND4J‑powered tensor operations, MongoDB persistence via Morphia, and a QuickDraw‑style sketch‑classification game using JavaFX and MVC.",
-        tags: ["Java", "Deep Learning", "Framework", "Educational"],
+        title: "CafeDL",
+        description: "Deep learning library in Java from scratch: Conv2D, Dense, Dropout, optimizers, ND4J tensors, MongoDB persistence via Morphia, and a QuickDraw-style sketch classifier in JavaFX.",
+        tags: ["Java", "Deep Learning"],
         github: "https://github.com/samuellimabraz/cafedl",
         image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/cafe-dl.png",
         featured: true,
         codeExamples: [
             {
                 path: "src/main/java/br/cafedl/neuralnetwork/examples/classification/image/qdraw/QuickDrawNN.java",
-                description: "Quick Draw Neural Network Training",
+                description: "Quick Draw network training",
                 language: "java"
             },
             {
                 path: "src/main/java/br/cafedl/neuralnetwork/core/optimizers/Adam.java",
-                description: "Adam Optimizer Implementation",
+                description: "Adam optimizer",
                 language: "java"
             },
             {
                 path: "src/main/java/br/cafedl/neuralnetwork/core/layers/Dense.java",
-                description: "Dense Layer Implementation",
+                description: "Dense layer",
                 language: "java"
             },
             {
                 path: "src/main/java/br/cafedl/neuralnetwork/core/train/Trainer.java",
-                description: "Trainer Class",
+                description: "Trainer",
                 language: "java"
-            },
-            {
-                path: "src/main/java/br/cafedl/neuralnetwork/examples/regression/NonLinearFunctions.java",
-                description: "Non Linear Functions Example Training",
-                language: "java"
-            },
-        ]
-    },
-    {
-        id: "peft-methods",
-        title: "PEFT: Parameter-Efficient Fine-Tuning Methods for LLMs",
-        description: "Technical article exploring efficient fine-tuning methods for Large Language Models, with practical implementation in a Colab notebook comparing Full Fine-Tuning, LoRA, QLoRA, and IA³, demonstrating comparable results with just 1% of trainable parameters.",
-        tags: ["LLM", "PEFT", "LoRA", "QLoRA", "IA³", "Fine-Tuning", "NLP"],
-        article: "https://huggingface.co/blog/samuellimabraz/peft-methods",
-        articlePt: "https://medium.com/@samuel.lima_75652/peft-m%C3%A9todos-de-fine-tuning-eficiente-para-llms-ffac60ac9d15",
-        demo: "https://colab.research.google.com/drive/1B9RsKLMa8SwTxLsxRT8g9OedK10zfBEP?usp=sharing",
-        image: "https://cdn-uploads.huggingface.co/production/uploads/666b9ef5e6c60b6fc4156675/K26QSN3Y5dE-rY2bGKymc.jpeg",
-        featured: true,
-        codeExamples: [
-            {
-                path: "peft_methods.ipynb",
-                description: "Notebook with PEFT implementation examples",
-                language: "python"
-            },
-            {
-                path: "full_finetuning.py",
-                description: "Full fine-tuning implementation",
-                language: "python"
-            },
-            {
-                path: "lora_implementation.py",
-                description: "LoRA implementation",
-                language: "python"
-            },
-            {
-                path: "qlora_implementation.py",
-                description: "QLoRA implementation",
-                language: "python"
-            },
-            {
-                path: "ia3_implementation.py",
-                description: "IA³ implementation",
-                language: "python"
             }
         ]
     },
     {
         id: "opencv-gui",
         title: "OpenCV Explorer",
-        description: "Interactive web application that allows real-time experimentation with computer vision techniques using your webcam. Built with OpenCV, Streamlit, and WebRTC.",
-        tags: ["Computer Vision", "OpenCV", "Streamlit", "WebRTC", "Python"],
+        description: "Web app for trying OpenCV filters and trackers on a live webcam. Streamlit and WebRTC.",
+        tags: ["Computer Vision", "OpenCV", "Streamlit", "Python"],
         github: "https://github.com/samuellimabraz/OpenCVGUI",
         demo: "https://huggingface.co/spaces/samuellimabraz/opencv-gui",
         embedUrl: "https://samuellimabraz-opencv-gui.hf.space",
@@ -174,89 +296,22 @@ export const projects: Project[] = [
         codeExamples: [
             {
                 path: "src/streamlit_app.py",
-                description: "Main Streamlit application with WebRTC video processing",
+                description: "Streamlit app with WebRTC video processing",
                 language: "python"
             },
             {
                 path: "src/opencv_utils.py",
-                description: "Implementation of various OpenCV filters and transformations",
+                description: "OpenCV filters and transforms",
                 language: "python"
             },
             {
                 path: "src/hand_tracker.py",
-                description: "Hand Tracker Class",
+                description: "Hand tracker",
                 language: "python"
             },
             {
                 path: "src/face_mesh_tracker.py",
-                description: "Face Mesh Tracker Class",
-                language: "python"
-            }
-        ]
-    },
-    {
-        id: "educai",
-        title: "EducAI: AI Math Assistant",
-        description: "AI-powered mathematics platform with natural language chat, OCR for handwritten problems, graph visualization, and step-by-step problem solving. Built with FastAPI, React, OlmOCR, and Qwen Math LLM served via vLLM. Developed as a team project at UNIFEI.",
-        tags: ["FastAPI", "React", "LLM", "OCR", "vLLM", "Docker", "Math"],
-        github: "https://github.com/samuellimabraz/EducAI",
-        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/educai-home.png",
-        featured: false,
-        codeExamples: [
-            {
-                path: "docker/models/Dockerfile.vllm",
-                description: "Dockerfile for vLLM models",
-                language: "docker"
-            },
-            {
-                path: "backend/app/main.py",
-                description: "FastAPI Main Application",
-                language: "python"
-            },
-            {
-                path: "backend/app/services/llm_service.py",
-                description: "LLM Service with vLLM",
-                language: "python"
-            },
-            {
-                path: "backend/app/services/ocr_service.py",
-                description: "OCR Service for image to text conversion",
-                language: "python"
-            },
-            {
-                path: "frontend/src/components/ChatInterface.js",
-                description: "React Chat Interface",
-                language: "javascript"
-            },
-            {
-                path: "frontend/src/components/GraphVisualizer.js",
-                description: "React Graph Visualizer",
-                language: "javascript"
-            },
-            {
-                path: "frontend/src/components/SketchPad.js",
-                description: "React Sketch Pad",
-                language: "javascript"
-            }
-        ]
-    },
-    {
-        id: "hand-mouse",
-        title: "Hand Mouse Controller",
-        description: "Python application for real-time mouse control via hand gestures using OpenCV and Google MediaPipe for accessibility and hands-free computing.",
-        tags: ["Computer Vision", "MediaPipe", "Python"],
-        github: "https://github.com/samuellimabraz/HandMouseController",
-        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/hand-controller.png",
-        featured: false,
-        codeExamples: [
-            {
-                path: "src/HandTracker.py",
-                description: "Hand Detector Class",
-                language: "python"
-            },
-            {
-                path: "src/main.py",
-                description: "Main hand tracking and mouse control logic",
+                description: "Face mesh tracker",
                 language: "python"
             }
         ]
@@ -264,264 +319,193 @@ export const projects: Project[] = [
     {
         id: "board-bringup",
         title: "Board Bring-Up PIC18F4550",
-        description: "PCB board bring-up and validation project for PIC18F4550 microcontroller. Built firmware with state machine architecture, LCD display, ADC monitoring, RTC clock, I2C communication, and USB serial control. Features multilingual IHM menu with alarm system.",
-        tags: ["Embedded Systems", "C", "PIC18F4550", "State Machine", "I2C", "MPLAB X"],
+        description: "Firmware in C for a PIC18F4550 board: event-driven state machine, LCD 16x2, ADC, RTC (MCP7940 over I2C), PWM, keypad, USB-serial (MCP2200). Monitoring application with alarm thresholds and a serial command protocol. Compiled with XC8 / MPLAB X.",
+        tags: ["Embedded", "C", "PIC18F4550", "I2C"],
         github: "https://github.com/samuellimabraz/BoardBring-Up-PIC18F4550",
         image: "https://raw.githubusercontent.com/samuellimabraz/BoardBring-Up-PIC18F4550/main/docs/DiagramaDeEstados.png",
         featured: false,
         codeExamples: [
             {
                 path: "src/main.c",
-                description: "Main Application Entry Point",
+                description: "Application entry point",
                 language: "c"
             },
             {
                 path: "src/stateMachine.c",
-                description: "State Machine Implementation",
+                description: "State machine",
                 language: "c"
             },
             {
                 path: "src/lcd.c",
-                description: "LCD Driver",
+                description: "LCD driver",
                 language: "c"
             },
             {
                 path: "src/adc.c",
-                description: "ADC Driver",
-                language: "c"
-            },
-            {
-                path: "src/var.c",
-                description: "Storing system variables",
+                description: "ADC driver",
                 language: "c"
             },
             {
                 path: "src/serial.c",
-                description: "Serial Communication",
+                description: "Serial communication",
                 language: "c"
             }
         ]
     },
-    // === Bottom row (second half) ===
     {
-        id: "quantum-assistant",
-        title: "Quantum Assistant: Multimodal VLM for Quantum Computing",
-        description: "Specializing vision-language models for quantum computing with Qiskit through synthetic data generation, efficient fine-tuning (rsLoRA), and evaluation. Built an 8,366-sample multimodal dataset (45% with images) achieving +11-17pp improvement on Qiskit HumanEval benchmark. Fine-tuned Qwen3-VL-8B models available on HuggingFace. Published in Expert Systems with Applications (Elsevier).",
-        tags: ["VLM", "Multimodal", "PEFT", "LoRA", "Qiskit", "Quantum Computing", "Python"],
-        github: "https://github.com/samuellimabraz/quantum-assistant",
-        demo: "https://huggingface.co/spaces/samuellimabraz/quantum-assistant",
-        article: "https://www.sciencedirect.com/science/article/pii/S0957417426028381",
-        embedUrl: "https://samuellimabraz-quantum-assistant.hf.space",
-        image: "https://media.githubusercontent.com/media/samuellimabraz/quantum-assistant/main/assets/images/synthetic-pipeline.png",
-        featured: true,
+        id: "ev3-color-sensor",
+        title: "EV3 Color Sensor for Arduino",
+        description: "Arduino library that talks to a LEGO EV3 color sensor over UART (SoftwareSerial). Modes: red light, blue light, color, off. Developed at Fundação Asimo.",
+        tags: ["Arduino", "UART", "Embedded", "C++"],
+        github: "https://github.com/Fundacao-Asimo/Ev3ColorSensor",
+        image: "/assets/ev3-color-sensor.jpg",
+        featured: false,
         codeExamples: [
             {
-                path: "src/synthetic_data/generators/stages/answer.py",
-                description: "Answer Generation Stage for Synthetic Data Pipeline",
+                path: "src/Ev3ColorSensor.h",
+                description: "Sensor class header",
+                language: "c"
+            },
+            {
+                path: "src/Ev3ColorSensor.cpp",
+                description: "UART protocol and color read",
+                language: "cpp"
+            },
+            {
+                path: "examples/SerialRead/SerialRead.ino",
+                description: "Example: one sensor",
+                language: "cpp"
+            },
+            {
+                path: "examples/SerialReadWith2Sensors/SerialReadWith2Sensors.ino",
+                description: "Example: two sensors",
+                language: "cpp"
+            }
+        ]
+    },
+    {
+        id: "emoji-compiler",
+        title: "EmojiCompiler",
+        description: "UNIFEI compilers course. A C-like language whose tokens are emojis. Lexer and parser in PLY, then translation to C, compile, and run. Sample programs in data/ (HelloWorld, parity, sphere volume, input/output).",
+        tags: ["Compilers", "PLY", "Python", "C"],
+        github: "https://github.com/samuellimabraz/EmojiCompiler",
+        image: "https://opengraph.githubassets.com/1/samuellimabraz/EmojiCompiler",
+        featured: false,
+        codeExamples: [
+            {
+                path: "main.py",
+                description: "CLI: lex, parse, translate, compile",
                 language: "python"
             },
             {
-                path: "src/evaluate/evaluators/code.py",
-                description: "Code Evaluator with Pass@k Metrics",
+                path: "src/emoji_lex.py",
+                description: "PLY lexer for emoji tokens",
                 language: "python"
             },
             {
-                path: "src/finetune/preparer.py",
-                description: "Fine-tuning Data Preparation for ms-swift",
-                language: "python"
-            },
-            {
-                path: "src/models/client.py",
-                description: "LLM/VLM Client for OpenAI-compatible APIs",
+                path: "src/emoji_parser.py",
+                description: "PLY parser",
                 language: "python"
             }
         ]
     },
     {
-        id: "vision-to-mavros",
-        title: "Vision to MAVROS for ROS2",
-        description: "ROS2 adaptation of the vision_to_mavros package that bridges visual pose estimation systems with flight controllers. Enables integration between Intel RealSense T265 tracking cameras and ArduPilot/PX4 via MAVROS with support for various mounting orientations.",
-        tags: ["ROS2", "Robotics", "Drone", "Computer Vision", "ArduPilot", "RealSense"],
-        github: "https://github.com/Black-Bee-Drones/vision_to_mavros",
-        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/realsense-photo.jpg",
-        featured: true,
+        id: "kruskal-mst",
+        title: "Kruskal MST",
+        description: "UNIFEI graphs course. Kruskal's algorithm on a random graph, with frames rendered in PIL/OpenCV and assembled into a video with moviepy.",
+        tags: ["Algorithms", "Graphs", "Python", "OpenCV"],
+        github: "https://github.com/samuellimabraz/Kruskal_Algorithm-MST",
+        demo: "https://youtube.com/shorts/o_dGmxP0Gcg",
+        image: "https://img.youtube.com/vi/o_dGmxP0Gcg/maxresdefault.jpg",
+        featured: false,
         codeExamples: [
             {
-                path: "src/vision_to_mavros.cpp",
-                description: "Main Node Implementation",
-                language: "cpp"
-            },
-            {
-                path: "launch/t265_all_nodes_launch.py",
-                description: "Launch File for Full System",
+                path: "Graph.py",
+                description: "Graph and Kruskal",
                 language: "python"
             },
             {
-                path: "launch/t265_tf_to_mavros_launch.py",
-                description: "T265 Integration Launch File",
+                path: "main.py",
+                description: "Frame generation and video pipeline",
+                language: "python"
+            },
+            {
+                path: "Video.py",
+                description: "Video assembly",
                 language: "python"
             }
         ]
-    },
-    {
-        id: "pid-controller",
-        title: "PID Controller for ROS2",
-        description: "Generic, configurable PID controller implemented as a ROS2 node in C++. Designed for versatile control applications including line following, altitude control, position control, velocity control, and heading/yaw control.",
-        tags: ["ROS2", "C++", "Control Systems", "Robotics", "Real-time"],
-        github: "https://github.com/Black-Bee-Drones/pid-controller",
-        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/pid.png",
-        featured: true,
-        codeExamples: [
-            {
-                path: "include/pid_controller/pid.hpp",
-                description: "PID Controller Class Header",
-                language: "cpp"
-            },
-            {
-                path: "src/pid.cpp",
-                description: "PID Controller Implementation",
-                language: "cpp"
-            },
-            {
-                path: "src/pid_controller_node.cpp",
-                description: "ROS2 Node Implementation",
-                language: "cpp"
-            },
-            {
-                path: "launch/pid_controller.launch.py",
-                description: "Launch File for PID Controller",
-                language: "python"
-            },
-            {
-                path: "src/pid_test_environment.cpp",
-                description: "First Order System Test Environment",
-                language: "python"
-            },
-        ]
-    },
-    {
-        id: "cv-hangout",
-        title: "Hugging Face - Computer Vision Hangout",
-        description: "Invited presenter at Hugging Face's open 'Computer Vision Hangout', sharing key CV projects and insights. Live demo and code walkthrough published on Hugging Face Spaces.",
-        tags: ["Computer Vision", "Hugging Face", "Open Source", "Community"],
-        demo: "https://huggingface.co/spaces/samuellimabraz/cv-hangout",
-        embedUrl: "https://samuellimabraz-cv-hangout.hf.space",
-        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/hf-hangout.png",
-        featured: true,
-        codeExamples: [
-            {
-                path: "app.py",
-                description: "Main Gradio application for the CV Hangout demo",
-                language: "python"
-            }
-        ]
-    },
-    {
-        id: "peft-ainews",
-        title: "PEFT Techniques for Fine-Tuning Transformer Models",
-        description: "Academic article published in AINews about Parameter-Efficient Fine-Tuning (PEFT) techniques for Transformer models, exploring efficient methods to adapt large language models with limited computational resources.",
-        tags: ["PEFT", "Transformers", "NLP", "Fine-Tuning", "LoRA", "Academic Paper", "Portuguese"],
-        pdfUrl: "https://ainews.net.br/wp-content/uploads/2025/01/Ajuste-fino-de-modelos-Transformers-atraves-de-tecnicas-PEFT-Parameter-Efficient-Fine-Tuning.pdf",
-        externalUrl: "https://ainews.net.br/ajuste-fino-de-modelos-transformers-atraves-detecnicas-peft-parameter-efficient-fine-tuning/",
-        image: "https://cdn-uploads.huggingface.co/production/uploads/666b9ef5e6c60b6fc4156675/dz0AdSqt4QP7iRjpiXDE1.png",
-        featured: true,
-        languagePt: true,
     },
     {
         id: "face-api",
-        title: "Face API: Facial Recognition System",
-        description: "Scalable facial recognition system using DeepFace, FastAPI, and MongoDB Atlas Vector Search for efficient face matching and similarity search.",
-        tags: ["Facial Recognition", "FastAPI", "MongoDB", "Vector Search"],
+        title: "Face API",
+        description: "Facial recognition API using DeepFace, FastAPI, and MongoDB Atlas Vector Search. Multi-tenant orgs, API keys, Redis, Docker.",
+        tags: ["FastAPI", "MongoDB", "Vector Search", "Python"],
         github: "https://github.com/samuellimabraz/face-api",
         image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/face-api.png",
         featured: false,
         codeExamples: [
             {
                 path: "src/api/main.py",
-                description: "API endpoints for facial recognition",
+                description: "API endpoints",
                 language: "python"
             },
             {
                 path: "src/infrastructure/ml/detect/deepface_detector.py",
-                description: "Face Detector",
+                description: "Face detector",
                 language: "python"
             },
             {
                 path: "src/infrastructure/database/mongodb.py",
-                description: "MongoDB Vector Store",
+                description: "MongoDB vector store",
                 language: "python"
-            },
+            }
         ]
     },
     {
-        id: "agent4ai",
-        title: "Agent4ai: LLM Agent Framework",
-        description: "A LangGraph‑based conversational agent for Tech4Humans onboarding, leveraging Adaptive, Corrective and Self‑RAG for dynamic document retrieval, real‑time web search (Tavily), Google Calendar integration, and a modular graph architecture to guide new employees through company info, tools and events.",
-        tags: ["LLM", "Agents", "RAG", "LangGraph", "Python"],
-        github: "https://github.com/samuellimabraz/Agent4ai",
-        image: "https://github.com/samuellimabraz/Agent4ai/raw/main/images/Cohere%20Multilingual%20Model.png",
+        id: "hand-mouse",
+        title: "Hand Mouse Controller",
+        description: "Mouse control from hand landmarks: index finger for motion, pinch to click. OpenCV and MediaPipe.",
+        tags: ["Computer Vision", "MediaPipe", "Python"],
+        github: "https://github.com/samuellimabraz/HandMouseController",
+        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/hand-controller.png",
         featured: false,
         codeExamples: [
             {
-                path: "agent/graph/agent.py",
-                description: "LLM Agent implementation with LangGraph",
+                path: "src/HandTracker.py",
+                description: "Hand detector",
                 language: "python"
             },
             {
-                path: "agent/tools/base_content_tool.py",
-                description: "Retrivier Content Tool",
+                path: "src/main.py",
+                description: "Tracking and mouse control",
                 language: "python"
-            },
-            {
-                path: "agent/tools/calendar_tool.py",
-                description: "Google Calendar Tool",
-                language: "python"
-            },
-            {
-                path: "agent/graph/chains/router.py",
-                description: "Router Chain",
-                language: "python"
-            },
+            }
         ]
     },
     {
-        id: "sorting-algorithms",
-        title: "Sorting Algorithms",
-        description: "Implementation and performance analysis of various sorting algorithms in C++ with Python visualization. Includes a Tkinter GUI to visualize execution times and a custom SGD linear regression model for curve approximation.",
-        tags: ["C++", "Python", "Algorithms", "Tkinter", "Data Visualization"],
-        github: "https://github.com/samuellimabraz/SortingAlgorithms",
-        image: "https://github.com/samuellimabraz/SortingAlgorithms/raw/main/resource/screenshot.png",
-        featured: true,
+        id: "educai",
+        title: "EducAI",
+        description: "Team project at UNIFEI. Mathematics assistant with chat, OCR for handwritten problems, and graph visualization. FastAPI, React, OlmOCR, and a Qwen Math model served with vLLM.",
+        tags: ["FastAPI", "React", "OCR", "vLLM"],
+        github: "https://github.com/samuellimabraz/EducAI",
+        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/educai-home.png",
+        featured: false,
         codeExamples: [
             {
-                path: "include/BubbleSort.h",
-                description: "Bubble Sort Implementation",
-                language: "cpp"
-            },
-            {
-                path: "include/QuickSort.h",
-                description: "Quick Sort Implementation",
-                language: "cpp"
-            },
-            {
-                path: "include/SortAlgorithm.h",
-                description: "A class for interface sorting algorithms",
-                language: "cpp"
-            },
-            {
-                path: "src/gui.py",
-                description: "Tkinter GUI Implementation",
+                path: "backend/app/main.py",
+                description: "FastAPI application",
                 language: "python"
             },
             {
-                path: "src/model.py",
-                description: "SGD Linear Regression Model",
+                path: "backend/app/services/llm_service.py",
+                description: "LLM service with vLLM",
                 language: "python"
             },
             {
-                path: "src/main.cpp",
-                description: "Main Algorithm Benchmarking Code",
-                language: "cpp"
+                path: "backend/app/services/ocr_service.py",
+                description: "OCR service",
+                language: "python"
             }
         ]
     }

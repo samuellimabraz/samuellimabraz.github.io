@@ -15,15 +15,15 @@ const EducationSection: React.FC<SectionProps> = ({ scrollDirection }) => {
     {
       degree: "Bachelor's degree in Computer Engineering",
       institution: "Universidade Federal de Itajubá",
-      period: "Mar 2022 — Dec 2025",
-      description: "Bachelor's in Computer Engineering. Work in artificial intelligence, machine learning, and computer vision.",
+      period: "Mar 2022 to Dec 2025",
+      description: "Completed Computer Engineering with coursework in artificial intelligence, machine learning, computer vision, robotics, and embedded systems. Graduation project: Quantum Assistant, published in Expert Systems with Applications.",
       logo: '/assets/unifei-logo.png'
     },
     {
-      degree: "Industrial Automation - Integrated Technical High School",
-      institution: "Instituto Federal de Educação, Ciência e Tecnologia de Minas Gerais - IFMG",
-      period: "Jan 2019 — Mar 2022",
-      description: "Focused on industrial automation systems, robotics, and embedded systems programming.",
+      degree: "Industrial Automation, Integrated Technical High School",
+      institution: "Instituto Federal de Educação, Ciência e Tecnologia de Minas Gerais (IFMG)",
+      period: "Jan 2019 to Feb 2022",
+      description: "Industrial automation systems, robotics, and embedded systems programming.",
       logo: '/assets/IF.png'
     }
   ];

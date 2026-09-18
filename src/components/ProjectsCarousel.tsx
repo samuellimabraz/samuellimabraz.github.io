@@ -30,7 +30,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
 
     // Modal functionality
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-    const [modalType, setModalType] = useState<'demo' | 'repo' | 'article' | 'pdf' | null>(null);
+    const [modalType, setModalType] = useState<'demo' | 'repo' | 'article' | 'pdf' | 'info' | null>(null);
     const [selectedCodeExample, setSelectedCodeExample] = useState<CodeExample | null>(null);
     const [codeContent, setCodeContent] = useState<CodeContent>({
         content: '',
@@ -141,32 +141,29 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
         };
     }, [isPaused, topRowSpeed, bottomRowSpeed]);
 
-    // Split projects into two groups for the two rows
-    const topRowProjects = projects.slice(0, Math.ceil(projects.length / 2));
-    const bottomRowProjects = projects.slice(Math.ceil(projects.length / 2));
+    const TOP_ROW_COUNT = 8;
+    const topRowProjects = projects.slice(0, TOP_ROW_COUNT);
+    const bottomRowProjects = projects.slice(TOP_ROW_COUNT);
 
-    // Determine modal type based on project properties
-    const determineModalType = (project: Project): 'demo' | 'repo' | 'article' | 'pdf' => {
+    const isDirectPdf = (url: string) => url.split('?')[0].toLowerCase().endsWith('.pdf');
+
+    const articleLinkLabel = (project: Project) => project.articleLabel ?? 'Post';
+
+    const determineModalType = (project: Project): 'demo' | 'repo' | 'article' | 'pdf' | 'info' => {
         if (project.id === 'peft-methods' && project.article) {
             return 'article';
-        }
-        if (project.pdfUrl) {
-            return 'pdf';
-        }
-        if (project.embedUrl) {
-            return 'demo';
         }
         if (project.github && project.codeExamples) {
             return 'repo';
         }
-        if (project.github) {
-            return 'repo';
+        if (project.embedUrl) {
+            return 'demo';
         }
-        return 'demo';
+        return 'info';
     };
 
     // Open project modal
-    const openProjectModal = (project: Project, type: 'demo' | 'repo' | 'article' | 'pdf') => {
+    const openProjectModal = (project: Project, type: 'demo' | 'repo' | 'article' | 'pdf' | 'info') => {
         setSelectedProject(project);
         setModalType(type);
         document.body.style.overflow = 'hidden';
@@ -241,37 +238,16 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                         });
                     }
                     
-                    // Open the project modal after a short delay to allow scrolling
                     setTimeout(() => {
-                        // Determine modal type inline
-                        let modalType: 'demo' | 'repo' | 'article' | 'pdf' = 'demo';
-                        if (project.id === 'peft-methods' && project.article) {
-                            modalType = 'article';
-                        } else if (project.pdfUrl) {
-                            modalType = 'pdf';
-                        } else if (project.embedUrl) {
-                            modalType = 'demo';
-                        } else if (project.github && project.codeExamples) {
-                            modalType = 'repo';
-                        } else if (project.github) {
-                            modalType = 'repo';
-                        }
-                        
-                        openProjectModal(project, modalType);
+                        openProjectModal(project, determineModalType(project));
                     }, 500);
                 }
             }
         };
 
-        // Check hash on mount
         handleHashChange();
-
-        // Listen for hash changes
         window.addEventListener('hashchange', handleHashChange);
-
-        return () => {
-            window.removeEventListener('hashchange', handleHashChange);
-        };
+        return () => window.removeEventListener('hashchange', handleHashChange);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [projects]);
 
@@ -397,6 +373,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
             'sh': 'bash',
             'yml': 'yaml',
             'yaml': 'yaml',
+            'ino': 'cpp',
         };
 
         return languageMap[extension] || 'text';
@@ -408,15 +385,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
             key={project.id}
             className="flex-shrink-0 w-80 bg-light-primary overflow-hidden border border-light-border transition-all hover:shadow-md hover:border-light-accent/50 hover:scale-[1.02] mx-3 my-3 flex flex-col cursor-pointer"
             onClick={() => {
-                if (project.id === "peft-methods" && project.article) {
-                    openProjectModal(project, 'article');
-                } else if (project.pdfUrl) {
-                    openProjectModal(project, 'pdf');
-                } else if (project.github && project.codeExamples) {
-                    openProjectModal(project, 'repo');
-                } else if (project.embedUrl) {
-                    openProjectModal(project, 'demo');
-                }
+                openProjectModal(project, determineModalType(project));
             }}
         >
             <div className="h-52 overflow-hidden bg-light-secondary relative group">
@@ -461,17 +430,17 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                             View Code
                         </button>
                     )}
-                    {project.pdfUrl && (
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation(); // Prevent the parent's onClick
-                                openProjectModal(project, 'pdf');
-                            }}
+                    {project.article && project.id !== 'peft-methods' && !project.embedUrl && !project.github && (
+                        <a
+                            href={project.article}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
                             className="px-4 py-2 bg-light-secondary text-light-text-primary font-medium hover:bg-light-tertiary transition-colors flex items-center border border-light-border"
                         >
-                            <FileCode size={16} className="mr-2" />
-                            View Article
-                        </button>
+                            <ExternalLink size={16} className="mr-2" />
+                            Open {articleLinkLabel(project)}
+                        </a>
                     )}
                 </div>
             </div>
@@ -504,11 +473,26 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                             rel="noopener noreferrer"
                             className="px-2 py-1 border border-light-border text-xs flex items-center hover:bg-light-secondary transition-colors text-light-text-secondary"
                             onClick={(e) => {
-                                e.stopPropagation(); // Prevent the parent's onClick
+                                e.stopPropagation();
                             }}
                         >
                             <Github size={14} className="mr-1" />
                             GitHub
+                        </a>
+                    )}
+
+                    {project.docs && (
+                        <a
+                            href={project.docs}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-2 py-1 border border-light-border text-xs flex items-center hover:bg-light-secondary transition-colors text-light-text-secondary"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                            }}
+                        >
+                            <ExternalLink size={14} className="mr-1" />
+                            Docs
                         </a>
                     )}
 
@@ -551,7 +535,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                             }}
                         >
                             <FileCode size={14} className="mr-1" />
-                            Article
+                            {articleLinkLabel(project)}
                         </a>
                     )}
 
@@ -566,7 +550,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                             }}
                         >
                             <FileCode size={14} className="mr-1" />
-                            Article (PT)
+                            Post (PT)
                         </a>
                     )}
 
@@ -577,13 +561,15 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                             rel="noopener noreferrer"
                             className="px-2 py-1 border border-light-border text-xs flex items-center hover:bg-light-secondary transition-colors text-light-text-secondary"
                             onClick={(e) => {
-                                e.stopPropagation(); // Prevent the parent's onClick
-                                e.preventDefault();
-                                openProjectModal(project, 'pdf');
+                                e.stopPropagation();
+                                if (isDirectPdf(project.pdfUrl!)) {
+                                    e.preventDefault();
+                                    openProjectModal(project, 'pdf');
+                                }
                             }}
                         >
                             <FileCode size={14} className="mr-1" />
-                            PDF Article
+                            {isDirectPdf(project.pdfUrl) ? 'PDF' : 'SSRN PDF'}
                         </a>
                     )}
 
@@ -611,7 +597,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
             <div className="container mx-auto px-4 md:px-6">
                 <h2 className="text-3xl font-bold mb-6 text-center text-light-text-primary">Projects</h2>
                 <p className="text-center text-lg mb-10 max-w-2xl mx-auto text-light-text-secondary">
-                    Explore my projects including computer vision models, language model applications, and AI frameworks.
+                    ROS 2 flight software, vision models trained and served on hardware, and coursework in compilers, graphs, and embedded systems.
                 </p>
 
                 {/* Controles para ajustar a velocidade do carrossel */}
@@ -696,20 +682,22 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
             {/* Project Modal for Demo or Code */}
             {selectedProject && modalType && (
                 <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
-                    <div className="bg-light-primary w-full max-w-6xl h-[90vh] flex flex-col border border-light-border">
+                    <div className={`bg-light-primary w-full flex flex-col border border-light-border ${modalType === 'info' ? 'max-w-3xl max-h-[90vh]' : 'max-w-6xl h-[90vh]'}`}>
                         <div className="flex justify-between items-center p-4 border-b border-light-border">
                             <div className="flex-1">
                                 <h3 className="text-xl font-bold text-light-text-primary">{selectedProject.title}</h3>
                                 <p className="text-sm text-light-text-secondary">
                                     {modalType === 'demo' ? 'Live Demo' :
-                                        modalType === 'article' ? 'Article' :
-                                            modalType === 'pdf' ? 'PDF Article' :
-                                                'Project Code & Details'}
+                                        modalType === 'article' ? articleLinkLabel(selectedProject) :
+                                            modalType === 'pdf' ? 'PDF' :
+                                                modalType === 'info' ? 'Overview' :
+                                                    'Project Code & Details'}
                                 </p>
                             </div>
                             <button
                                 onClick={closeProjectModal}
                                 className="p-1 hover:bg-light-secondary text-light-text-secondary border border-light-border"
+                                aria-label="Close"
                             >
                                 <X size={24} />
                             </button>
@@ -748,7 +736,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                                     className="px-4 py-2 bg-light-secondary text-light-text-primary font-medium hover:bg-light-tertiary transition-colors flex items-center border border-light-border"
                                                 >
                                                     <ExternalLink size={16} className="mr-2" />
-                                                    View on AINews
+                                                    Open source page
                                                 </a>
                                             )}
                                         </div>
@@ -876,10 +864,30 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                 </div>
                             )}
 
-                            {modalType === 'article' && selectedProject.id !== 'peft-methods' && selectedProject.article && (
-                                <div className="w-full h-full p-4 overflow-auto bg-light-primary">
-                                    <div className="max-w-4xl mx-auto">
-                                        <div className="flex justify-center mb-8">
+                            {modalType === 'info' && (
+                                <div className="w-full overflow-auto bg-light-primary p-8">
+                                    {selectedProject.image && (
+                                        <img
+                                            src={selectedProject.image}
+                                            alt={selectedProject.title}
+                                            className="w-full max-h-56 object-cover border border-light-border mb-6"
+                                        />
+                                    )}
+                                    <p className="text-light-text-secondary leading-relaxed mb-6">
+                                        {selectedProject.description}
+                                    </p>
+                                    <div className="flex flex-wrap gap-1 mb-6">
+                                        {selectedProject.tags.map((tag: string) => (
+                                            <span
+                                                key={tag}
+                                                className="px-2 py-0.5 bg-light-secondary text-light-text-secondary text-xs border border-light-border"
+                                            >
+                                                {tag}
+                                            </span>
+                                        ))}
+                                    </div>
+                                    <div className="flex flex-wrap gap-2">
+                                        {selectedProject.article && (
                                             <a
                                                 href={selectedProject.article}
                                                 target="_blank"
@@ -887,14 +895,40 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                                 className="px-4 py-2 bg-light-secondary text-light-text-primary font-medium hover:bg-light-tertiary transition-colors flex items-center border border-light-border"
                                             >
                                                 <ExternalLink size={16} className="mr-2" />
-                                                Open Article in New Tab
+                                                Open {articleLinkLabel(selectedProject)}
                                             </a>
-                                        </div>
-                                        <iframe
-                                            src={selectedProject.article}
-                                            className="w-full min-h-[70vh] border border-light-border"
-                                            title={`${selectedProject.title} Article`}
-                                        />
+                                        )}
+                                        {selectedProject.pdfUrl && (
+                                            <button
+                                                onClick={() => openProjectModal(selectedProject, 'pdf')}
+                                                className="px-4 py-2 bg-light-secondary text-light-text-primary font-medium hover:bg-light-tertiary transition-colors flex items-center border border-light-border"
+                                            >
+                                                <FileCode size={16} className="mr-2" />
+                                                {isDirectPdf(selectedProject.pdfUrl) ? 'PDF' : 'SSRN PDF'}
+                                            </button>
+                                        )}
+                                        {selectedProject.demo && (
+                                            <a
+                                                href={selectedProject.demo}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="px-4 py-2 bg-light-secondary text-light-text-primary font-medium hover:bg-light-tertiary transition-colors flex items-center border border-light-border"
+                                            >
+                                                <ExternalLink size={16} className="mr-2" />
+                                                Demo
+                                            </a>
+                                        )}
+                                        {selectedProject.github && (
+                                            <a
+                                                href={selectedProject.github}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="px-4 py-2 bg-light-secondary text-light-text-primary font-medium hover:bg-light-tertiary transition-colors flex items-center border border-light-border"
+                                            >
+                                                <Github size={16} className="mr-2" />
+                                                GitHub
+                                            </a>
+                                        )}
                                     </div>
                                 </div>
                             )}
@@ -1105,7 +1139,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                                     }}
                                                 >
                                                     <FileCode size={18} className="mr-2" />
-                                                    Article
+                                                    {articleLinkLabel(selectedProject)}
                                                 </a>
                                             )}
 
@@ -1117,7 +1151,7 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                                     className="px-4 py-2 border border-light-border hover:bg-light-secondary transition-colors flex items-center text-light-text-secondary"
                                                 >
                                                     <FileCode size={18} className="mr-2" />
-                                                    Article (PT)
+                                                    Post (PT)
                                                 </a>
                                             )}
                                         </div>

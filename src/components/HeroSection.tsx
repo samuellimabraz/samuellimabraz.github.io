@@ -36,15 +36,13 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection: _scrollDirection
   const [isMobile, setIsMobile] = useState(false);
 
   const expertiseAreas = [
-    "Machine Learning Engineer",
     "Computer Vision",
-    "Autonomous Drone",
-    "Fine Tuning",
-    "PyTorch & Transformers",
-    "PEFT Techniques",
-    "AI Deployment",
-    "Neural Networks",
-    "Model Optimization"
+    "Robotics",
+    "Autonomous Drones",
+    "Model Training",
+    "Edge Deployment",
+    "ROS 2",
+    "Control"
   ];
 
   // Detect mobile breakpoint
@@ -213,6 +211,14 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection: _scrollDirection
               whileTap={{ scale: 0.95 }}
             >
               About Me
+            </motion.a>
+            <motion.a
+              href="/Samuel-Lima-Braz-Resume.pdf"
+              className="px-8 py-3 bg-transparent text-white font-medium border border-gray-400 hover:bg-white/10 transition-colors"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Resume
             </motion.a>
           </motion.div>
         </motion.div>

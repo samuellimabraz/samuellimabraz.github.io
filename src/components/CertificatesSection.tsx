@@ -36,7 +36,7 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
       id: "deep-learning-specialization",
       title: "Deep Learning Specialization",
       issuer: "DeepLearning.AI",
-      date: "Jan 2024 — Jul 2024",
+      date: "Jan 2024 to Jul 2024",
       description: "5-course specialization by Andrew Ng covering the deep learning pipeline from neural network fundamentals to advanced architectures and deployment strategies.",
       details: [
         "**Course 1 - Neural Networks and Deep Learning:** Built foundational understanding of deep learning, implemented core neural network components (forward/backward propagation, vectorization), and constructed shallow and deep networks.",
@@ -52,7 +52,7 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
       id: "ml-specialization",
       title: "Machine Learning Specialization",
       issuer: "DeepLearning.AI",
-      date: "Sep 2023 — Nov 2023",
+      date: "Sep 2023 to Nov 2023",
       description: "3-course specialization by Andrew Ng on machine learning fundamentals, algorithms, and practical applications with Python.",
       details: [
         "**Course 1 - Supervised Machine Learning:** Covered foundational supervised algorithms like linear and logistic regression, gradient descent, feature engineering, regularization, and practical implementation using Python (NumPy, Scikit-Learn).",

@@ -50,18 +50,14 @@ const AboutSection: React.FC<SectionProps> = ({ scrollDirection }) => {
           >
             <div className="prose prose-lg max-w-none text-light-text-secondary">
               <p>
-                I work on applied machine learning and autonomous robotics. I started in industrial automation, joined a university drone team for indoor flight competitions, and have been building perception and navigation systems ever since. That means writing PID controllers, integrating visual odometry and depth cameras, implementing classical image processing with OpenCV, and running object detection and segmentation models on embedded hardware, integrating complex systems with ROS 2, all to make real drones fly themselves in indoor environments and complete missions fully autonomously.
+                I work on computer vision and autonomous robotics. I started in industrial automation, joined a university drone team for indoor flight competitions, and have been building perception and navigation systems since then. That means writing PID controllers, integrating visual odometry and depth cameras, implementing classical image processing with OpenCV, and running object detection and segmentation models on embedded hardware, all wired through ROS 2 so indoor drones can complete missions without GPS.
               </p>
               <p>
-                On the ML side, I care about the full path from training to production. I fine-tune detection models and vision-language models using parameter-efficient techniques, optimize them through quantization and runtimes like OpenVINO and TensorRT, and deploy them to serve real users at scale. I also like building things from scratch when I want to understand them deeply.
+                I train, evaluate, and serve vision models, then run them on hardware. That includes parameter-efficient fine-tuning of detectors and vision-language models, conversion to ONNX, OpenVINO, and TensorRT, and serving with NVIDIA Triton.
               </p>
               <p>
-                I publish my work openly: code, models, datasets, and technical writing. I think this field moves faster when people share what they learn.
+                I publish code, models, datasets, and technical writing.
               </p>
-              <blockquote className="border-l-4 border-light-accent pl-4 italic my-6 text-light-text-secondary">
-                "We are stardust brought to life, then empowered by the universe to figure itself out – and we have only just begun."
-                <footer className="text-sm mt-2 text-light-text-secondary/70">— Neil deGrasse Tyson, Astrophysics for People in a Hurry</footer>
-              </blockquote>
             </div>
 
             <div className="mt-8 flex space-x-6">

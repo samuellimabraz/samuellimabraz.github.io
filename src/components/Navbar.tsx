@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
 import { navigateToSection } from '../App';
 
 interface NavbarProps {
@@ -11,7 +10,6 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,9 +31,9 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
   const navItems = [
     { id: 'home', label: 'Home' },
     { id: 'about', label: 'About' },
-    { id: 'projects', label: 'Projects' },
-    { id: 'nn-playground', label: 'NN Playground' },
     { id: 'experience', label: 'Experience' },
+    { id: 'projects', label: 'Projects' },
+    { id: 'nn-playground', label: 'Playground' },
     { id: 'education', label: 'Education' },
     { id: 'certificates', label: 'Certificates' }
   ];
@@ -70,7 +68,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
           </motion.div>
 
           <nav className="hidden md:block">
-            <ul className="flex space-x-6">
+            <ul className="flex space-x-4 lg:space-x-6">
               {navItems.map((item) => (
                 <motion.li key={item.id}
                   whileHover={{ y: -2 }}

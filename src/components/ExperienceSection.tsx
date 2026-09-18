@@ -28,25 +28,24 @@ const ExperienceSection: React.FC<SectionProps> = ({ scrollDirection }) => {
   };
 
   const experiences: ExperienceItem[] = [
-    // Work Experience
     {
-      title: "Machine Learning Engineer — Summer Intern",
+      title: "Machine Learning Engineer Intern",
       organization: "Chunkr",
-      period: "Jul 2025 — Jul 2026",
+      period: "Jul 2025 to Jul 2026",
       type: 'work',
       logo: '/assets/chunkr_logo.jpeg',
       description: [
-        "Built a synthetic document-layout generator from statistics of real pages (positions, co-occurrence, size), with an SQLite element pool, vectorized search, and multiprocessing.",
+        "Built a synthetic document-layout generator from statistics of real pages (positions, co-occurrence, size). Element pool in SQLite with vectorized search and multiprocessing.",
         "Pretrained YOLO and RF-DETR on 500K+ synthetic samples mixed with real data, then fine-tuned. Stratified rare classes, multi-GPU training, TensorBoard.",
         "After training: per-class confidence filters, statistical anomaly checks, and box refinement from pixel density. Compared WBF, soft-NMS, and DIoU-NMS and kept a merge that corrected class confusions, raising F1 on every class.",
-        "Built a reading-order model: 88.1% exact match and 98.2% Kendall's τ on the open benchmark (733 samples, 16 document categories). Served models on NVIDIA Triton with Redis workers.",
+        "Fine-tuned LayoutLMv3-Large for reading order: 88.1% exact match and 98.2% Kendall's tau on the open benchmark (733 samples, 16 document categories). Served models on NVIDIA Triton; workers on Redis."
       ],
       skills: [],
       relatedProjects: [
         {
           id: "chunkr-layout",
-          name: "Chunkr Layout 1 — SOTA Document Layout Analysis",
-          url: "https://chunkr.ai/blog/introducing-chunkr-layout-1-state-of-the-art-document-layout-analysis"
+          name: "Chunkr Layout 1",
+          url: "#projects/chunkr-layout"
         },
         {
           id: "chunkr-bench",
@@ -55,7 +54,7 @@ const ExperienceSection: React.FC<SectionProps> = ({ scrollDirection }) => {
         },
         {
           id: "chunkr-reading-order",
-          name: "Reading-Order Benchmark",
+          name: "Reading-order benchmark",
           url: "https://huggingface.co/datasets/ChunkrAI/chunkr-reading-order-bench-oss"
         }
       ]
@@ -63,15 +62,13 @@ const ExperienceSection: React.FC<SectionProps> = ({ scrollDirection }) => {
     {
       title: "ML Engineer",
       organization: "Tech4Humans",
-      period: "Feb 2025 — Jul 2025",
+      period: "Feb 2025 to Jul 2025",
       type: 'work',
       logo: '/assets/tech4humans_hyperautomation_logo.jpeg',
       description: [
-        "Engineered an open-source signature detection model using hybrid datasets and advanced augmentations.",
-        "Benchmarked YOLO (v8–v12), DETR, and YOLOS models, selecting YOLOv8s for optimal accuracy/inference speed trade-off.",
-        "Deployed on Azure Container Apps via NVIDIA Triton Inference Server with ONNX/OpenVINO backend, achieving <200 ms CPU latency.",
-        "Fine-tuned Vision-Language Models (VLMs) for structured data extraction from Brazilian documents using PEFT techniques.",
-        "Built AI inference gateways and model-monitoring pipelines with LiteLLM and LangFuse."
+        "Open-source signature detector on Hugging Face (50M+ downloads). Compared YOLO (v8 to v12), DETR, and YOLOS; chose YOLOv8s. Public code, weights, data, and report.",
+        "Optuna search: +7.94 percentage points F1. Triton with ONNX/OpenVINO, under 200 ms on CPU.",
+        "Fine-tuned open VLMs (12B or smaller) for fields on Brazilian documents with LoRA and QLoRA (Unsloth, MS-Swift), evaluated with vLLM, and served JSON extraction on GPU. Experiment tracking in Weights & Biases and MLflow."
       ],
       skills: [],
       relatedProjects: [
@@ -85,37 +82,35 @@ const ExperienceSection: React.FC<SectionProps> = ({ scrollDirection }) => {
     {
       title: "AI Developer Intern",
       organization: "Tech4Humans",
-      period: "Jul 2024 — Feb 2025",
+      period: "Jul 2024 to Feb 2025",
       type: 'work',
       logo: '/assets/tech4humans_hyperautomation_logo.jpeg',
       description: [
-        "Conducted R&D focused on Fine Tuning Small Generative Models methods for optimizing large language models.",
-        "Explored and applied PEFT techniques including LoRA, QLoRA, and IA3, demonstrating their effectiveness in reducing computational requirements.",
-        "Achieved performance comparable to full fine-tuning by training less than 1% of model parameters on tasks like dialogue summarization.",
-        "Authored technical blog posts on PEFT methodologies and practical applications, published on Hugging Face Community Blog and AI News Brazil."
+        "Studied PEFT (LoRA, QLoRA, IA3) for language models under a small compute budget.",
+        "On dialogue summarization, training less than 1% of parameters matched full fine-tuning closely enough to be useful.",
+        "Wrote up the methods on the Hugging Face Community Blog and AI News Brazil."
       ],
       skills: [],
       relatedProjects: [
         {
           id: "peft-methods",
-          name: "PEFT: Parameter-Efficient Fine-Tuning Methods for LLMs",
+          name: "PEFT methods",
           url: "#projects/peft-methods"
         }
       ]
     },
-    // Extracurricular Activities
     {
-      title: "Robotics Software Engineer",
-      organization: "Black Bee Drones — UNIFEI",
-      period: "Apr 2023 — Jun 2026",
+      title: "Robotics Engineer",
+      organization: "Black Bee Drones, UNIFEI",
+      period: "Apr 2023 to Present",
       type: 'extracurricular',
       logo: '/assets/black_bee_drones_logo.jpeg',
       description: [
-        "Competed in IMAV, CBR, and SAE Eletroquad. 3rd place indoor at IMAV 2023 (stacking challenge) and IMAV 2025. Special Achievement Award at IMAV 2023 for highly automated MAV operation during the stacking challenge. 2nd place at SAE Eletroquad 2026.",
-        "Lead developer of Nectar SDK, the team's open-source ROS 2 stack for flight, cameras, and detection. Volunteer contributor since June 2026.",
-        "Built indoor GPS-denied navigation: VIO with Intel RealSense T265 on a Raspberry Pi, then vSLAM with Isaac ROS and RealSense D435i on a Jetson Orin Nano, feeding ArduPilot.",
-        "Implemented PID position control and computer vision on the vehicle (line estimates, ArUco, distance from detections). Same missions in Gazebo SITL before flight.",
-        "Trained YOLO, DETR, and RF-DETR for competition tasks; converted with TensorRT, OpenVINO, and ONNX.",
+        "Volunteer on a university autonomous drone team. Competed in IMAV, CBR, and SAE Eletroquad. 3rd place indoor at IMAV 2023 (stacking challenge) and IMAV 2025. Special Achievement Award at IMAV 2023 for highly automated MAV operation. 2nd place at SAE Eletroquad 2026.",
+        "Lead developer of Nectar SDK, a ROS 2 kit that became the shared software for the team's missions. One flight interface for ArduPilot and PX4 (MAVROS, MAVLink, uXRCE-DDS), plus Bebop and Crazyflie; camera factory; detection, segmentation, and classification. Docker images for x86_64 and ARM64.",
+        "Indoor navigation without GPS: VIO with Intel RealSense T265 on a Raspberry Pi, then vSLAM with Isaac ROS and RealSense D435i on a Jetson Orin Nano, feeding ArduPilot EKF3 and PX4 EKF2.",
+        "PID position control in body, world, and takeoff frames; GPS waypoint navigation with EGM96 geoid correction; obstacle handling from a depth camera. Same missions in Gazebo SITL before flight.",
+        "OpenCV on the vehicle: HSV/LAB color filters, line estimates, ArUco, and distance from detections. Trained YOLO, DETR, and RF-DETR for competition tasks, converted with TensorRT, OpenVINO, and ONNX."
       ],
       skills: [],
       relatedProjects: [
@@ -126,48 +121,57 @@ const ExperienceSection: React.FC<SectionProps> = ({ scrollDirection }) => {
         },
         {
           id: "pid-controller",
-          name: "PID Controller for ROS2",
+          name: "PID Controller for ROS 2",
           url: "#projects/pid-controller"
         },
         {
           id: "vision-to-mavros",
-          name: "Vision to MAVROS for ROS2",
+          name: "Vision to MAVROS for ROS 2",
           url: "#projects/vision-to-mavros"
         }
       ]
     },
     {
-      title: "Teaching Instructor & Project Member",
-      organization: "Fundação Asimo - UNIFEI Extension Project",
-      period: "Apr 2023 — Jul 2024",
+      title: "Teaching Member",
+      organization: "Fundação Asimo, UNIFEI",
+      period: "Apr 2023 to Aug 2024",
       type: 'extracurricular',
       logo: '/assets/asimo.png',
       description: [
-        "Contributed to an educational equity project aimed at reducing disparities between public and private education by bringing STEAM learning to local public schools.",
-        "Served as an instructor for elementary and high school classes, teaching computer literacy, programming fundamentals, and embedded systems using Arduino and C++.",
-        "Developed hands-on projects with ESP32, Lego Mindstorms, and Arduino to promote practical learning experiences in technology and engineering.",
-        "Created a 4-servo robotic arm controlled through computer vision that tracked hand movements, implementing advanced CV techniques for gesture recognition.",
-        "Mentored students preparing for the Brazilian Robotics Olympiad (OBR), providing guidance on both theoretical knowledge and practical implementation."
-      ],
-      skills: []
-    },
-    {
-      title: "Competitive Programming Student",
-      organization: "UNIFEI",
-      period: "Mar 2023 — Jan 2024",
-      type: 'extracurricular',
-      logo: '/assets/unifei-logo.png',
-      description: [
-        "Participated in programming competitions and marathons.",
-        "Implemented advanced data structures and algorithms (DFS, BFS, Dijkstra, Bellman-Ford, balanced trees) in C++ under time constraints.",
-        "Developed problem-solving skills and algorithmic thinking through competitive challenges."
+        "Taught programming and embedded systems (Arduino, C++, ESP32, Lego Mindstorms) to elementary and high school students in local public schools.",
+        "Built a 4-servo arm with MediaPipe and OpenCV, used to teach computer vision.",
+        "Mentored students preparing for the Brazilian Robotics Olympiad (OBR)."
       ],
       skills: [],
       relatedProjects: [
         {
-          id: "sorting-algorithms",
-          name: "Sorting Algorithms",
-          url: "#projects/sorting-algorithms"
+          id: "roboarm",
+          name: "RoboArm",
+          url: "#projects/roboarm"
+        },
+        {
+          id: "ev3-color-sensor",
+          name: "EV3 Color Sensor",
+          url: "#projects/ev3-color-sensor"
+        }
+      ]
+    },
+    {
+      title: "Competitive Programming Student",
+      organization: "UNIFEI",
+      period: "Mar 2023 to Dec 2023",
+      type: 'extracurricular',
+      logo: '/assets/unifei-logo.png',
+      description: [
+        "Participated in programming marathons.",
+        "Implemented data structures and algorithms (DFS, BFS, Dijkstra, Bellman-Ford, balanced trees) in C++ under time constraints."
+      ],
+      skills: [],
+      relatedProjects: [
+        {
+          id: "kruskal-mst",
+          name: "Kruskal MST",
+          url: "#projects/kruskal-mst"
         }
       ]
     }

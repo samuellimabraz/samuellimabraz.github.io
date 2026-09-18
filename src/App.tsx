@@ -37,9 +37,10 @@ function MainLayout() {
   const hashToSectionMap: Record<string, string> = {
     'home': 'home',
     'about': 'about',
-    'nn': 'nn-playground', 
+    'nn': 'nn-playground',
     'nn-playground': 'nn-playground',
     'projects': 'projects',
+    'publications': 'projects',
     'work': 'experience',
     'extracurricular': 'experience',
     'experience': 'experience',
@@ -106,9 +107,9 @@ function MainLayout() {
         <AnimatePresence mode="wait">
           <HeroSection key="hero" scrollDirection={scrollDirection} />
           <AboutSection key="about" scrollDirection={scrollDirection} />
+          <ExperienceSection key="experience" scrollDirection={scrollDirection} />
           <ProjectsCarousel key="projects" projects={projects} scrollDirection={scrollDirection} />
           <NNPlaygroundSection key="nn" scrollDirection={scrollDirection} />
-          <ExperienceSection key="experience" scrollDirection={scrollDirection} />
           <EducationSection key="education" scrollDirection={scrollDirection} />
           <CertificatesSection key="certificates" scrollDirection={scrollDirection} />
         </AnimatePresence>
