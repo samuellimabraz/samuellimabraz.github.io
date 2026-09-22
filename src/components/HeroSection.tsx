@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { SectionProps } from '../lib/types';
 
 interface MosaicVideo {
   src: string;
+  poster: string;
   /** CSS grid-column span */
   colSpan: string;
   /** CSS grid-row span */
@@ -16,17 +17,27 @@ interface MosaicVideo {
 
 const MOSAIC_VIDEOS: MosaicVideo[] = [
   // Row 1
-  { src: 'videos/drone_line_following_video.mp4', colSpan: 'span 3', rowSpan: 'span 1', mobileColSpan: 'span 2', mobileRowSpan: 'span 1' },
-  { src: 'videos/cafedl-game.mp4', colSpan: 'span 2', rowSpan: 'span 1', mobileColSpan: 'span 1', mobileRowSpan: 'span 1' },
-  { src: 'videos/cbr-test.mp4', colSpan: 'span 1', rowSpan: 'span 2', mobileColSpan: 'span 1', mobileRowSpan: 'span 2' },
+  { src: 'videos/drone_line_following_video.mp4', poster: 'videos/posters/drone_line_following_video.jpg', colSpan: 'span 3', rowSpan: 'span 1', mobileColSpan: 'span 2', mobileRowSpan: 'span 1' },
+  { src: 'videos/cafedl-game.mp4', poster: 'videos/posters/cafedl-game.jpg', colSpan: 'span 2', rowSpan: 'span 1', mobileColSpan: 'span 1', mobileRowSpan: 'span 1' },
+  { src: 'videos/cbr-test.mp4', poster: 'videos/posters/cbr-test.jpg', colSpan: 'span 1', rowSpan: 'span 2', mobileColSpan: 'span 1', mobileRowSpan: 'span 2' },
   // Row 2
-  { src: 'videos/escola-bebop-1.mp4', colSpan: 'span 2', rowSpan: 'span 1', mobileColSpan: 'span 1', mobileRowSpan: 'span 1' },
-  { src: 'videos/indoor-test-23-t265.mp4', colSpan: 'span 2', rowSpan: 'span 1', mobileColSpan: 'span 1', mobileRowSpan: 'span 1' },
-  { src: 'videos/isaac-ros.mp4', colSpan: 'span 1', rowSpan: 'span 1', mobileColSpan: 'span 2', mobileRowSpan: 'span 1' },
+  { src: 'videos/escola-bebop-1.mp4', poster: 'videos/posters/escola-bebop-1.jpg', colSpan: 'span 2', rowSpan: 'span 1', mobileColSpan: 'span 1', mobileRowSpan: 'span 1' },
+  { src: 'videos/indoor-test-23-t265.mp4', poster: 'videos/posters/indoor-test-23-t265.jpg', colSpan: 'span 2', rowSpan: 'span 1', mobileColSpan: 'span 1', mobileRowSpan: 'span 1' },
+  { src: 'videos/isaac-ros.mp4', poster: 'videos/posters/isaac-ros.jpg', colSpan: 'span 1', rowSpan: 'span 1', mobileColSpan: 'span 2', mobileRowSpan: 'span 1' },
   // Row 3
-  { src: 'videos/black-bee-ui.mp4', colSpan: 'span 3', rowSpan: 'span 1', mobileColSpan: 'span 1', mobileRowSpan: 'span 1' },
-  { src: 'videos/signature.mp4', colSpan: 'span 3', rowSpan: 'span 1', mobileColSpan: 'span 1', mobileRowSpan: 'span 1' },
+  { src: 'videos/black-bee-ui.mp4', poster: 'videos/posters/black-bee-ui.jpg', colSpan: 'span 3', rowSpan: 'span 1', mobileColSpan: 'span 1', mobileRowSpan: 'span 1' },
+  { src: 'videos/signature.mp4', poster: 'videos/posters/signature.jpg', colSpan: 'span 3', rowSpan: 'span 1', mobileColSpan: 'span 1', mobileRowSpan: 'span 1' },
 ];
+
+/** Data-saver and very slow links keep the poster and skip the eight clips. */
+const shouldSkipVideoDownload = (): boolean => {
+  const connection = (navigator as Navigator & {
+    connection?: { saveData?: boolean; effectiveType?: string };
+  }).connection;
+  if (!connection) return false;
+  if (connection.saveData) return true;
+  return connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g';
+};
 
 const HeroSection: React.FC<SectionProps> = ({ scrollDirection: _scrollDirection }) => {
   const [typedText, setTypedText] = useState('');
@@ -34,6 +45,7 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection: _scrollDirection
   const [textIndex, setTextIndex] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(150);
   const [isMobile, setIsMobile] = useState(false);
+  const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
 
   const expertiseAreas = [
     "Computer Vision",
@@ -44,6 +56,26 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection: _scrollDirection
     "ROS 2",
     "Control"
   ];
+
+  // Posters paint first. Playback starts on the next frame unless the
+  // connection is marked as data-saver or 2G.
+  useEffect(() => {
+    if (shouldSkipVideoDownload()) return;
+    let innerFrame = 0;
+    const outerFrame = window.requestAnimationFrame(() => {
+      innerFrame = window.requestAnimationFrame(() => {
+        videoRefs.current.forEach((video) => {
+          if (!video) return;
+          video.muted = true;
+          video.play().catch(() => {});
+        });
+      });
+    });
+    return () => {
+      window.cancelAnimationFrame(outerFrame);
+      window.cancelAnimationFrame(innerFrame);
+    };
+  }, []);
 
   // Detect mobile breakpoint
   useEffect(() => {
@@ -123,7 +155,7 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection: _scrollDirection
           gap: '2px',
         }}
       >
-        {MOSAIC_VIDEOS.map((video) => (
+        {MOSAIC_VIDEOS.map((video, index) => (
           <div
             key={video.src}
             style={{
@@ -135,12 +167,15 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection: _scrollDirection
             }}
           >
             <video
+              ref={(node) => {
+                videoRefs.current[index] = node;
+              }}
               src={video.src}
-              autoPlay
+              poster={video.poster}
               muted
               loop
               playsInline
-              preload="auto"
+              preload="none"
               style={{
                 width: '100%',
                 height: '100%',

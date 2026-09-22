@@ -11,6 +11,7 @@ interface Certificate {
   description: string;
   credential?: string;
   image: string;
+  preview: string;
   details?: string[];
 }
 
@@ -46,7 +47,8 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
         "**Course 5 - Sequence Models:** Built and trained RNNs, LSTMs, GRUs, and Transformers for NLP tasks. Explored word embeddings, attention mechanisms, speech recognition, and fine-tuned transformer models for specific applications like NER and QA."
       ],
       credential: "https://coursera.org/share/c41cc5a69d2f652411004575c01b7645",
-      image: "/certificates/dl-specialization.jpg"
+      image: "/certificates/dl-specialization.jpg",
+      preview: "/images/certificates/dl-specialization.webp"
     },
     {
       id: "ml-specialization",
@@ -60,7 +62,8 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
         "**Course 3 - Unsupervised Learning, Recommenders, Reinforcement Learning:** Implemented K-Means clustering, anomaly detection, built recommender systems (collaborative & content-based), explored PCA, and introduced reinforcement learning concepts (Q-learning, DQN)."
       ],
       credential: "https://coursera.org/share/c1412dd699127cb2b3627a73d493eb87",
-      image: "/certificates/ml-specialization.jpg"
+      image: "/certificates/ml-specialization.jpg",
+      preview: "/images/certificates/ml-specialization.webp"
     },
     {
       id: "generative-ai-llm",
@@ -74,7 +77,8 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
         "Week 3: Deep-dive into reinforcement learning from human feedback (RLHF), model deployment strategies, and advanced architectures including chain-of-thought, program-aided language models (PAL), and ReAct frameworks."
       ],
       credential: "https://coursera.org/share/84ec3e3b3ee61cc343feabb5ec8bf27f",
-      image: "/certificates/generativeai-llm-.jpg"
+      image: "/certificates/generativeai-llm-.jpg",
+      preview: "/images/certificates/generative-ai-llm.webp"
     },
     {
       id: "finetuning-transformers",
@@ -90,7 +94,8 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
         "Gained practical experience in optimizing models for deployment, considering computational efficiency and task-specific accuracy."
       ],
       credential: "https://www.codecademy.com/profiles/core1125022600/certificates/c48eab73789f42f49e97464d5ffdeb06",
-      image: "/certificates/finetune-codeacademy.jpg"
+      image: "/certificates/finetune-codeacademy.jpg",
+      preview: "/images/certificates/finetuning-transformers.webp"
     },
     {
       id: "opencv-bootcamp",
@@ -106,7 +111,8 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
         "**Deep Learning Integration:** Utilized TensorFlow with OpenCV for object detection tasks and implemented human pose estimation using OpenPose, bridging traditional CV with modern deep learning techniques."
       ],
       credential: "https://courses.opencv.org/certificates/36b9a0bf22a543f4824d483951ca7761",
-      image: "/certificates/opencv-bootcamp.jpg"
+      image: "/certificates/opencv-bootcamp.jpg",
+      preview: "/images/certificates/opencv-bootcamp.webp"
     }
   ];
 
@@ -261,9 +267,11 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
                   <div className="md:w-1/4 h-24 md:h-auto relative overflow-hidden bg-light-primary">
                     <div className="absolute inset-0 flex justify-center items-center">
                       <img
-                        src={certificate.image}
+                        src={certificate.preview}
                         alt={`${certificate.title} preview`}
                         className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity"
+                        loading="lazy"
+                        decoding="async"
                       />
                       <div className="absolute inset-0 bg-gradient-to-r from-transparent to-light-primary/80 md:bg-gradient-to-l md:from-transparent md:to-light-primary/80" />
                     </div>

@@ -8,7 +8,7 @@ export const projects: Project[] = [
         tags: ["ROS 2", "Robotics", "Computer Vision", "Python", "C++", "OpenCV"],
         github: "https://github.com/Black-Bee-Drones/nectar-sdk",
         docs: "https://black-bee-drones.github.io/nectar-sdk/",
-        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/bb-photo.jpg",
+        image: "/images/projects/nectar-sdk.webp",
         featured: true,
         codeExamples: [
             {
@@ -59,7 +59,7 @@ export const projects: Project[] = [
         articleLabel: "Paper",
         pdfUrl: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6271408",
         embedUrl: "https://samuellimabraz-quantum-assistant.hf.space",
-        image: "https://media.githubusercontent.com/media/samuellimabraz/quantum-assistant/main/assets/images/synthetic-pipeline.png",
+        image: "/images/projects/quantum-assistant.webp",
         featured: true,
         codeExamples: [
             {
@@ -94,7 +94,7 @@ export const projects: Project[] = [
         article: "https://huggingface.co/blog/samuellimabraz/signature-detection-model",
         articleLabel: "Post",
         embedUrl: "https://tech4humans-signature-detection.hf.space",
-        image: "https://cdn-uploads.huggingface.co/production/uploads/666b9ef5e6c60b6fc4156675/6AnC1ut7EOLa6EjibXZXY.webp",
+        image: "/images/projects/signature-detection.webp",
         featured: true,
         codeExamples: [
             {
@@ -125,7 +125,7 @@ export const projects: Project[] = [
         description: "ROS 2 C++ package that bridges visual pose estimation (Intel RealSense T265) with ArduPilot and PX4 through MAVROS, including ENU/NED conversion and covariance. Used for indoor GPS-denied flight on Black Bee vehicles.",
         tags: ["ROS 2", "Robotics", "ArduPilot", "RealSense", "C++"],
         github: "https://github.com/Black-Bee-Drones/vision_to_mavros",
-        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/realsense-photo.jpg",
+        image: "/images/projects/vision-to-mavros.webp",
         featured: true,
         codeExamples: [
             {
@@ -153,7 +153,7 @@ export const projects: Project[] = [
         article: "https://chunkr.ai/blog/introducing-chunkr-layout-1-state-of-the-art-document-layout-analysis%20",
         articleLabel: "Post",
         demo: "https://huggingface.co/datasets/ChunkrAI/chunkr-reading-order-bench-oss",
-        image: "/assets/chunkr-layout-detect.jpg",
+        image: "/images/projects/chunkr-layout.webp",
         featured: true
     },
     {
@@ -162,7 +162,7 @@ export const projects: Project[] = [
         description: "Generic PID controller as a ROS 2 node in C++, with gains that can be changed live. Used for line following, altitude, position, velocity, and yaw.",
         tags: ["ROS 2", "C++", "Control", "Robotics"],
         github: "https://github.com/Black-Bee-Drones/pid-controller",
-        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/pid.png",
+        image: "/images/projects/pid-controller.webp",
         featured: true,
         codeExamples: [
             {
@@ -193,7 +193,7 @@ export const projects: Project[] = [
         description: "4-DOF RoboCore arm controlled from a webcam. MediaPipe hand landmarks and OpenCV map gestures to base rotation, height, reach, and gripper, sent to an Arduino Uno over Firmata (pyFirmata2). Built at Fundação Asimo to teach computer vision in public schools.",
         tags: ["Computer Vision", "MediaPipe", "OpenCV", "Arduino", "Python"],
         github: "https://github.com/Fundacao-Asimo/RoboArm",
-        image: "/assets/roboarm.png",
+        image: "/images/projects/roboarm.webp",
         featured: true,
         codeExamples: [
             {
@@ -219,7 +219,7 @@ export const projects: Project[] = [
         description: "Object detection for capacitor counting on a Seeed XIAO ESP32S3 Sense (OV2640). Edge Impulse FOMO at 96x96 RGB, exported as an int8 Arduino library with the EON Compiler. Validation F1 82.1%, precision 98%, recall 71%. Test accuracy 75.58%, precision 97%, recall 73%, F1 83%. About 1.1 s inference and 229 KB RAM on device. UNIFEI IESTI01 final project, with José Anderson dos Reis and Tony Albert Lima.",
         tags: ["TinyML", "Edge Impulse", "FOMO", "ESP32", "Object Detection"],
         pdfUrl: "/docs/tinyml-capacitor-counting.pdf",
-        image: "/assets/tinyml-preview-01.png",
+        image: "/images/projects/tinyml.webp",
         featured: true
     },
     {
@@ -229,7 +229,7 @@ export const projects: Project[] = [
         tags: ["Computer Vision", "Hugging Face"],
         demo: "https://huggingface.co/spaces/samuellimabraz/cv-hangout",
         embedUrl: "https://samuellimabraz-cv-hangout.hf.space",
-        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/hf-hangout.png",
+        image: "/images/projects/cv-hangout.webp",
         featured: true,
         codeExamples: [
             {
@@ -249,7 +249,7 @@ export const projects: Project[] = [
         articlePt: "https://ainews.net.br/ajuste-fino-de-modelos-transformers-atraves-detecnicas-peft-parameter-efficient-fine-tuning/",
         pdfUrl: "https://ainews.net.br/wp-content/uploads/2025/01/Ajuste-fino-de-modelos-Transformers-atraves-de-tecnicas-PEFT-Parameter-Efficient-Fine-Tuning.pdf",
         demo: "https://colab.research.google.com/drive/1B9RsKLMa8SwTxLsxRT8g9OedK10zfBEP?usp=sharing",
-        image: "https://cdn-uploads.huggingface.co/production/uploads/666b9ef5e6c60b6fc4156675/K26QSN3Y5dE-rY2bGKymc.jpeg",
+        image: "/images/projects/peft-methods.webp",
         featured: true
     },
     {
@@ -258,7 +258,7 @@ export const projects: Project[] = [
         description: "Deep learning library in Java from scratch: Conv2D, Dense, Dropout, optimizers, ND4J tensors, MongoDB persistence via Morphia, and a QuickDraw-style sketch classifier in JavaFX.",
         tags: ["Java", "Deep Learning"],
         github: "https://github.com/samuellimabraz/cafedl",
-        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/cafe-dl.png",
+        image: "/images/projects/cafedl.webp",
         featured: true,
         codeExamples: [
             {
@@ -291,7 +291,7 @@ export const projects: Project[] = [
         github: "https://github.com/samuellimabraz/OpenCVGUI",
         demo: "https://huggingface.co/spaces/samuellimabraz/opencv-gui",
         embedUrl: "https://samuellimabraz-opencv-gui.hf.space",
-        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/opencv-gui-2.png",
+        image: "/images/projects/opencv-gui.webp",
         featured: true,
         codeExamples: [
             {
@@ -322,7 +322,7 @@ export const projects: Project[] = [
         description: "Firmware in C for a PIC18F4550 board: event-driven state machine, LCD 16x2, ADC, RTC (MCP7940 over I2C), PWM, keypad, USB-serial (MCP2200). Monitoring application with alarm thresholds and a serial command protocol. Compiled with XC8 / MPLAB X.",
         tags: ["Embedded", "C", "PIC18F4550", "I2C"],
         github: "https://github.com/samuellimabraz/BoardBring-Up-PIC18F4550",
-        image: "https://raw.githubusercontent.com/samuellimabraz/BoardBring-Up-PIC18F4550/main/docs/DiagramaDeEstados.png",
+        image: "/images/projects/board-bringup.webp",
         featured: false,
         codeExamples: [
             {
@@ -358,7 +358,7 @@ export const projects: Project[] = [
         description: "Arduino library that talks to a LEGO EV3 color sensor over UART (SoftwareSerial). Modes: red light, blue light, color, off. Developed at Fundação Asimo.",
         tags: ["Arduino", "UART", "Embedded", "C++"],
         github: "https://github.com/Fundacao-Asimo/Ev3ColorSensor",
-        image: "/assets/ev3-color-sensor.jpg",
+        image: "/images/projects/ev3-color-sensor.webp",
         featured: false,
         codeExamples: [
             {
@@ -389,7 +389,7 @@ export const projects: Project[] = [
         description: "UNIFEI compilers course. A C-like language whose tokens are emojis. Lexer and parser in PLY, then translation to C, compile, and run. Sample programs in data/ (HelloWorld, parity, sphere volume, input/output).",
         tags: ["Compilers", "PLY", "Python", "C"],
         github: "https://github.com/samuellimabraz/EmojiCompiler",
-        image: "https://opengraph.githubassets.com/1/samuellimabraz/EmojiCompiler",
+        image: "/images/projects/emoji-compiler.webp",
         featured: false,
         codeExamples: [
             {
@@ -416,7 +416,7 @@ export const projects: Project[] = [
         tags: ["Algorithms", "Graphs", "Python", "OpenCV"],
         github: "https://github.com/samuellimabraz/Kruskal_Algorithm-MST",
         demo: "https://youtube.com/shorts/o_dGmxP0Gcg",
-        image: "https://img.youtube.com/vi/o_dGmxP0Gcg/maxresdefault.jpg",
+        image: "/images/projects/kruskal-mst.webp",
         featured: false,
         codeExamples: [
             {
@@ -442,7 +442,7 @@ export const projects: Project[] = [
         description: "Facial recognition API using DeepFace, FastAPI, and MongoDB Atlas Vector Search. Multi-tenant orgs, API keys, Redis, Docker.",
         tags: ["FastAPI", "MongoDB", "Vector Search", "Python"],
         github: "https://github.com/samuellimabraz/face-api",
-        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/face-api.png",
+        image: "/images/projects/face-api.webp",
         featured: false,
         codeExamples: [
             {
@@ -468,7 +468,7 @@ export const projects: Project[] = [
         description: "Mouse control from hand landmarks: index finger for motion, pinch to click. OpenCV and MediaPipe.",
         tags: ["Computer Vision", "MediaPipe", "Python"],
         github: "https://github.com/samuellimabraz/HandMouseController",
-        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/hand-controller.png",
+        image: "/images/projects/hand-mouse.webp",
         featured: false,
         codeExamples: [
             {
@@ -489,7 +489,7 @@ export const projects: Project[] = [
         description: "Team project at UNIFEI. Mathematics assistant with chat, OCR for handwritten problems, and graph visualization. FastAPI, React, OlmOCR, and a Qwen Math model served with vLLM.",
         tags: ["FastAPI", "React", "OCR", "vLLM"],
         github: "https://github.com/samuellimabraz/EducAI",
-        image: "https://raw.githubusercontent.com/samuellimabraz/samuellimabraz.github.io/refs/heads/main/assets/educai-home.png",
+        image: "/images/projects/educai.webp",
         featured: false,
         codeExamples: [
             {

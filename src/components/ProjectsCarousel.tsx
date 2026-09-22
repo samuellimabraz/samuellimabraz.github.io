@@ -393,6 +393,10 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                     src={project.image}
                     alt={project.title}
                     className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                    width={320}
+                    height={208}
+                    loading="lazy"
+                    decoding="async"
                 />
                 {project.languagePt && (
                     <div className="absolute top-2 right-2 bg-light-primary text-light-text-secondary px-2 py-1 text-xs border border-light-border">
@@ -871,6 +875,9 @@ const ProjectsCarousel: React.FC<ProjectsCarouselProps> = ({ projects, scrollDir
                                             src={selectedProject.image}
                                             alt={selectedProject.title}
                                             className="w-full max-h-56 object-cover border border-light-border mb-6"
+                                            width={768}
+                                            height={224}
+                                            decoding="async"
                                         />
                                     )}
                                     <p className="text-light-text-secondary leading-relaxed mb-6">

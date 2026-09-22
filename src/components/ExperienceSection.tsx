@@ -136,7 +136,7 @@ const ExperienceSection: React.FC<SectionProps> = ({ scrollDirection }) => {
       organization: "Fundação Asimo, UNIFEI",
       period: "Apr 2023 to Aug 2024",
       type: 'extracurricular',
-      logo: '/assets/asimo.png',
+      logo: '/images/logos/asimo.png',
       description: [
         "Taught programming and embedded systems (Arduino, C++, ESP32, Lego Mindstorms) to elementary and high school students in local public schools.",
         "Built a 4-servo arm with MediaPipe and OpenCV, used to teach computer vision.",
@@ -161,7 +161,7 @@ const ExperienceSection: React.FC<SectionProps> = ({ scrollDirection }) => {
       organization: "UNIFEI",
       period: "Mar 2023 to Dec 2023",
       type: 'extracurricular',
-      logo: '/assets/unifei-logo.png',
+      logo: '/images/logos/unifei.png',
       description: [
         "Participated in programming marathons.",
         "Implemented data structures and algorithms (DFS, BFS, Dijkstra, Bellman-Ford, balanced trees) in C++ under time constraints."
@@ -240,6 +240,10 @@ const ExperienceSection: React.FC<SectionProps> = ({ scrollDirection }) => {
                       src={experience.logo}
                       alt={`${experience.organization} logo`}
                       className="w-10 h-10 object-contain"
+                      width={40}
+                      height={40}
+                      loading="lazy"
+                      decoding="async"
                     />
                   )}
                   <div>

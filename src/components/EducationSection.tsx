@@ -17,14 +17,14 @@ const EducationSection: React.FC<SectionProps> = ({ scrollDirection }) => {
       institution: "Universidade Federal de Itajubá",
       period: "Mar 2022 to Dec 2025",
       description: "Completed Computer Engineering with coursework in artificial intelligence, machine learning, computer vision, robotics, and embedded systems. Graduation project: Quantum Assistant, published in Expert Systems with Applications.",
-      logo: '/assets/unifei-logo.png'
+      logo: '/images/logos/unifei.png'
     },
     {
       degree: "Industrial Automation, Integrated Technical High School",
       institution: "Instituto Federal de Educação, Ciência e Tecnologia de Minas Gerais (IFMG)",
       period: "Jan 2019 to Feb 2022",
       description: "Industrial automation systems, robotics, and embedded systems programming.",
-      logo: '/assets/IF.png'
+      logo: '/images/logos/ifmg.png'
     }
   ];
 
@@ -80,6 +80,10 @@ const EducationSection: React.FC<SectionProps> = ({ scrollDirection }) => {
                       src={item.logo}
                       alt={`${item.institution} logo`}
                       className="w-16 h-16 object-contain"
+                      width={64}
+                      height={64}
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
                 )}
