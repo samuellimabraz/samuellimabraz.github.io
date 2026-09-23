@@ -508,5 +508,67 @@ export const projects: Project[] = [
                 language: "python"
             }
         ]
+    },
+    {
+        id: "agent4ai",
+        title: "Agent4ai",
+        description: "Conversational agent for Tech4Humans onboarding. LangGraph routes each question to company documents (Adaptive, Corrective, and Self-RAG), Tavily web search, or Google Calendar.",
+        tags: ["LangGraph", "RAG", "Python"],
+        github: "https://github.com/samuellimabraz/Agent4ai",
+        image: "https://raw.githubusercontent.com/samuellimabraz/Agent4ai/main/images/Cohere%20Multilingual%20Model.png",
+        featured: false,
+        codeExamples: [
+            {
+                path: "agent/graph/agent.py",
+                description: "LangGraph agent",
+                language: "python"
+            },
+            {
+                path: "agent/tools/base_content_tool.py",
+                description: "Document retriever",
+                language: "python"
+            },
+            {
+                path: "agent/tools/calendar_tool.py",
+                description: "Google Calendar tool",
+                language: "python"
+            },
+            {
+                path: "agent/graph/chains/router.py",
+                description: "Router chain",
+                language: "python"
+            }
+        ]
+    },
+    {
+        id: "sorting-algorithms",
+        title: "Sorting Algorithms",
+        description: "C++ implementations of Bubble, Selection, Insertion, Shell, Merge, and Quick Sort, timed on strings and integers. A Tkinter GUI plots the times, and a small SGD linear regression approximates the curves.",
+        tags: ["C++", "Algorithms", "Tkinter", "Python"],
+        github: "https://github.com/samuellimabraz/SortingAlgorithms",
+        image: "https://raw.githubusercontent.com/samuellimabraz/SortingAlgorithms/main/resource/screenshot.png",
+        featured: false,
+        codeExamples: [
+            {
+                path: "include/SortAlgorithm.h",
+                description: "Sorting interface",
+                language: "cpp"
+            },
+            {
+                path: "include/QuickSort.h",
+                description: "Quick Sort",
+                language: "cpp"
+            },
+            {
+                path: "src/main.cpp",
+                description: "Benchmark runner",
+                language: "cpp"
+            },
+            {
+                path: "src/gui.py",
+                description: "Tkinter GUI",
+                language: "python"
+            }
+        ]
     }
 ];
