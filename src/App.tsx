@@ -6,9 +6,9 @@ import HeroSection from './components/HeroSection';
 import NNPlaygroundSection from './components/NNPlaygroundSection';
 import AboutSection from './components/AboutSection';
 import ExperienceSection from './components/ExperienceSection';
+import CompetitionsSection from './components/CompetitionsSection';
 import EducationSection from './components/EducationSection';
-import ProjectsCarousel from './components/ProjectsCarousel';
-import CertificatesSection from './components/CertificatesSection';
+import ProjectsSection from './components/ProjectsSection';
 import Footer from './components/Footer';
 
 import { projects } from './data/projects';
@@ -44,6 +44,8 @@ function MainLayout() {
     'work': 'experience',
     'extracurricular': 'experience',
     'experience': 'experience',
+    'competitions': 'competitions',
+    'awards': 'competitions',
     'education': 'education',
     'certificates': 'certificates'
   };
@@ -108,10 +110,10 @@ function MainLayout() {
           <HeroSection key="hero" scrollDirection={scrollDirection} />
           <AboutSection key="about" scrollDirection={scrollDirection} />
           <ExperienceSection key="experience" scrollDirection={scrollDirection} />
-          <ProjectsCarousel key="projects" projects={projects} scrollDirection={scrollDirection} />
+          <CompetitionsSection key="competitions" scrollDirection={scrollDirection} />
+          <ProjectsSection key="projects" projects={projects} />
+          <EducationSection key="education" />
           <NNPlaygroundSection key="nn" scrollDirection={scrollDirection} />
-          <EducationSection key="education" scrollDirection={scrollDirection} />
-          <CertificatesSection key="certificates" scrollDirection={scrollDirection} />
         </AnimatePresence>
       </main>
 

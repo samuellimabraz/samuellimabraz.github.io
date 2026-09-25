@@ -1,12 +1,32 @@
-import React from 'react';
+import React, { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { SectionProps } from '../lib/types';
-import NNPlayground from './NNPlayground';
+
+// The playground also injects Plotly from a CDN, so nothing loads until the section is near.
+const NNPlayground = lazy(() => import('./NNPlayground'));
 
 const NNPlaygroundSection: React.FC<SectionProps> = ({ }) => {
+    const sectionRef = useRef<HTMLElement>(null);
+    const [isNear, setIsNear] = useState(false);
+
+    useEffect(() => {
+        const section = sectionRef.current;
+        if (!section) return;
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsNear(true);
+                    observer.disconnect();
+                }
+            },
+            { rootMargin: '600px 0px' }
+        );
+        observer.observe(section);
+        return () => observer.disconnect();
+    }, []);
 
     return (
-        <section id="nn-playground" className="py-20 bg-light-secondary">
+        <section ref={sectionRef} id="nn-playground" className="py-20 bg-light-secondary">
             <div className="container mx-auto px-4">
                 <motion.div
                     className="text-center mb-8"
@@ -22,12 +42,16 @@ const NNPlaygroundSection: React.FC<SectionProps> = ({ }) => {
                     </p>
                 </motion.div>
 
-                <div className="bg-light-primary shadow-lg shadow-black/10 p-6 border border-light-border">
-                    <NNPlayground />
+                <div className="bg-light-primary shadow-lg shadow-black/10 p-6 border border-light-border min-h-[600px]">
+                    {isNear && (
+                        <Suspense fallback={null}>
+                            <NNPlayground />
+                        </Suspense>
+                    )}
                 </div>
             </div>
         </section>
     );
 };
 
-export default NNPlaygroundSection; 
+export default NNPlaygroundSection;

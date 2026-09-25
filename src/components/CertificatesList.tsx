@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, X, Maximize2 } from 'lucide-react';
-import { SectionProps } from '../lib/types';
+import { ExternalLink, X } from 'lucide-react';
 
 interface Certificate {
   id: string;
@@ -29,7 +28,7 @@ const parseMarkdownBold = (text: string) => {
   });
 };
 
-const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
+const CertificatesList: React.FC = () => {
   const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
 
   const certificates: Certificate[] = [
@@ -116,30 +115,6 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
     }
   ];
 
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
-      }
-    }
-  };
-
-  const cardVariants = {
-    hidden: {
-      opacity: 0,
-      y: scrollDirection === 'down' ? 20 : -20
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5, ease: "easeOut" }
-    }
-  };
-
   const openCertificate = (certificate: Certificate) => {
     setSelectedCertificate(certificate);
     document.body.style.overflow = 'hidden'; // Prevent page scrolling
@@ -149,6 +124,15 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
     setSelectedCertificate(null);
     document.body.style.overflow = 'auto'; // Re-enable page scrolling
   };
+
+  useEffect(() => {
+    if (!selectedCertificate) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeCertificate();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [selectedCertificate]);
 
   // Modal for viewing certificate
   const CertificateModal = () => {
@@ -233,89 +217,52 @@ const CertificatesSection: React.FC<SectionProps> = ({ scrollDirection }) => {
   };
 
   return (
-    <section id="certificates" className="py-20 bg-light-secondary">
-      <div className="container mx-auto px-4 md:px-6">
-        <motion.div
-          className="flex items-center justify-center mb-8"
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true, margin: "-100px" }}
-        >
-          <h2 className="text-3xl font-bold text-light-text-primary">Certificates & Courses</h2>
-        </motion.div>
-
-        <motion.div
-          className="grid gap-6 md:grid-cols-2 max-w-4xl mx-auto"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-        >
-          {certificates.map(certificate => (
-            <motion.div
-              key={certificate.id}
-              className="group"
-              variants={cardVariants}
+    <>
+      <ul className="grid gap-3">
+        {certificates.map(certificate => (
+          <li
+            key={certificate.id}
+            className="flex items-center gap-4 p-3 bg-light-primary border border-light-border hover:border-light-text-secondary transition-colors"
+          >
+            <button
+              type="button"
+              onClick={() => openCertificate(certificate)}
+              className="flex flex-1 min-w-0 items-center gap-4 text-left"
             >
-              <div
-                className="bg-light-tertiary  border border-light-border shadow-sm hover:shadow-md hover:shadow-black/10 transition-all duration-300 overflow-hidden cursor-pointer"
-                onClick={() => openCertificate(certificate)}
+              <img
+                src={certificate.preview}
+                alt=""
+                className="w-16 h-12 flex-shrink-0 object-cover border border-light-border"
+                width={64}
+                height={48}
+                loading="lazy"
+                decoding="async"
+              />
+              <span className="min-w-0">
+                <span className="block font-semibold text-light-text-primary leading-snug">{certificate.title}</span>
+                <span className="block text-sm text-light-text-secondary">
+                  {certificate.issuer} · <span className="font-mono text-xs">{certificate.date}</span>
+                </span>
+              </span>
+            </button>
+            {certificate.credential && (
+              <a
+                href={certificate.credential}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-shrink-0 items-center text-sm text-light-text-secondary hover:text-light-accent transition-colors"
               >
-                <div className="flex flex-col md:flex-row">
-                  {/* Certificate preview (about 1/4 of the card) */}
-                  <div className="md:w-1/4 h-24 md:h-auto relative overflow-hidden bg-light-primary">
-                    <div className="absolute inset-0 flex justify-center items-center">
-                      <img
-                        src={certificate.preview}
-                        alt={`${certificate.title} preview`}
-                        className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent to-light-primary/80 md:bg-gradient-to-l md:from-transparent md:to-light-primary/80" />
-                    </div>
-                    <div className="absolute bottom-2 right-2 bg-light-primary/80 p-1 ">
-                      <Maximize2 className="h-4 w-4 text-light-accent" />
-                    </div>
-                  </div>
+                <ExternalLink size={14} className="mr-1" />
+                Verify
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
 
-                  {/* Certificate info (about 3/4 of the card) */}
-                  <div className="p-5 md:w-3/4">
-                    <div className="flex justify-between items-start mb-3">
-                      <h3 className="text-lg font-bold text-light-text-primary">{certificate.title}</h3>
-                      <span className="text-sm text-light-text-secondary font-mono">{certificate.date}</span>
-                    </div>
-
-                    <p className="text-light-text-secondary font-medium mb-2">{certificate.issuer}</p>
-                    <p className="text-light-text-secondary mb-4 text-sm line-clamp-2">{certificate.description}</p>
-
-                    <div className="flex justify-end items-center">
-                      {certificate.credential && (
-                        <a
-                          href={certificate.credential}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center text-sm text-light-text-secondary hover:text-light-text-primary transition-colors group"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <ExternalLink size={14} className="mr-1 group-hover:text-light-accent" />
-                          <span className="group-hover:text-light-accent">Verify</span>
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
-
-      {/* Certificate modal */}
       <CertificateModal />
-    </section>
+    </>
   );
 };
 
-export default CertificatesSection;
+export default CertificatesList;

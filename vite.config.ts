@@ -19,13 +19,19 @@ export default defineConfig({
             'react-dom',
             'react-router-dom',
             'framer-motion'
-          ],
-          three: ['three', '@react-three/fiber', '@react-three/drei']
+          ]
         }
       }
     }
   },
   optimizeDeps: {
     exclude: ['lucide-react'],
+  },
+  server: {
+    // The machine is at the inotify watch limit (ENOSPC). Polling avoids that.
+    watch: {
+      usePolling: true,
+      interval: 1000,
+    },
   },
 });

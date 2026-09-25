@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
 import { SectionProps } from '../lib/types';
+import { navigateToSection } from '../App';
 
 interface RelatedProject {
   id: string;
@@ -31,14 +32,14 @@ const ExperienceSection: React.FC<SectionProps> = ({ scrollDirection }) => {
     {
       title: "Machine Learning Engineer Intern",
       organization: "Chunkr",
-      period: "Jul 2025 to Jul 2026",
+      period: "Jun 2025 to Jun 2026",
       type: 'work',
       logo: '/assets/chunkr_logo.jpeg',
       description: [
         "Built a synthetic document-layout generator from statistics of real pages (positions, co-occurrence, size). Element pool in SQLite with vectorized search and multiprocessing.",
-        "Pretrained YOLO and RF-DETR on 500K+ synthetic samples mixed with real data, then fine-tuned. Stratified rare classes, multi-GPU training, TensorBoard.",
-        "After training: per-class confidence filters, statistical anomaly checks, and box refinement from pixel density. Compared WBF, soft-NMS, and DIoU-NMS and kept a merge that corrected class confusions, raising F1 on every class.",
-        "Fine-tuned LayoutLMv3-Large for reading order: 88.1% exact match and 98.2% Kendall's tau on the open benchmark (733 samples, 16 document categories). Served models on NVIDIA Triton; workers on Redis."
+        "Pretrained YOLO and RF-DETR on 500K synthetic pages mixed with real data, then fine-tuned. Stratified rare classes, multi-GPU training, TensorBoard.",
+        "After training: per-class confidence filters, statistical anomaly checks, and box refinement from pixel density. Compared WBF, soft-NMS, and DIoU-NMS and kept a merge that corrected class confusions, raising F1 on every class. A customer layout model went from 0.52 to 0.71 test F1.",
+        "Released chunkr-layout-1 at 80.9% mAP@50 on 1,013 annotated documents. Fine-tuned LayoutLMv3-Large for reading order: 88.1% exact match and 98.2% Kendall's tau on the open benchmark (733 documents, 16 document categories). Served models on NVIDIA Triton; workers on Redis."
       ],
       skills: [],
       relatedProjects: [
@@ -60,15 +61,15 @@ const ExperienceSection: React.FC<SectionProps> = ({ scrollDirection }) => {
       ]
     },
     {
-      title: "ML Engineer",
+      title: "Machine Learning Engineer",
       organization: "Tech4Humans",
       period: "Feb 2025 to Jul 2025",
       type: 'work',
       logo: '/assets/tech4humans_hyperautomation_logo.jpeg',
       description: [
-        "Open-source signature detector on Hugging Face (50M+ downloads). Compared YOLO (v8 to v12), DETR, and YOLOS; chose YOLOv8s. Public code, weights, data, and report.",
-        "Optuna search: +7.94 percentage points F1. Triton with ONNX/OpenVINO, under 200 ms on CPU.",
-        "Fine-tuned open VLMs (12B or smaller) for fields on Brazilian documents with LoRA and QLoRA (Unsloth, MS-Swift), evaluated with vLLM, and served JSON extraction on GPU. Experiment tracking in Weights & Biases and MLflow."
+        "Open-source handwritten-signature detector on Hugging Face (50M+ downloads). Compared YOLO (v8 to v12), DETR, and YOLOS; chose YOLOv8s. Public code, weights, data, and report.",
+        "Optuna search: +7.94 percentage points F1; recall 76.2% to 91.2%. Triton with ONNX/OpenVINO, 172 ms on CPU.",
+        "Fine-tuned open VLMs (8B or smaller) for fields on Brazilian documents with LoRA and QLoRA (Unsloth, MS-Swift), evaluated with vLLM, and served JSON extraction on GPU. Experiment tracking in Weights & Biases and MLflow."
       ],
       skills: [],
       relatedProjects: [
@@ -80,14 +81,14 @@ const ExperienceSection: React.FC<SectionProps> = ({ scrollDirection }) => {
       ]
     },
     {
-      title: "AI Developer Intern",
+      title: "AI Engineer Intern",
       organization: "Tech4Humans",
-      period: "Jul 2024 to Feb 2025",
+      period: "Aug 2024 to Jan 2025",
       type: 'work',
       logo: '/assets/tech4humans_hyperautomation_logo.jpeg',
       description: [
         "Studied PEFT (LoRA, QLoRA, IA3) for language models under a small compute budget.",
-        "On dialogue summarization, training less than 1% of parameters matched full fine-tuning closely enough to be useful.",
+        "Compared them with full fine-tuning on dialogue summarization: QLoRA trained less than 1% of parameters, used 55% less memory, and scored best on every automatic metric.",
         "Wrote up the methods on the Hugging Face Community Blog and AI News Brazil."
       ],
       skills: [],
@@ -100,20 +101,25 @@ const ExperienceSection: React.FC<SectionProps> = ({ scrollDirection }) => {
       ]
     },
     {
-      title: "Robotics Engineer",
+      title: "Robotics Engineer (Volunteer)",
       organization: "Black Bee Drones, UNIFEI",
       period: "Apr 2023 to Present",
       type: 'extracurricular',
       logo: '/assets/black_bee_drones_logo.jpeg',
       description: [
-        "Volunteer on a university autonomous drone team. Competed in IMAV, CBR, and SAE Eletroquad. 3rd place indoor at IMAV 2023 (stacking challenge) and IMAV 2025. Special Achievement Award at IMAV 2023 for highly automated MAV operation. 2nd place at SAE Eletroquad 2026.",
-        "Lead developer of Nectar SDK, a ROS 2 kit that became the shared software for the team's missions. One flight interface for ArduPilot and PX4 (MAVROS, MAVLink, uXRCE-DDS), plus Bebop and Crazyflie; camera factory; detection, segmentation, and classification. Docker images for x86_64 and ARM64.",
-        "Indoor navigation without GPS: VIO with Intel RealSense T265 on a Raspberry Pi, then vSLAM with Isaac ROS and RealSense D435i on a Jetson Orin Nano, feeding ArduPilot EKF3 and PX4 EKF2.",
-        "PID position control in body, world, and takeoff frames; GPS waypoint navigation with EGM96 geoid correction; obstacle handling from a depth camera. Same missions in Gazebo SITL before flight.",
-        "OpenCV on the vehicle: HSV/LAB color filters, line estimates, ArUco, and distance from detections. Trained YOLO, DETR, and RF-DETR for competition tasks, converted with TensorRT, OpenVINO, and ONNX."
+        "IMAV 2023 indoor 3rd place and Special Achievement Award for highly automated MAV operation (only team to complete the indoor course fully autonomously). IMAV 2025 indoor 3rd place. SAE EletroQuad 2026 2nd place overall. Also competed in IMAV 2024, SAE EletroQuad 2025, and CBR 2025.",
+        "Lead developer of Nectar SDK, the ROS 2 kit the team has used as its shared software since 2024. One flight interface for ArduPilot and PX4 (MAVROS, MAVLink, uXRCE-DDS), plus Bebop and Crazyflie; camera factory (RealSense, OAK-D, USB); detection, segmentation, and classification. Docker images for x86_64 and ARM64.",
+        "Indoor navigation without GPS: VIO with Intel RealSense T265 on a Raspberry Pi, then vSLAM with Isaac ROS and RealSense D435i on a Jetson Orin Nano, into ArduPilot EKF3 and PX4 EKF2. Wrote a ROS 2 C++ bridge (vision_to_mavros) from T265 pose to MAVROS, including ENU/NED conversion and covariance.",
+        "Mission state machines; PID position control in body, world, and takeoff frames; GPS waypoint navigation with EGM96 geoid correction; obstacle pause from D435i depth. Same missions in Gazebo SITL before flight.",
+        "OpenCV on the vehicle: HSV/LAB color filters, line estimates, ArUco, and distance from detections. Trained YOLO, DETR, and RF-DETR detectors and YOLO instance segmentation for competition tasks, converted with TensorRT, OpenVINO, and ONNX."
       ],
       skills: [],
       relatedProjects: [
+        {
+          id: "competitions",
+          name: "Competitions & Awards",
+          url: "#competitions"
+        },
         {
           id: "nectar-sdk",
           name: "Nectar SDK",
@@ -128,6 +134,26 @@ const ExperienceSection: React.FC<SectionProps> = ({ scrollDirection }) => {
           id: "vision-to-mavros",
           name: "Vision to MAVROS for ROS 2",
           url: "#projects/vision-to-mavros"
+        },
+        {
+          id: "sae-2026",
+          name: "SAE EletroQuad 2026",
+          url: "#projects/sae-2026"
+        },
+        {
+          id: "imav-2025",
+          name: "IMAV 2025",
+          url: "#projects/imav-2025"
+        },
+        {
+          id: "cbr-2025",
+          name: "CBR 2025",
+          url: "#projects/cbr-2025"
+        },
+        {
+          id: "imav-2023",
+          name: "IMAV 2023",
+          url: "#projects/imav-2023"
         }
       ]
     },
@@ -310,6 +336,7 @@ const ExperienceSection: React.FC<SectionProps> = ({ scrollDirection }) => {
                     <div className="flex flex-wrap gap-1.5">
                       {experience.relatedProjects.map((project, idx) => {
                         const isInternalProject = project.url.startsWith('#projects/');
+                        const isInternalSection = !isInternalProject && project.url.startsWith('#');
 
                         return (
                           <a
@@ -320,6 +347,9 @@ const ExperienceSection: React.FC<SectionProps> = ({ scrollDirection }) => {
                               if (isInternalProject) {
                                 e.preventDefault();
                                 window.location.hash = project.url.replace('#', '');
+                              } else if (isInternalSection) {
+                                e.preventDefault();
+                                navigateToSection(project.url.slice(1));
                               }
                             }}
                           >

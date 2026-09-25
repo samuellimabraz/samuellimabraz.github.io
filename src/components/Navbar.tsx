@@ -32,10 +32,10 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
     { id: 'home', label: 'Home' },
     { id: 'about', label: 'About' },
     { id: 'experience', label: 'Experience' },
+    { id: 'competitions', label: 'Awards' },
     { id: 'projects', label: 'Projects' },
-    { id: 'nn-playground', label: 'Playground' },
     { id: 'education', label: 'Education' },
-    { id: 'certificates', label: 'Certificates' }
+    { id: 'nn-playground', label: 'Playground' }
   ];
 
   return (

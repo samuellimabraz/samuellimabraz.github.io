@@ -39,10 +39,10 @@ Welcome to my personal portfolio website repository! This portfolio showcases my
     - `HeroSection.tsx` - Landing page with interactive background
     - `AboutSection.tsx` - Personal information and bio
     - `NNPlayground.tsx` - Interactive neural network visualization
-    - `ProjectsCarousel.tsx` - Project showcase with carousel
+    - `ProjectsSection.tsx` - Project grid with area filters
     - `WorkSection.tsx` - Professional experience timeline
     - `EducationSection.tsx` - Academic background
-    - `CertificatesSection.tsx` - Professional certifications
+    - `CertificatesList.tsx` - Certificates list, shown inside the Education section
     - `Navbar.tsx` - Navigation component
     - `Footer.tsx` - Footer component
   - `data/` - Data files

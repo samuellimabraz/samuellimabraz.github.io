@@ -30,7 +30,7 @@ const MOSAIC_VIDEOS: MosaicVideo[] = [
 ];
 
 /** Data-saver and very slow links keep the poster and skip the eight clips. */
-const shouldSkipVideoDownload = (): boolean => {
+export const shouldSkipVideoDownload = (): boolean => {
   const connection = (navigator as Navigator & {
     connection?: { saveData?: boolean; effectiveType?: string };
   }).connection;
@@ -40,22 +40,8 @@ const shouldSkipVideoDownload = (): boolean => {
 };
 
 const HeroSection: React.FC<SectionProps> = ({ scrollDirection: _scrollDirection }) => {
-  const [typedText, setTypedText] = useState('');
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [textIndex, setTextIndex] = useState(0);
-  const [typingSpeed, setTypingSpeed] = useState(150);
   const [isMobile, setIsMobile] = useState(false);
   const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
-
-  const expertiseAreas = [
-    "Computer Vision",
-    "Robotics",
-    "Autonomous Drones",
-    "Model Training",
-    "Edge Deployment",
-    "ROS 2",
-    "Control"
-  ];
 
   // Posters paint first. Playback starts on the next frame unless the
   // connection is marked as data-saver or 2G.
@@ -86,33 +72,6 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection: _scrollDirection
     return () => mq.removeEventListener('change', handler);
   }, []);
 
-  // Typing animation effect
-  useEffect(() => {
-    const currentText = expertiseAreas[textIndex];
-
-    const typingEffect = () => {
-      if (isDeleting) {
-        setTypedText(currentText.substring(0, typedText.length - 1));
-        setTypingSpeed(20);
-      } else {
-        setTypedText(currentText.substring(0, typedText.length + 1));
-        setTypingSpeed(80);
-      }
-
-      if (!isDeleting && typedText === currentText) {
-        setTimeout(() => setIsDeleting(true), 1500);
-      }
-
-      if (isDeleting && typedText === '') {
-        setIsDeleting(false);
-        setTextIndex((prev) => (prev + 1) % expertiseAreas.length);
-      }
-    };
-
-    const timer = setTimeout(typingEffect, typingSpeed);
-    return () => clearTimeout(timer);
-  }, [typedText, isDeleting, textIndex, typingSpeed, expertiseAreas]);
-
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -129,18 +88,6 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection: _scrollDirection
       opacity: 1,
       transition: { duration: 0.5, ease: "easeOut" }
     }
-  };
-
-  const cursorVariants = {
-    blinking: {
-      opacity: [0, 1, 0],
-      transition: {
-        duration: 1,
-        repeat: Infinity,
-        repeatType: "loop" as const,
-        ease: "linear",
-      },
-    },
   };
 
   return (
@@ -187,8 +134,8 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection: _scrollDirection
         ))}
       </div>
 
-      {/* Dark overlay for text contrast */}
-      <div className="absolute inset-0 z-[1] bg-black/55" />
+      {/* Dark overlay for button contrast */}
+      <div className="absolute inset-0 z-[1] bg-black/30" />
 
       {/* Text overlay */}
       <motion.div
@@ -198,34 +145,7 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection: _scrollDirection
         variants={containerVariants}
       >
         <motion.div className="max-w-3xl mx-auto text-center">
-          <motion.h1
-            className="text-4xl md:text-6xl font-bold mb-6 tracking-tight text-white"
-            variants={itemVariants}
-          >
-            <motion.div className="flex flex-col md:flex-row md:justify-center items-center">
-              <motion.span className="md:mr-3" variants={itemVariants}>
-                Samuel Lima
-              </motion.span>
-              <motion.span
-                className="font-mono text-3xl md:text-5xl opacity-80 text-gray-300"
-                variants={itemVariants}
-              >
-                Braz
-              </motion.span>
-            </motion.div>
-          </motion.h1>
-
-          <motion.div
-            className="text-lg md:text-xl mb-8 font-light leading-relaxed h-8 flex justify-center items-center"
-            variants={itemVariants}
-          >
-            <span className="font-medium text-blue-400">{typedText}</span>
-            <motion.span
-              className="w-1 h-6 ml-1 inline-block bg-blue-400"
-              variants={cursorVariants}
-              animate="blinking"
-            />
-          </motion.div>
+          <h1 className="sr-only">Samuel Lima Braz</h1>
 
           <motion.div
             className="flex flex-col sm:flex-row justify-center gap-4"
@@ -241,7 +161,7 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection: _scrollDirection
             </motion.a>
             <motion.a
               href="#about"
-              className="px-8 py-3 bg-transparent text-white font-medium border border-gray-400 hover:bg-white/10 transition-colors"
+              className="px-8 py-3 bg-black/50 text-white font-medium border border-gray-400 hover:bg-black/70 transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -249,7 +169,7 @@ const HeroSection: React.FC<SectionProps> = ({ scrollDirection: _scrollDirection
             </motion.a>
             <motion.a
               href="/Samuel-Lima-Braz-Resume.pdf"
-              className="px-8 py-3 bg-transparent text-white font-medium border border-gray-400 hover:bg-white/10 transition-colors"
+              className="px-8 py-3 bg-black/50 text-white font-medium border border-gray-400 hover:bg-black/70 transition-colors"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
