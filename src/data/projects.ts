@@ -327,7 +327,7 @@ export const projects: Project[] = [
         tags: ["ROS 2", "Isaac ROS", "YOLO", "Pose Estimation", "Python"],
         areas: ["vision", "robotics", "localization", "edge"],
         github: "https://github.com/Black-Bee-Drones/cbr-2025",
-        image: "/images/competitions/ext-cbr25.webp",
+        image: "/images/competitions/cbr-2025-arena.webp",
         featured: false,
         codeExamples: [
             {
@@ -385,6 +385,33 @@ export const projects: Project[] = [
         featured: true
     },
     {
+        id: "sae-2025",
+        title: "SAE EletroQuad 2025",
+        description: "HSV colour filters for the slalom posts, red-hose centering for Hang the Hook, and an ONNX YOLOv11n detector with proportional landing control for Bouncing. ArduPilot through MAVROS, YASMIN state machines. First edition of the Competição EletroQuad SAE BRASIL – Eletrobras, São José dos Campos, Brazil.",
+        tags: ["ROS 2", "OpenCV", "YOLO", "ONNX", "ArduPilot"],
+        areas: ["vision", "robotics", "localization", "edge"],
+        github: "https://github.com/Black-Bee-Drones/SAE-Eletroquad",
+        image: "/images/competitions/sae-2025-me.webp",
+        featured: false,
+        codeExamples: [
+            {
+                path: "slalom/slalom/slalom_mission.py",
+                description: "Slalom mission state machine",
+                language: "python"
+            },
+            {
+                path: "hook/hook/states/hook_operations/center_red_blob.py",
+                description: "Hang the Hook: red-hose detection and centering states",
+                language: "python"
+            },
+            {
+                path: "bouncing/bouncing/ai/yolo/inference_onnx.py",
+                description: "Bouncing: ONNX Runtime YOLO inference for the ground figures",
+                language: "python"
+            }
+        ]
+    },
+    {
         id: "imav-2024",
         title: "IMAV 2024 Indoor and Outdoor",
         description: "Indoor: a five-task circuit (image capture, gate passage, precision landing, package delivery, line following) built as hierarchical YASMIN state machines with ArUco navigation. Outdoor: YOLO zebra detection with GPS coordinate mapping for a wildlife census. 15th International Micro Air Vehicle Conference and Competition, Bristol, UK.",
@@ -425,67 +452,6 @@ export const projects: Project[] = [
             {
                 path: "app.py",
                 description: "Streamlit application for the hangout demo",
-                language: "python"
-            }
-        ]
-    },
-    {
-        id: "opencv-gui",
-        title: "OpenCV Explorer",
-        description: "Web app for trying OpenCV filters, ArUco detection, optical flow, and MediaPipe hand and face-mesh landmarks on a live webcam. Streamlit and WebRTC.",
-        tags: ["Computer Vision", "OpenCV", "Streamlit", "Python"],
-        areas: ["vision"],
-        github: "https://github.com/samuellimabraz/OpenCVGUI",
-        demo: "https://huggingface.co/spaces/samuellimabraz/opencv-gui",
-        embedUrl: "https://samuellimabraz-opencv-gui.hf.space",
-        image: "/images/projects/opencv-gui.webp",
-        featured: true,
-        codeExamples: [
-            {
-                path: "src/streamlit_app.py",
-                description: "Streamlit app with WebRTC video processing",
-                language: "python"
-            },
-            {
-                path: "src/opencv_utils.py",
-                description: "OpenCV filters and transforms",
-                language: "python"
-            },
-            {
-                path: "src/hand_tracker.py",
-                description: "Hand tracker",
-                language: "python"
-            },
-            {
-                path: "src/face_mesh_tracker.py",
-                description: "Face mesh tracker",
-                language: "python"
-            }
-        ]
-    },
-    {
-        id: "sae-2025",
-        title: "SAE EletroQuad 2025",
-        description: "HSV colour filters for the slalom posts, red-hose centering for Hang the Hook, and an ONNX YOLOv11n detector with proportional landing control for Bouncing. ArduPilot through MAVROS, YASMIN state machines. First edition of the Competição EletroQuad SAE BRASIL – Eletrobras, São José dos Campos, Brazil.",
-        tags: ["ROS 2", "OpenCV", "YOLO", "ONNX", "ArduPilot"],
-        areas: ["vision", "robotics", "localization", "edge"],
-        github: "https://github.com/Black-Bee-Drones/SAE-Eletroquad",
-        image: "/images/competitions/sae-2025-me.webp",
-        featured: false,
-        codeExamples: [
-            {
-                path: "slalom/slalom/slalom_mission.py",
-                description: "Slalom mission state machine",
-                language: "python"
-            },
-            {
-                path: "hook/hook/states/hook_operations/center_red_blob.py",
-                description: "Hang the Hook: red-hose detection and centering states",
-                language: "python"
-            },
-            {
-                path: "bouncing/bouncing/ai/yolo/inference_onnx.py",
-                description: "Bouncing: ONNX Runtime YOLO inference for the ground figures",
                 language: "python"
             }
         ]
@@ -636,33 +602,6 @@ export const projects: Project[] = [
         ]
     },
     {
-        id: "emoji-compiler",
-        title: "EmojiCompiler",
-        description: "UNIFEI compilers course. A C-like language whose tokens are emojis. Lexer and parser in PLY, then translation to C, compile, and run. Sample programs in data/ (HelloWorld, parity, sphere volume, input/output).",
-        tags: ["Compilers", "PLY", "Python", "C"],
-        areas: ["software"],
-        github: "https://github.com/samuellimabraz/EmojiCompiler",
-        image: "/images/projects/emoji-compiler.webp",
-        featured: false,
-        codeExamples: [
-            {
-                path: "main.py",
-                description: "CLI: lex, parse, translate, compile",
-                language: "python"
-            },
-            {
-                path: "src/emoji_lex.py",
-                description: "PLY lexer for emoji tokens",
-                language: "python"
-            },
-            {
-                path: "src/emoji_parser.py",
-                description: "PLY parser",
-                language: "python"
-            }
-        ]
-    },
-    {
         id: "agent4ai",
         title: "Agent4ai",
         description: "Conversational agent for Tech4Humans onboarding. LangGraph routes each question to company documents (Adaptive, Corrective, and Self-RAG), Tavily web search, or Google Calendar.",
@@ -690,6 +629,72 @@ export const projects: Project[] = [
             {
                 path: "agent/graph/chains/router.py",
                 description: "Router chain",
+                language: "python"
+            }
+        ]
+    },
+    {
+        id: "opencv-gui",
+        title: "OpenCV Explorer",
+        description: "Web app for trying OpenCV filters, ArUco detection, optical flow, and MediaPipe hand and face-mesh landmarks on a live webcam. Streamlit and WebRTC.",
+        tags: ["Computer Vision", "OpenCV", "Streamlit", "Python"],
+        areas: ["vision"],
+        github: "https://github.com/samuellimabraz/OpenCVGUI",
+        demo: "https://huggingface.co/spaces/samuellimabraz/opencv-gui",
+        embedUrl: "https://samuellimabraz-opencv-gui.hf.space",
+        image: "/images/projects/opencv-gui.webp",
+        featured: true,
+        codeExamples: [
+            {
+                path: "src/streamlit_app.py",
+                description: "Streamlit app with WebRTC video processing",
+                language: "python"
+            },
+            {
+                path: "src/opencv_utils.py",
+                description: "OpenCV filters and transforms",
+                language: "python"
+            },
+            {
+                path: "src/hand_tracker.py",
+                description: "Hand tracker",
+                language: "python"
+            },
+            {
+                path: "src/face_mesh_tracker.py",
+                description: "Face mesh tracker",
+                language: "python"
+            }
+        ]
+    },
+    {
+        id: "sorting-algorithms",
+        title: "Sorting Algorithms",
+        description: "C++ implementations of Bubble, Selection, Insertion, Shell, Merge, and Quick Sort, timed on strings and integers. A Tkinter GUI plots the times, and a small SGD linear regression approximates the curves.",
+        tags: ["C++", "Algorithms", "Tkinter", "Python"],
+        areas: ["software"],
+        github: "https://github.com/samuellimabraz/SortingAlgorithms",
+        image: "https://raw.githubusercontent.com/samuellimabraz/SortingAlgorithms/main/resource/screenshot.png",
+        featured: false,
+        codeExamples: [
+            {
+                path: "include/SortAlgorithm.h",
+                description: "Sorting interface",
+                language: "cpp"
+            },
+            {
+                path: "include/QuickSort.h",
+                description: "Quick Sort",
+                language: "cpp"
+            },
+            {
+                path: "src/main.cpp",
+                description: "Benchmark runner",
+                language: "cpp"
+            },
+            {
+                path: "src/gui.py",
+                description: "Tkinter GUI",
                 language: "python"
             }
         ]
@@ -723,33 +728,28 @@ export const projects: Project[] = [
         ]
     },
     {
-        id: "sorting-algorithms",
-        title: "Sorting Algorithms",
-        description: "C++ implementations of Bubble, Selection, Insertion, Shell, Merge, and Quick Sort, timed on strings and integers. A Tkinter GUI plots the times, and a small SGD linear regression approximates the curves.",
-        tags: ["C++", "Algorithms", "Tkinter", "Python"],
+        id: "emoji-compiler",
+        title: "EmojiCompiler",
+        description: "UNIFEI compilers course. A C-like language whose tokens are emojis. Lexer and parser in PLY, then translation to C, compile, and run. Sample programs in data/ (HelloWorld, parity, sphere volume, input/output).",
+        tags: ["Compilers", "PLY", "Python", "C"],
         areas: ["software"],
-        github: "https://github.com/samuellimabraz/SortingAlgorithms",
-        image: "https://raw.githubusercontent.com/samuellimabraz/SortingAlgorithms/main/resource/screenshot.png",
+        github: "https://github.com/samuellimabraz/EmojiCompiler",
+        image: "/images/projects/emoji-compiler.webp",
         featured: false,
         codeExamples: [
             {
-                path: "include/SortAlgorithm.h",
-                description: "Sorting interface",
-                language: "cpp"
+                path: "main.py",
+                description: "CLI: lex, parse, translate, compile",
+                language: "python"
             },
             {
-                path: "include/QuickSort.h",
-                description: "Quick Sort",
-                language: "cpp"
+                path: "src/emoji_lex.py",
+                description: "PLY lexer for emoji tokens",
+                language: "python"
             },
             {
-                path: "src/main.cpp",
-                description: "Benchmark runner",
-                language: "cpp"
-            },
-            {
-                path: "src/gui.py",
-                description: "Tkinter GUI",
+                path: "src/emoji_parser.py",
+                description: "PLY parser",
                 language: "python"
             }
         ]

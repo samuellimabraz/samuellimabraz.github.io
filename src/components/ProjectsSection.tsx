@@ -62,7 +62,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) => {
     const [kernelIds, setKernelIds] = useState<Set<string>>(new Set());
     const gridRef = useRef<HTMLDivElement>(null);
 
-    const moveKernel = (e: React.PointerEvent<HTMLButtonElement>) => {
+    const moveKernel = (e: React.PointerEvent<HTMLDivElement>) => {
         if (e.pointerType !== 'mouse' || !gridRef.current) return;
         const center = e.currentTarget.getBoundingClientRect();
         const ids = new Set<string>();
@@ -323,20 +323,37 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) => {
         return languageMap[extension] || 'text';
     };
 
+    const clickLabel = (project: Project) => {
+        const type = determineModalType(project);
+        if (type === 'demo') return 'Open demo';
+        if (type === 'article') return 'Read article';
+        if (type === 'repo') return 'View code';
+        return 'View project';
+    };
+
     const renderProjectTile = (project: Project) => {
-        const tileAreas = AREAS.filter(a => project.areas.includes(a.id));
         const stars = project.github ? starsMap.get(project.github) : undefined;
         const dimmed = activeArea !== null && !project.areas.includes(activeArea);
         const lit = activeArea !== null && !dimmed;
-        const area = lit && activeArea ? areaOf(activeArea) : tileAreas[0];
+        const ring = lit && activeArea ? areaOf(activeArea).ring : '';
+        const badge = 'px-1.5 py-0.5 border border-light-border text-[11px] leading-none flex items-center text-light-text-secondary hover:bg-light-secondary';
+        const open = () => openProjectModal(project, determineModalType(project));
         return (
-            <button
+            <div
                 key={project.id}
-                type="button"
+                role="button"
+                tabIndex={0}
                 data-id={project.id}
-                onClick={() => openProjectModal(project, determineModalType(project))}
+                onClick={open}
+                onKeyDown={(e) => {
+                    if (e.target !== e.currentTarget) return;
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        open();
+                    }
+                }}
                 onPointerEnter={moveKernel}
-                className={`group text-left bg-light-primary border border-light-border flex flex-col overflow-hidden transition-[opacity,filter,box-shadow] duration-300 hover:border-light-text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-light-accent ${dimmed ? 'opacity-30 grayscale max-sm:hidden' : ''} ${lit ? `ring-2 ${area.ring}` : ''} ${kernelIds.has(project.id) && !lit ? 'ring-1 ring-light-text-secondary/40' : ''}`}
+                className={`group text-left bg-light-primary border border-light-border flex flex-col overflow-hidden transition-[opacity,filter,box-shadow] duration-300 hover:border-light-text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-light-accent cursor-pointer ${dimmed ? 'opacity-30 grayscale max-sm:hidden' : ''} ${ring ? `ring-2 ${ring}` : ''} ${kernelIds.has(project.id) && !lit ? 'ring-1 ring-light-text-secondary/40' : ''}`}
             >
                 <div className="relative aspect-[16/10] overflow-hidden bg-light-secondary">
                     <img
@@ -348,6 +365,9 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) => {
                         loading="lazy"
                         decoding="async"
                     />
+                    <div aria-hidden="true" className="absolute inset-0 bg-black/55 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                        <span className="text-white text-sm font-medium border border-white/80 px-3 py-1.5">{clickLabel(project)}</span>
+                    </div>
                     {project.languagePt && (
                         <span className="absolute top-2 right-2 bg-light-primary text-light-text-secondary px-1.5 py-0.5 text-[10px] border border-light-border">
                             🇧🇷 PT-BR
@@ -362,17 +382,59 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects }) => {
                 </div>
                 <div className="p-3 flex flex-col gap-1.5 flex-1">
                     <h3 className="text-sm font-semibold leading-snug text-light-text-primary line-clamp-2">{project.title}</h3>
-                    <div className="flex items-center gap-1.5 text-xs text-light-text-secondary" title={tileAreas.map(a => a.label).join(', ')}>
-                        <span className="flex gap-0.5 flex-shrink-0" aria-hidden="true">
-                            {tileAreas.map(a => <span key={a.id} className={`w-2 h-2 ${a.dot}`} />)}
-                        </span>
-                        <span className="truncate" aria-hidden="true">{area.label}</span>
-                        {tileAreas.length > 1 && <span className="flex-shrink-0 opacity-60" aria-hidden="true">+{tileAreas.length - 1}</span>}
-                        <span className="sr-only">{tileAreas.map(a => a.label).join(', ')}</span>
+                    <p className="text-xs leading-snug text-light-text-secondary line-clamp-2">{project.description}</p>
+                    <div className="flex flex-wrap gap-1 mt-auto pt-1">
+                        {project.github && (
+                            <a href={project.github} target="_blank" rel="noopener noreferrer" className={badge} onClick={(e) => e.stopPropagation()}>
+                                <Github size={12} className="mr-1" />
+                                GitHub
+                            </a>
+                        )}
+                        {project.demo && (
+                            <a href={project.demo} target="_blank" rel="noopener noreferrer" className={badge} onClick={(e) => e.stopPropagation()}>
+                                <ExternalLink size={12} className="mr-1" />
+                                {project.demo.includes('colab.research.google.com') ? 'Colab' : 'Demo'}
+                            </a>
+                        )}
+                        {project.article && (
+                            <a
+                                href={project.article}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={badge}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (project.id === 'peft-methods') {
+                                        e.preventDefault();
+                                        openProjectModal(project, 'article');
+                                    }
+                                }}
+                            >
+                                <FileCode size={12} className="mr-1" />
+                                {articleLinkLabel(project)}
+                            </a>
+                        )}
+                        {project.pdfUrl && (
+                            <a
+                                href={project.pdfUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={badge}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (isDirectPdf(project.pdfUrl!)) {
+                                        e.preventDefault();
+                                        openProjectModal(project, 'pdf');
+                                    }
+                                }}
+                            >
+                                <FileCode size={12} className="mr-1" />
+                                PDF
+                            </a>
+                        )}
                     </div>
-                    <p className="text-xs text-light-text-secondary/80 truncate">{project.tags.slice(0, 3).join(' · ')}</p>
                 </div>
-            </button>
+            </div>
         );
     };
 
