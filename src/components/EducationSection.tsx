@@ -16,7 +16,7 @@ const EducationSection: React.FC = () => {
       degree: "Bachelor's degree in Computer Engineering",
       institution: "Universidade Federal de Itajubá",
       period: "Mar 2022 to Dec 2025",
-      description: "Completed Computer Engineering with coursework in artificial intelligence, machine learning, computer vision, robotics, and embedded systems. Graduation project: Quantum Assistant, published in Expert Systems with Applications.",
+      description: "IRA 8.93/10, in the top 6% of completion averages among Computer Engineering graduates. Completed the 5-year program in 4 years by taking a heavier course load. Coursework in artificial intelligence, machine learning, computer vision, robotics, and embedded systems. Graduation project: Quantum Assistant, published in Expert Systems with Applications.",
       logo: '/images/logos/unifei.png'
     },
     {

@@ -75,7 +75,7 @@ const CertificatesList: React.FC = () => {
         "Week 2: Mastered instruction fine-tuning, model evaluation techniques, and parameter-efficient fine-tuning methods (PEFT) including LoRA and soft prompts.",
         "Week 3: Deep-dive into reinforcement learning from human feedback (RLHF), model deployment strategies, and advanced architectures including chain-of-thought, program-aided language models (PAL), and ReAct frameworks."
       ],
-      credential: "https://coursera.org/share/84ec3e3b3ee61cc343feabb5ec8bf27f",
+      credential: "https://www.coursera.org/verify/LG93SUN2FOYV",
       image: "/certificates/generativeai-llm-.jpg",
       preview: "/images/certificates/generative-ai-llm.webp"
     },
@@ -112,6 +112,36 @@ const CertificatesList: React.FC = () => {
       credential: "https://courses.opencv.org/certificates/36b9a0bf22a543f4824d483951ca7761",
       image: "/certificates/opencv-bootcamp.jpg",
       preview: "/images/certificates/opencv-bootcamp.webp"
+    },
+    {
+      id: "ibm-quantum-information",
+      title: "Basics of Quantum Information",
+      issuer: "IBM",
+      date: "Mar 2025",
+      description: "First course of IBM's Understanding Quantum Information and Computation series. Badge earned by passing the course exam.",
+      details: [
+        "**Single and multiple systems:** Classical and quantum information, state vectors, measurements, unitary operations, and tensor products, with Qiskit implementations.",
+        "**Quantum circuits:** The circuit model, inner products and projections, and limits on quantum information such as no-cloning.",
+        "**Entanglement in action:** Quantum teleportation, superdense coding, and the CHSH game."
+      ],
+      credential: "https://www.credly.com/badges/8be64d2f-241e-4c82-9855-abf4343b3c00",
+      image: "/certificates/ibm-quantum-information.jpg",
+      preview: "/images/certificates/ibm-quantum-information.webp"
+    },
+    {
+      id: "quantum-enigmas",
+      title: "Quantum Enigmas",
+      issuer: "IBM SkillsBuild",
+      date: "Jun 2025",
+      description: "Self-paced course by IBM and the Institut quantique of Université de Sherbrooke, built around a series of quantum-computing puzzles. Badge earned by passing the end-of-module quizzes with 80% or higher.",
+      details: [
+        "**Foundations:** Differences between classical and quantum computing, superposition, entanglement, and qubit measurement.",
+        "**Quantum gates:** Roles of the NOT, Hadamard, CNOT, and SWAP gates in quantum information processing.",
+        "**IBM Quantum Composer:** Mapping each puzzle onto a circuit, placing qubits in superposition, and entangling them."
+      ],
+      credential: "https://www.credly.com/go/Ka7BZAaU",
+      image: "/certificates/quantum-enigmas.jpg",
+      preview: "/images/certificates/quantum-enigmas.webp"
     }
   ];
 
